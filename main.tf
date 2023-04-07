@@ -1,10 +1,12 @@
 terraform {
-  required_providers {
-    postgresql = {
-      source  = "cyrilgdn/postgresql"
-      version = "1.19.0"
+  cloud {
+    organization = "quantified-uncertainty"
+    workspaces {
+      name = "ops"
     }
+  }
 
+  required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"
       version = "~> 2.0"
@@ -17,14 +19,6 @@ terraform {
   }
 }
 
-
-provider "postgresql" {
-  host            = "localhost"
-  port            = 5432
-  sslmode         = "disable"
-  connect_timeout = 15
-}
-
 variable "do_token" {}
 provider "digitalocean" {
   token = var.do_token
@@ -34,10 +28,6 @@ variable "vercel_api_token" {}
 provider "vercel" {
   api_token = var.vercel_api_token
   team      = "quantified-uncertainty"
-}
-
-resource "postgresql_database" "quri_db" {
-  name = "quri"
 }
 
 resource "digitalocean_project" "quri" {
@@ -53,6 +43,24 @@ resource "digitalocean_database_cluster" "quri" {
   region     = "nyc1"
   node_count = 1
   project_id = digitalocean_project.quri.id
+}
+
+resource "vercel_project" "quri-api" {
+  name           = "quri-api"
+  root_directory = "packages/api-server"
+  git_repository = {
+    production_branch = "master"
+    repo              = "quantified-uncertainty/squiggle"
+    type              = "github"
+  }
+
+  environment = [
+    {
+      key    = "DATABASE_URL"
+      value  = digitalocean_database_cluster.quri.uri
+      target = ["production", "development", "preview"]
+    }
+  ]
 }
 
 
