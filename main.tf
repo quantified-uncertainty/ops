@@ -37,6 +37,7 @@ resource "digitalocean_project" "metaforecast" {
 
 resource "digitalocean_project" "quri" {
   name        = "QURI"
+  is_default  = true
   description = "Main project with QURI resources."
 }
 
