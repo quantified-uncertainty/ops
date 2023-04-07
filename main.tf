@@ -30,6 +30,11 @@ provider "vercel" {
   team      = "quantified-uncertainty"
 }
 
+resource "digitalocean_project" "metaforecast" {
+  name        = "metaforecast.org"
+  description = "Metaforecast.org resources."
+}
+
 resource "digitalocean_project" "quri" {
   name        = "QURI"
   description = "Main project with QURI resources."
