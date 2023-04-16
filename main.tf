@@ -55,7 +55,7 @@ resource "vercel_project" "quri-api" {
   name           = "quri-api"
   root_directory = "packages/api-server"
   git_repository = {
-    production_branch = "master"
+    production_branch = "develop"
     repo              = "quantified-uncertainty/squiggle"
     type              = "github"
   }
