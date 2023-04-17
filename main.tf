@@ -19,12 +19,10 @@ terraform {
   }
 }
 
-variable "do_token" {}
 provider "digitalocean" {
   token = var.do_token
 }
 
-variable "vercel_api_token" {}
 provider "vercel" {
   api_token = var.vercel_api_token
   team      = "quantified-uncertainty"
@@ -65,7 +63,17 @@ resource "vercel_project" "quri-api" {
       key    = "DATABASE_URL"
       value  = digitalocean_database_cluster.quri.uri
       target = ["production", "development", "preview"]
-    }
+    },
+    {
+      key    = "GITHUB_CLIENT_ID"
+      value  = var.github_client_id
+      target = ["production"]
+    },
+    {
+      key    = "GITHUB_CLIENT_SECRET"
+      value  = var.github_client_secret
+      target = ["production"]
+    },
   ]
 }
 
