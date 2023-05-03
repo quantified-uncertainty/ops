@@ -49,9 +49,9 @@ resource "digitalocean_database_cluster" "quri" {
   project_id = digitalocean_project.quri.id
 }
 
-resource "vercel_project" "quri-api" {
+resource "vercel_project" "hub" {
   name           = "quri-api"
-  root_directory = "packages/api-server"
+  root_directory = "packages/hub"
   git_repository = {
     production_branch = "develop"
     repo              = "quantified-uncertainty/squiggle"
@@ -62,7 +62,7 @@ resource "vercel_project" "quri-api" {
     {
       key    = "DATABASE_URL"
       value  = digitalocean_database_cluster.quri.uri
-      target = ["production", "development", "preview"]
+      target = ["production", "preview"]
     },
     {
       key    = "GITHUB_CLIENT_ID"
@@ -73,6 +73,16 @@ resource "vercel_project" "quri-api" {
       key    = "GITHUB_CLIENT_SECRET"
       value  = var.github_client_secret
       target = ["production"]
+    },
+    {
+      key    = "SENDGRID_KEY"
+      value  = var.sendgrid_key
+      target = ["production", "preview"]
+    },
+    {
+      key    = "EMAIL_FROM"
+      value  = var.hub_email_from
+      target = ["production", "preview"]
     },
   ]
 }
