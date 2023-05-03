@@ -50,7 +50,7 @@ resource "digitalocean_database_cluster" "quri" {
 }
 
 resource "vercel_project" "hub" {
-  name           = "quri-api"
+  name           = "quri-hub"
   root_directory = "packages/hub"
   git_repository = {
     production_branch = "develop"
