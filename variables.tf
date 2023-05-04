@@ -19,6 +19,11 @@ variable "sendgrid_key" {
   sensitive = true
 }
 
+variable "hub_nextauth_secret" {
+  type      = string
+  sensitive = true
+}
+
 // public, defined in main.auto.tfvars
 variable "github_client_id" {
   type = string

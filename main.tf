@@ -84,6 +84,11 @@ resource "vercel_project" "hub" {
       value  = var.hub_email_from
       target = ["production", "preview"]
     },
+    {
+      key    = "NEXTAUTH_SECRET"
+      value  = var.hub_nextauth_secret
+      target = ["production", "preview"]
+    },
   ]
 }
 
