@@ -89,12 +89,6 @@ resource "vercel_project" "hub" {
       value  = var.hub_nextauth_secret
       target = ["production", "preview"]
     },
-    {
-      # https://github.com/vercel/next.js/issues/49169#issuecomment-1535218952
-      key    = "__NEXT_PRIVATE_PREBUNDLED_REACT"
-      value  = "next"
-      target = ["production", "preview", "development"]
-    }
   ]
 }
 
