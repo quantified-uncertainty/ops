@@ -90,6 +90,9 @@ resource "vercel_project" "hub" {
       target = ["production", "preview"]
     },
   ]
+
+  # close to digitalocean_database_cluster.quri
+  serverless_function_region = "iad1"
 }
 
 
