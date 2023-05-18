@@ -117,6 +117,17 @@ resource "vercel_project" "squiggle-components" {
   }
 }
 
+resource "vercel_project" "quri-ui" {
+  name           = "quri-ui"
+  root_directory = "packages/ui"
+
+  git_repository = {
+    production_branch = "master"
+    repo              = "quantified-uncertainty/squiggle"
+    type              = "github"
+  }
+}
+
 resource "vercel_project" "squiggle-website" {
   name           = "squiggle-website"
   root_directory = "packages/website"
