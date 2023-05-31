@@ -53,3 +53,15 @@ resource "vercel_project" "hub" {
   # close to digitalocean_database_cluster.quri
   serverless_function_region = "iad1"
 }
+
+resource "vercel_project_domain" "squiggle-hub-com" {
+  domain     = "squiggle-hub.com"
+  project_id = vercel_project.hub.id
+}
+
+resource "vercel_project_domain" "www-squiggle-hub-com" {
+  domain               = "www.squiggle-hub.com"
+  redirect             = "squiggle-hub.com"
+  redirect_status_code = 308
+  project_id           = vercel_project.squiggle-website.id
+}
