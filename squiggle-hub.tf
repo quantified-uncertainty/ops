@@ -54,14 +54,28 @@ resource "vercel_project" "hub" {
   serverless_function_region = "iad1"
 }
 
-resource "vercel_project_domain" "squiggle-hub-com" {
-  domain     = "squiggle-hub.com"
+resource "vercel_project_domain" "squiggle-hub-org" {
+  domain     = "squiggle-hub.org"
   project_id = vercel_project.hub.id
+}
+
+resource "vercel_project_domain" "www-squiggle-hub-org" {
+  domain               = "www.squiggle-hub.org"
+  redirect             = "squiggle-hub.org"
+  redirect_status_code = 308
+  project_id           = vercel_project.squiggle-website.id
+}
+
+resource "vercel_project_domain" "squiggle-hub-com" {
+  domain               = "squiggle-hub.com"
+  redirect             = "squiggle-hub.org"
+  redirect_status_code = 308
+  project_id           = vercel_project.hub.id
 }
 
 resource "vercel_project_domain" "www-squiggle-hub-com" {
   domain               = "www.squiggle-hub.com"
-  redirect             = "squiggle-hub.com"
+  redirect             = "squiggle-hub.org"
   redirect_status_code = 308
   project_id           = vercel_project.squiggle-website.id
 }
