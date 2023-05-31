@@ -9,11 +9,6 @@ variable "vercel_api_token" {
   sensitive = true
 }
 
-variable "namecheap_api_key" {
-  type      = string
-  sensitive = true
-}
-
 variable "github_client_secret" {
   type      = string
   sensitive = true
