@@ -16,6 +16,11 @@ terraform {
       source  = "vercel/vercel"
       version = "~> 0.4"
     }
+
+    namecheap = {
+      source  = "namecheap/namecheap"
+      version = ">= 2.0.0"
+    }
   }
 }
 
@@ -26,6 +31,12 @@ provider "digitalocean" {
 provider "vercel" {
   api_token = var.vercel_api_token
   team      = "quantified-uncertainty"
+}
+
+provider "namecheap" {
+  user_name = "quriops"
+  api_user  = "quriops"
+  api_key   = var.namecheap_api_key
 }
 
 resource "digitalocean_project" "metaforecast" {
@@ -198,5 +209,15 @@ resource "vercel_project" "squiggle-tweaker" {
     production_branch = "master"
     repo              = "quantified-uncertainty/squiggle-tweaker"
     type              = "github"
+  }
+}
+
+resource "namecheap_domain_records" "squiggle-hub-org" {
+  domain = "squiggle-hub.org"
+
+  record {
+    hostname = "@"
+    type     = "TXT"
+    address  = "terraform namecheap test"
   }
 }
