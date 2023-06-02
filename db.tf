@@ -13,3 +13,11 @@ resource "digitalocean_database_cluster" "quri" {
   node_count = 1
   project_id = digitalocean_project.quri.id
 }
+
+resource "digitalocean_database_connection_pool" "main" {
+  cluster_id = digitalocean_database_cluster.quri.id
+  name       = "main"
+  mode       = "transaction"
+  size       = 20
+  db_name    = "defaultdb"
+}
