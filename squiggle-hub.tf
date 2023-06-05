@@ -20,7 +20,7 @@ resource "vercel_project" "hub" {
   environment = [
     {
       key    = "DATABASE_URL"
-      value  = digitalocean_database_cluster.quri.uri
+      value  = digitalocean_database_connection_pool.main.uri
       target = ["production", "preview"]
     },
     {
