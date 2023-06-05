@@ -20,4 +20,5 @@ resource "digitalocean_database_connection_pool" "main" {
   mode       = "transaction"
   size       = 20
   db_name    = "defaultdb"
+  user       = "doadmin"
 }
