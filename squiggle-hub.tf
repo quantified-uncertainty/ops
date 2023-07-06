@@ -1,13 +1,3 @@
-resource "vercel_project" "relative-values" {
-  name           = "relative-values"
-  root_directory = "packages/relative-values"
-  git_repository = {
-    production_branch = "master"
-    repo              = "quantified-uncertainty/squiggle"
-    type              = "github"
-  }
-}
-
 resource "vercel_project" "hub" {
   name           = "quri-hub"
   root_directory = "packages/hub"
