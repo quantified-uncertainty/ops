@@ -26,15 +26,3 @@ resource "vercel_project_domain" "squiggle-website-preview" {
   git_branch = "develop"
   project_id = vercel_project.squiggle-website.id
 }
-
-
-resource "vercel_project" "squiggle-website-nextra" {
-  name           = "squiggle-nextra"
-  root_directory = "packages/website2"
-
-  git_repository = {
-    production_branch = "nextra"
-    repo              = "quantified-uncertainty/squiggle"
-    type              = "github"
-  }
-}
