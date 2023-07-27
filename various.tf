@@ -3,7 +3,7 @@ resource "vercel_project" "squiggle-components" {
   root_directory = "packages/components"
 
   git_repository = {
-    production_branch = "master"
+    production_branch = "main"
     repo              = "quantified-uncertainty/squiggle"
     type              = "github"
   }
@@ -27,7 +27,7 @@ resource "vercel_project" "quri-ui" {
   root_directory = "packages/ui"
 
   git_repository = {
-    production_branch = "master"
+    production_branch = "main"
     repo              = "quantified-uncertainty/squiggle"
     type              = "github"
   }
