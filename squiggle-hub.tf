@@ -64,3 +64,20 @@ resource "vercel_project_domain" "squigglehub-redirects" {
   redirect_status_code = 308
   project_id           = vercel_project.hub.id
 }
+
+# Sendgrid DNS configuration; obtained from https://app.sendgrid.com/settings/sender_auth/domain/get/18308809
+resource "vercel_dns_record" "squigglehub-sendgrid" {
+  for_each = {
+    "url1940" : "sendgrid.net",
+    "34091428" : "sendgrid.net",
+    "em6594" : "u34091428.wl179.sendgrid.net",
+    "s1._domainkey" : "s1.domainkey.u34091428.wl179.sendgrid.net",
+    "s2._domainkey" : "s2.domainkey.u34091428.wl179.sendgrid.net",
+  }
+
+  domain = "squigglehub.org"
+  name   = each.key
+  type   = "CNAME"
+  ttl    = 300
+  value  = each.value
+}
