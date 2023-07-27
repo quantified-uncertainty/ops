@@ -2,7 +2,7 @@ resource "vercel_project" "hub" {
   name           = "quri-hub"
   root_directory = "packages/hub"
   git_repository = {
-    production_branch = "develop"
+    production_branch = "main"
     repo              = "quantified-uncertainty/squiggle"
     type              = "github"
   }

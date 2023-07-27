@@ -9,6 +9,19 @@ resource "vercel_project" "squiggle-components" {
   }
 }
 
+resource "vercel_project_domain" "squiggle-components-preview" {
+  domain               = "preview-components.squiggle-language.com"
+  redirect             = "components.squiggle-language.com"
+  redirect_status_code = 308
+  project_id           = vercel_project.squiggle-components.id
+}
+
+resource "vercel_project_domain" "squiggle-components" {
+  domain     = "components.squiggle-language.com"
+  project_id = vercel_project.squiggle-components.id
+}
+
+
 resource "vercel_project" "quri-ui" {
   name           = "quri-ui"
   root_directory = "packages/ui"
