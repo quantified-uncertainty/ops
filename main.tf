@@ -34,5 +34,6 @@ provider "vercel" {
 }
 
 provider "github" {
+  token = var.github_token
   owner = "quantified-uncertainty"
 }
