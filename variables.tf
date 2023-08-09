@@ -9,6 +9,7 @@ variable "vercel_api_token" {
   sensitive = true
 }
 
+// secret for "sign in with github" feature
 variable "github_client_secret" {
   type      = string
   sensitive = true
@@ -24,6 +25,11 @@ variable "hub_nextauth_secret" {
   sensitive = true
 }
 
+// token for controlling github, e.g. configuring action secrets in Squiggle repo
+variable "github_token" {
+  type      = string
+  sensitive = true
+}
 // public, defined in main.auto.tfvars
 variable "github_client_id" {
   type = string

@@ -22,3 +22,10 @@ resource "digitalocean_database_connection_pool" "main" {
   db_name    = "defaultdb"
   user       = "doadmin"
 }
+
+resource "github_actions_secret" "database_url" {
+  // used by "prisma migrate" action
+  repository      = "squiggle"
+  secret_name     = "DATABASE_URL"
+  plaintext_value = digitalocean_database_cluster.quri.uri
+}
