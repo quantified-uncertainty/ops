@@ -64,22 +64,24 @@ resource "digitalocean_database_connection_pool" "dev" {
 }
 
 locals {
+  database_direct_url     = digitalocean_database_cluster.quri.uri
+  database_dev_direct_url = "postgresql://${postgresql_role.quri_dev.user}:${postgresql_role.quri_dev.password}@${digitalocean_database_cluster.quri.host}:${digitalocean_database_cluster.quri.port}/${postgresql_database.database.name}?sslmode=require"
+
   database_bouncer_url = digitalocean_database_connection_pool.defaultdb.uri
 
   // `digitalocean_database_connection_pool.dev.uri` won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs.
-  database_dev_bouncer_url = "postgresql://${digitalocean_database_connection_pool.dev.user}:${postgresql_role.quri_dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require"
+  database_dev_bouncer_url = "postgresql://${postgresql_role.quri_dev.user}:${postgresql_role.quri_dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require"
 
 }
 resource "github_actions_secret" "database_url" {
   // Used by "prisma migrate" action.
-  repository  = "squiggle"
-  secret_name = "DATABASE_URL"
-  // TODO: should be direct URL instead, https://www.prisma.io/docs/guides/performance-and-optimization/connection-management/configure-pg-bouncer#prisma-migrate-and-pgbouncer-workaround.
-  plaintext_value = local.database_bouncer_url
+  repository      = "squiggle"
+  secret_name     = "DATABASE_DIRECT_URL"
+  plaintext_value = local.database_direct_url
 }
 
 resource "github_actions_secret" "database_dev_url" {
   repository      = "squiggle"
-  secret_name     = "DATABASE_DEV_URL"
-  plaintext_value = local.database_dev_bouncer_url
+  secret_name     = "DATABASE_DEV_DIRECT_URL"
+  plaintext_value = local.database_dev_direct_url
 }
