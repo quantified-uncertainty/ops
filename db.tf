@@ -91,5 +91,5 @@ resource "github_actions_secret" "database_url" {
 resource "github_actions_secret" "database_dev_url" {
   repository      = "squiggle"
   secret_name     = "DATABASE_DEV_URL"
-  plaintext_value = local.database_bouncer_dev_url
+  plaintext_value = local.database_dev_bouncer_url
 }
