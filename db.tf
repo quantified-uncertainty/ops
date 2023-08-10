@@ -24,15 +24,16 @@ provider "postgresql" {
   superuser = false
 }
 
-resource "random_password" "quri_dev_db" {
-  length = 16
+resource "random_password" "quri_dev_password" {
+  length  = 16
+  special = false // to avoid trouble with https://www.prisma.io/docs/reference/database-reference/connection-urls#special-characters
 }
 
 resource "postgresql_role" "quri_dev" {
   provider = postgresql.quri
   name     = "quri_dev_role"
   login    = true
-  password = random_password.quri_dev_db.result
+  password = random_password.quri_dev_password.result
 }
 
 resource "postgresql_database" "quri_dev" {
