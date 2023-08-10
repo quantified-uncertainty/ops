@@ -21,6 +21,12 @@ terraform {
       source  = "integrations/github"
       version = "~> 5.0"
     }
+
+    // configured in db.tf
+    postgresql = {
+      source  = "cyrilgdn/postgresql"
+      version = "~> 1.20"
+    }
   }
 }
 
