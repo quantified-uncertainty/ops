@@ -20,6 +20,7 @@ provider "postgresql" {
   database = digitalocean_database_cluster.quri.database
   username = digitalocean_database_cluster.quri.user
   password = digitalocean_database_cluster.quri.password
+  port     = digitalocean_database_cluster.quri.port
 }
 
 resource "random_password" "quri_dev_db" {
@@ -36,7 +37,7 @@ resource "postgresql_role" "quri_dev" {
 resource "postgresql_database" "quri_dev" {
   provider = postgresql.quri
   name     = "quri_dev"
-  owner    = "quri_dev_role"
+  owner    = postgresql_role.quri_dev.name
 }
 
 resource "digitalocean_database_connection_pool" "main" {
@@ -53,8 +54,8 @@ resource "digitalocean_database_connection_pool" "dev" {
   name       = "dev"
   mode       = "transaction"
   size       = 3
-  db_name    = "quri_dev"
-  user       = "quri_dev_role"
+  db_name    = postgresql_database.quri_dev.name
+  user       = postgresql_role.quri_dev.name
 }
 
 resource "github_actions_secret" "database_url" {
