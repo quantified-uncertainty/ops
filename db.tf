@@ -65,7 +65,7 @@ resource "digitalocean_database_connection_pool" "dev" {
 
 locals {
   database_direct_url     = digitalocean_database_cluster.quri.uri
-  database_dev_direct_url = "postgresql://${postgresql_role.quri_dev.name}:${postgresql_role.quri_dev.password}@${digitalocean_database_cluster.quri.host}:${digitalocean_database_cluster.quri.port}/${postgresql_database.database.name}?sslmode=require"
+  database_dev_direct_url = "postgresql://${postgresql_role.quri_dev.name}:${postgresql_role.quri_dev.password}@${digitalocean_database_cluster.quri.host}:${digitalocean_database_cluster.quri.port}/${postgresql_database.quri_dev.name}?sslmode=require"
 
   database_bouncer_url = digitalocean_database_connection_pool.defaultdb.uri
 
