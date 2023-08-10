@@ -44,7 +44,17 @@ resource "digitalocean_database_connection_pool" "main" {
   name       = "main"
   mode       = "transaction"
   size       = 15
+  db_name    = "defaultdb"
   user       = "doadmin"
+}
+
+resource "digitalocean_database_connection_pool" "dev" {
+  cluster_id = digitalocean_database_cluster.quri.id
+  name       = "dev"
+  mode       = "transaction"
+  size       = 3
+  db_name    = "quri_dev"
+  user       = "quri_dev_role"
 }
 
 resource "github_actions_secret" "database_url" {
