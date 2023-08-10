@@ -15,12 +15,13 @@ resource "digitalocean_database_cluster" "quri" {
 }
 
 provider "postgresql" {
-  alias    = "quri"
-  host     = digitalocean_database_cluster.quri.host
-  database = digitalocean_database_cluster.quri.database
-  username = digitalocean_database_cluster.quri.user
-  password = digitalocean_database_cluster.quri.password
-  port     = digitalocean_database_cluster.quri.port
+  alias     = "quri"
+  host      = digitalocean_database_cluster.quri.host
+  database  = digitalocean_database_cluster.quri.database
+  username  = digitalocean_database_cluster.quri.user
+  password  = digitalocean_database_cluster.quri.password
+  port      = digitalocean_database_cluster.quri.port
+  superuser = false
 }
 
 resource "random_password" "quri_dev_db" {
