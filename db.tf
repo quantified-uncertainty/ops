@@ -42,16 +42,6 @@ resource "postgresql_database" "quri_dev" {
   depends_on = [postgresql_role.quri_dev]
 }
 
-// Legacy, will be replaced by `defaultdb` pool.
-resource "digitalocean_database_connection_pool" "main" {
-  cluster_id = digitalocean_database_cluster.quri.id
-  name       = "main"
-  mode       = "transaction"
-  size       = 7
-  db_name    = "defaultdb"
-  user       = "doadmin"
-}
-
 // Production DB pool.
 resource "digitalocean_database_connection_pool" "defaultdb" {
   cluster_id = digitalocean_database_cluster.quri.id
