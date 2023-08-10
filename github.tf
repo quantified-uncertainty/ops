@@ -11,10 +11,6 @@ import {
 resource "github_repository_environment" "preview" {
   environment = "Preview"
   repository  = "squiggle"
-  deployment_branch_policy {
-    protected_branches     = false
-    custom_branch_policies = false
-  }
 }
 
 resource "github_repository_environment" "production" {
@@ -22,7 +18,7 @@ resource "github_repository_environment" "production" {
   repository  = "squiggle"
   deployment_branch_policy {
     protected_branches     = false
-    custom_branch_policies = false
+    custom_branch_policies = true
   }
 }
 
