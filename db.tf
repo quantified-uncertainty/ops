@@ -61,9 +61,23 @@ resource "digitalocean_database_connection_pool" "dev" {
   depends_on = [postgresql_database.quri_dev]
 }
 
+locals {
+  // could be done with digitalocean_database_connection_pool.main.uri, but we use longer version for parity with database_dev_url
+  database_url = "postgresql://${digitalocean_database_connection_pool.main.user}:${digitalocean_database_connection_pool.main.password}@${digitalocean_database_connection_pool.main.host}:${digitalocean_database_connection_pool.main.port}/${digitalocean_database_connection_pool.main.name}?sslmode=require&pgbouncer=true"
+
+  // digitalocean_database_connection_pool.dev.uri won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs
+  database_dev_url = "postgresql://${digitalocean_database_connection_pool.dev.user}:${digitalocean_database_connection_pool.dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require&pgbouncer=true"
+
+}
 resource "github_actions_secret" "database_url" {
   // used by "prisma migrate" action
   repository      = "squiggle"
   secret_name     = "DATABASE_URL"
-  plaintext_value = digitalocean_database_cluster.quri.uri
+  plaintext_value = local.database_url
+}
+
+resource "github_actions_secret" "database_dev_url" {
+  repository      = "squiggle"
+  secret_name     = "DATABASE_DEV_URL"
+  plaintext_value = local.database_dev_url
 }

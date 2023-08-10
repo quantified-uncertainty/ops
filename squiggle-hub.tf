@@ -10,8 +10,13 @@ resource "vercel_project" "hub" {
   environment = [
     {
       key    = "DATABASE_URL"
-      value  = "${digitalocean_database_connection_pool.main.uri}&pgbouncer=true"
-      target = ["production", "preview"]
+      value  = local.database_url
+      target = ["production"]
+    },
+    {
+      key    = "DATABASE_URL"
+      value  = local.database_dev_url
+      target = ["preview"]
     },
     {
       key    = "GITHUB_CLIENT_ID"
