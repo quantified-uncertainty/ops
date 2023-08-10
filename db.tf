@@ -73,15 +73,3 @@ locals {
   database_dev_bouncer_url = "postgresql://${postgresql_role.quri_dev.name}:${postgresql_role.quri_dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require"
 
 }
-resource "github_actions_secret" "database_url" {
-  // Used by "prisma migrate" action.
-  repository      = "squiggle"
-  secret_name     = "DATABASE_DIRECT_URL"
-  plaintext_value = local.database_direct_url
-}
-
-resource "github_actions_secret" "database_dev_url" {
-  repository      = "squiggle"
-  secret_name     = "DATABASE_DEV_DIRECT_URL"
-  plaintext_value = local.database_dev_direct_url
-}
