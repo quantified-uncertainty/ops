@@ -42,11 +42,12 @@ resource "postgresql_database" "quri_dev" {
   depends_on = [postgresql_role.quri_dev]
 }
 
+// Legacy, will be replaced by `defaultdb` pool.
 resource "digitalocean_database_connection_pool" "main" {
   cluster_id = digitalocean_database_cluster.quri.id
   name       = "main"
   mode       = "transaction"
-  size       = 15
+  size       = 7
   db_name    = "defaultdb"
   user       = "doadmin"
 }
@@ -54,9 +55,9 @@ resource "digitalocean_database_connection_pool" "main" {
 // Production DB pool.
 resource "digitalocean_database_connection_pool" "defaultdb" {
   cluster_id = digitalocean_database_cluster.quri.id
-  name       = "defaultdb" // matched db_name for convenience ()
+  name       = "defaultdb"
   mode       = "transaction"
-  size       = 15
+  size       = 8
   db_name    = "defaultdb"
   user       = "doadmin"
 }
@@ -73,8 +74,8 @@ resource "digitalocean_database_connection_pool" "dev" {
 }
 
 locals {
-  // Could be done with `digitalocean_database_connection_pool.main.uri`, but we use longer version for parity with `database_dev_url`.
-  database_bouncer_url = "postgresql://${digitalocean_database_connection_pool.main.user}:${digitalocean_database_connection_pool.main.password}@${digitalocean_database_connection_pool.main.host}:${digitalocean_database_connection_pool.main.port}/${digitalocean_database_connection_pool.main.name}?sslmode=require"
+  // Could be done with `digitalocean_database_connection_pool.defaultdb.uri`, but we use longer version for parity with `database_dev_url`.
+  database_bouncer_url = "postgresql://${digitalocean_database_connection_pool.defaultdb.user}:${digitalocean_database_connection_pool.defaultdb.password}@${digitalocean_database_connection_pool.defaultdb.host}:${digitalocean_database_connection_pool.defaultdb.port}/${digitalocean_database_connection_pool.defaultdb.name}?sslmode=require"
 
   // `digitalocean_database_connection_pool.dev.uri` won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs.
   database_dev_bouncer_url = "postgresql://${digitalocean_database_connection_pool.dev.user}:${digitalocean_database_connection_pool.dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require"
