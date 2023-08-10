@@ -74,11 +74,10 @@ resource "digitalocean_database_connection_pool" "dev" {
 }
 
 locals {
-  // Could be done with `digitalocean_database_connection_pool.defaultdb.uri`, but we use longer version for parity with `database_dev_url`.
-  database_bouncer_url = "postgresql://${digitalocean_database_connection_pool.defaultdb.user}:${digitalocean_database_connection_pool.defaultdb.password}@${digitalocean_database_connection_pool.defaultdb.host}:${digitalocean_database_connection_pool.defaultdb.port}/${digitalocean_database_connection_pool.defaultdb.name}?sslmode=require"
+  database_bouncer_url = digitalocean_database_connection_pool.defaultdb.uri
 
   // `digitalocean_database_connection_pool.dev.uri` won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs.
-  database_dev_bouncer_url = "postgresql://${digitalocean_database_connection_pool.dev.user}:${digitalocean_database_connection_pool.dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require"
+  database_dev_bouncer_url = "postgresql://${digitalocean_database_connection_pool.dev.user}:${postgresql_role.quri_dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require"
 
 }
 resource "github_actions_secret" "database_url" {
