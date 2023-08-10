@@ -36,9 +36,10 @@ resource "postgresql_role" "quri_dev" {
 }
 
 resource "postgresql_database" "quri_dev" {
-  provider = postgresql.quri
-  name     = "quri_dev"
-  owner    = postgresql_role.quri_dev.name
+  provider   = postgresql.quri
+  name       = "quri_dev"
+  owner      = postgresql_role.quri_dev.name
+  depends_on = [postgresql_role.quri_dev]
 }
 
 resource "digitalocean_database_connection_pool" "main" {
@@ -57,6 +58,7 @@ resource "digitalocean_database_connection_pool" "dev" {
   size       = 3
   db_name    = postgresql_database.quri_dev.name
   user       = postgresql_role.quri_dev.name
+  depends_on = [postgresql_database.quri_dev]
 }
 
 resource "github_actions_secret" "database_url" {
