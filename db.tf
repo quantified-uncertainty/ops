@@ -14,12 +14,36 @@ resource "digitalocean_database_cluster" "quri" {
   project_id = digitalocean_project.quri.id
 }
 
+provider "postgresql" {
+  alias    = "quri"
+  host     = digitalocean_database_cluster.quri.host
+  database = digitalocean_database_cluster.quri.database
+  username = digitalocean_database_cluster.quri.user
+  password = digitalocean_database_cluster.quri.password
+}
+
+resource "random_password" "quri_dev_db" {
+  length = 16
+}
+
+resource "postgresql_role" "quri_dev" {
+  provider = postgresql.quri
+  name     = "quri_dev_role"
+  login    = true
+  password = random_password.quri_dev_db.result
+}
+
+resource "postgresql_database" "quri_dev" {
+  provider = postgresql.quri
+  name     = "quri_dev"
+  owner    = "quri_dev_role"
+}
+
 resource "digitalocean_database_connection_pool" "main" {
   cluster_id = digitalocean_database_cluster.quri.id
   name       = "main"
   mode       = "transaction"
-  size       = 20
-  db_name    = "defaultdb"
+  size       = 15
   user       = "doadmin"
 }
 
