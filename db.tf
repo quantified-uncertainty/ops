@@ -51,6 +51,17 @@ resource "digitalocean_database_connection_pool" "main" {
   user       = "doadmin"
 }
 
+// Production DB pool.
+resource "digitalocean_database_connection_pool" "defaultdb" {
+  cluster_id = digitalocean_database_cluster.quri.id
+  name       = "defaultdb" // matched db_name for convenience ()
+  mode       = "transaction"
+  size       = 15
+  db_name    = "defaultdb"
+  user       = "doadmin"
+}
+
+// Dev DB pool.
 resource "digitalocean_database_connection_pool" "dev" {
   cluster_id = digitalocean_database_cluster.quri.id
   name       = "dev"
@@ -62,22 +73,23 @@ resource "digitalocean_database_connection_pool" "dev" {
 }
 
 locals {
-  // could be done with digitalocean_database_connection_pool.main.uri, but we use longer version for parity with database_dev_url
-  database_url = "postgresql://${digitalocean_database_connection_pool.main.user}:${digitalocean_database_connection_pool.main.password}@${digitalocean_database_connection_pool.main.host}:${digitalocean_database_connection_pool.main.port}/${digitalocean_database_connection_pool.main.name}?sslmode=require&pgbouncer=true"
+  // Could be done with `digitalocean_database_connection_pool.main.uri`, but we use longer version for parity with `database_dev_url`.
+  database_bouncer_url = "postgresql://${digitalocean_database_connection_pool.main.user}:${digitalocean_database_connection_pool.main.password}@${digitalocean_database_connection_pool.main.host}:${digitalocean_database_connection_pool.main.port}/${digitalocean_database_connection_pool.main.name}?sslmode=require"
 
-  // digitalocean_database_connection_pool.dev.uri won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs
-  database_dev_url = "postgresql://${digitalocean_database_connection_pool.dev.user}:${digitalocean_database_connection_pool.dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require&pgbouncer=true"
+  // `digitalocean_database_connection_pool.dev.uri` won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs.
+  database_dev_bouncer_url = "postgresql://${digitalocean_database_connection_pool.dev.user}:${digitalocean_database_connection_pool.dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require"
 
 }
 resource "github_actions_secret" "database_url" {
-  // used by "prisma migrate" action
-  repository      = "squiggle"
-  secret_name     = "DATABASE_URL"
-  plaintext_value = local.database_url
+  // Used by "prisma migrate" action.
+  repository  = "squiggle"
+  secret_name = "DATABASE_URL"
+  // TODO: should be direct URL instead, https://www.prisma.io/docs/guides/performance-and-optimization/connection-management/configure-pg-bouncer#prisma-migrate-and-pgbouncer-workaround.
+  plaintext_value = local.database_bouncer_url
 }
 
 resource "github_actions_secret" "database_dev_url" {
   repository      = "squiggle"
   secret_name     = "DATABASE_DEV_URL"
-  plaintext_value = local.database_dev_url
+  plaintext_value = local.database_bouncer_dev_url
 }

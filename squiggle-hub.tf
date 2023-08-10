@@ -9,13 +9,15 @@ resource "vercel_project" "hub" {
 
   environment = [
     {
-      key    = "DATABASE_URL"
-      value  = local.database_url
+      key = "DATABASE_URL"
+      // https://www.prisma.io/docs/guides/performance-and-optimization/connection-management/configure-pg-bouncer#add-pgbouncer-to-the-connection-url
+      value  = "${local.database_bouncer_url}&pgbouncer=true"
       target = ["production"]
     },
     {
       key    = "DATABASE_URL"
-      value  = local.database_dev_url
+      value  = local.database_dev_bouncer_url
+      value  = "${local.database_dev_bouncer_url}&pgbouncer=true"
       target = ["preview"]
     },
     {
