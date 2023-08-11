@@ -74,8 +74,9 @@ resource "postgresql_database" "quri_dev" {
   depends_on = [postgresql_role.quri_dev]
 }
 
-# Tighten permissions on `public` schemas; default since PostgreSQL 15.
+# Tighten permissions; default since PostgreSQL 15.
 # https://www.depesz.com/2021/09/10/waiting-for-postgresql-15-revoke-public-create-from-public-schema-now-owned-by-pg_database_owner/
+# Revoking from `public` schema didn't work for some reason, but revoking on database level did.
 resource "postgresql_grant" "revoke_public" {
   provider = postgresql.quri
   for_each = toset([
@@ -106,7 +107,7 @@ resource "digitalocean_database_connection_pool" "prod" {
   mode       = "transaction"
   size       = 5
   db_name    = "defaultdb"
-  user       = "doadmin"
+  user       = postgresql_role.quri_prod.name
 }
 
 # Dev DB pool.
