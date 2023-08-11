@@ -56,7 +56,7 @@ resource "postgresql_grant" "quri_prod" {
   privileges  = ["CREATE", "CONNECT", "TEMPORARY"]
 }
 
-resource "postgresql_grant" "quri_prod" {
+resource "postgresql_grant" "quri_prod_tables" {
   provider    = postgresql.quri
   role        = postgresql_role.quri_prod.name
   database    = "defaultdb"
