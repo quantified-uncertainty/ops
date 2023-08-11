@@ -26,7 +26,7 @@ provider "postgresql" {
 
 resource "random_password" "quri_dev_password" {
   length  = 16
-  special = false // to avoid trouble with https://www.prisma.io/docs/reference/database-reference/connection-urls#special-characters
+  special = false # to avoid trouble with https://www.prisma.io/docs/reference/database-reference/connection-urls#special-characters
 }
 
 resource "postgresql_role" "quri_dev" {
@@ -36,6 +36,25 @@ resource "postgresql_role" "quri_dev" {
   password = random_password.quri_dev_password.result
 }
 
+resource "random_password" "quri_prod_password" {
+  length  = 16
+  special = false
+}
+
+resource "postgresql_role" "quri_prod" {
+  provider = postgresql.quri
+  name     = "quri_prod_role"
+  login    = true
+  password = random_password.quri_prod_password.result
+}
+
+resource "postgresql_grant" "quri_prod" {
+  role        = postgresql_role.quri_prod.name
+  object_type = "database"
+  database    = "defaultdb"
+  privileges  = ["CREATE", "CONNECT", "TEMPORARY", "TEMP"]
+}
+
 resource "postgresql_database" "quri_dev" {
   provider   = postgresql.quri
   name       = "quri_dev"
@@ -43,7 +62,7 @@ resource "postgresql_database" "quri_dev" {
   depends_on = [postgresql_role.quri_dev]
 }
 
-// Production DB pool.
+# Legacy production DB pool for `doadmin` user.
 resource "digitalocean_database_connection_pool" "defaultdb" {
   cluster_id = digitalocean_database_cluster.quri.id
   name       = "defaultdb"
@@ -53,7 +72,17 @@ resource "digitalocean_database_connection_pool" "defaultdb" {
   user       = "doadmin"
 }
 
-// Dev DB pool.
+# New production DB pool.
+resource "digitalocean_database_connection_pool" "prod" {
+  cluster_id = digitalocean_database_cluster.quri.id
+  name       = "prod"
+  mode       = "transaction"
+  size       = 5
+  db_name    = "defaultdb"
+  user       = "doadmin"
+}
+
+# Dev DB pool.
 resource "digitalocean_database_connection_pool" "dev" {
   cluster_id = digitalocean_database_cluster.quri.id
   name       = "dev"
@@ -70,7 +99,7 @@ locals {
 
   database_bouncer_url = digitalocean_database_connection_pool.defaultdb.uri
 
-  // `digitalocean_database_connection_pool.dev.uri` won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs.
+  # `digitalocean_database_connection_pool.dev.uri` won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs.
   database_dev_bouncer_url = "postgresql://${postgresql_role.quri_dev.name}:${postgresql_role.quri_dev.password}@${digitalocean_database_connection_pool.dev.host}:${digitalocean_database_connection_pool.dev.port}/${digitalocean_database_connection_pool.dev.name}?sslmode=require"
 
 }
