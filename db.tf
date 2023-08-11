@@ -48,6 +48,7 @@ resource "postgresql_role" "quri_prod" {
   password = random_password.quri_prod_password.result
 }
 
+# We store production data on `defaultdb` for legacy reasons, so `quri_prod` role needs grants to access `defaultdb`.
 resource "postgresql_grant" "quri_prod" {
   provider    = postgresql.quri
   role        = postgresql_role.quri_prod.name
@@ -60,10 +61,12 @@ resource "postgresql_grant" "quri_prod_tables" {
   provider    = postgresql.quri
   role        = postgresql_role.quri_prod.name
   database    = "defaultdb"
+  schema      = "public"
   object_type = "table"
   privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"]
 }
 
+# `quri_dev_role` owns `quri_dev` DB, so there's no need to configure grants
 resource "postgresql_database" "quri_dev" {
   provider   = postgresql.quri
   name       = "quri_dev"
@@ -71,7 +74,7 @@ resource "postgresql_database" "quri_dev" {
   depends_on = [postgresql_role.quri_dev]
 }
 
-# Default since PostgreSQL 15.
+# Tighten permissions on `public` schemas; default since PostgreSQL 15.
 # https://www.depesz.com/2021/09/10/waiting-for-postgresql-15-revoke-public-create-from-public-schema-now-owned-by-pg_database_owner/
 resource "postgresql_grant" "revoke_public" {
   provider = postgresql.quri
