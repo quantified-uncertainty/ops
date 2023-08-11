@@ -85,8 +85,8 @@ resource "postgresql_grant" "revoke_public" {
   database    = each.key
   role        = "public"
   schema      = "public"
-  object_type = "schema"
-  privileges  = ["USAGE"]
+  object_type = "database"
+  privileges  = []
 }
 
 # Legacy production DB pool for `doadmin` user.
