@@ -49,6 +49,7 @@ resource "postgresql_role" "quri_prod" {
 }
 
 resource "postgresql_grant" "quri_prod" {
+  provider    = postgresql.quri
   role        = postgresql_role.quri_prod.name
   object_type = "database"
   database    = "defaultdb"
