@@ -51,9 +51,17 @@ resource "postgresql_role" "quri_prod" {
 resource "postgresql_grant" "quri_prod" {
   provider    = postgresql.quri
   role        = postgresql_role.quri_prod.name
-  object_type = "database"
   database    = "defaultdb"
-  privileges  = ["CREATE", "CONNECT", "TEMPORARY", "TEMP"]
+  object_type = "database"
+  privileges  = ["CREATE", "CONNECT", "TEMPORARY"]
+}
+
+resource "postgresql_grant" "quri_prod" {
+  provider    = postgresql.quri
+  role        = postgresql_role.quri_prod.name
+  database    = "defaultdb"
+  object_type = "table"
+  privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"]
 }
 
 resource "postgresql_database" "quri_dev" {
@@ -61,6 +69,21 @@ resource "postgresql_database" "quri_dev" {
   name       = "quri_dev"
   owner      = postgresql_role.quri_dev.name
   depends_on = [postgresql_role.quri_dev]
+}
+
+# Default since PostgreSQL 15.
+# https://www.depesz.com/2021/09/10/waiting-for-postgresql-15-revoke-public-create-from-public-schema-now-owned-by-pg_database_owner/
+resource "postgresql_grant" "revoke_public" {
+  provider = postgresql.quri
+  for_each = toset([
+    "defaultdb",
+    "quri_dev"
+  ])
+  database    = each.key
+  role        = "public"
+  schema      = "public"
+  object_type = "schema"
+  privileges  = []
 }
 
 # Legacy production DB pool for `doadmin` user.
