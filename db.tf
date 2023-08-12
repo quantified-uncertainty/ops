@@ -55,6 +55,7 @@ resource "postgresql_grant" "db_access" {
   database    = each.value.database
   object_type = "database"
   privileges  = ["CREATE", "CONNECT", "TEMPORARY"]
+  depends_on  = [postgresql_database.quri_db]
 }
 
 resource "postgresql_grant" "table_access" {
@@ -65,6 +66,7 @@ resource "postgresql_grant" "table_access" {
   schema      = "public"
   object_type = "table"
   privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"]
+  depends_on  = [postgresql_database.quri_db]
 }
 
 # Tighten permissions; default since PostgreSQL 15.
@@ -78,6 +80,7 @@ resource "postgresql_grant" "revoke_public" {
   schema      = "public"
   object_type = "database"
   privileges  = []
+  depends_on  = [postgresql_database.quri_db]
 }
 
 # Each DB gets its own connection pool.
