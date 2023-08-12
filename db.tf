@@ -103,7 +103,7 @@ locals {
       # In general, `prisma migrate` might require `CREATEDB` permission, but `prisma migrate deploy` shouldn't require it, so it should be fine that the role doesn't have it.
       direct_url = "postgresql://${v.role}:${postgresql_role.quri_db_role[k].password}@${digitalocean_database_cluster.quri.host}:${digitalocean_database_cluster.quri.port}/${v.database}?sslmode=require"
       # `digitalocean_database_connection_pool.prod.uri` won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs.
-      bouncer_url = "postgresql://${v.role}:${postgresql_role.quri_db_role[k].password}@${digitalocean_database_connection_pool.per_db[k].host}:${digitalocean_database_connection_pool.per_db[k].port}/${v.database}?sslmode=require"
+      bouncer_url = "postgresql://${v.role}:${postgresql_role.quri_db_role[k].password}@${digitalocean_database_connection_pool.per_db[k].host}:${digitalocean_database_connection_pool.per_db[k].port}/${digitalocean_database_connection_pool.per_db[k].name}?sslmode=require"
     }
   }
 }
