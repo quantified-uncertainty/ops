@@ -33,12 +33,12 @@ resource "github_actions_environment_secret" "database_url" {
   repository      = "squiggle"
   secret_name     = "DATABASE_DIRECT_URL"
   environment     = github_repository_environment.production.environment
-  plaintext_value = local.database_direct_url
+  plaintext_value = local.database_urls.prod.direct_url
 }
 
 resource "github_actions_environment_secret" "database_dev_url" {
   repository      = "squiggle"
   secret_name     = "DATABASE_DIRECT_URL"
   environment     = github_repository_environment.preview.environment
-  plaintext_value = local.database_dev_direct_url
+  plaintext_value = local.database_urls.dev.direct_url
 }
