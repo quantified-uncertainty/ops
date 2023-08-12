@@ -28,6 +28,12 @@ resource "github_repository_environment_deployment_policy" "production" {
   branch_pattern = "main"
 }
 
+resource "github_actions_secret" "vercel_api_token" {
+  repository      = "squiggle"
+  secret_name     = "VERCEL_API_TOKEN"
+  plaintext_value = var.vercel_api_token
+}
+
 resource "github_actions_environment_secret" "database_url" {
   // Used by "prisma migrate" action.
   repository      = "squiggle"
