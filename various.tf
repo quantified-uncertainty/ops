@@ -1,6 +1,6 @@
 resource "vercel_project" "squiggle-components" {
-  name = "squiggle-components"
-  # No root_directory - it interferes with deploying with Github Actions.
+  name           = "squiggle-components"
+  root_directory = "packages/components"
 
   git_repository = {
     production_branch = "main"
