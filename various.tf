@@ -1,12 +1,6 @@
 resource "vercel_project" "squiggle-components" {
   name           = "squiggle-components"
   root_directory = "packages/components"
-
-  git_repository = {
-    production_branch = "main"
-    repo              = "quantified-uncertainty/squiggle"
-    type              = "github"
-  }
 }
 
 resource "vercel_project_domain" "squiggle-components-preview" {

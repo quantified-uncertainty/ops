@@ -48,3 +48,18 @@ resource "github_actions_environment_secret" "database_dev_url" {
   environment     = github_repository_environment.preview.environment
   plaintext_value = local.database_urls.dev.direct_url
 }
+
+resource "github_actions_secret" "vercel_org_id" {
+  repository      = "squiggle"
+  secret_name     = "VERCEL_ORG_ID"
+  plaintext_value = var.vercel_org_id
+}
+
+resource "github_actions_secret" "vercel_project_ids" {
+  for_each = {
+    components : vercel_project.squiggle-components.id
+  }
+  repository      = "squiggle"
+  secret_name     = "VERCEL_${upper(each.key)}_PROJECT_ID"
+  plaintext_value = each.value
+}

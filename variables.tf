@@ -9,6 +9,10 @@ variable "vercel_api_token" {
   sensitive = true
 }
 
+variable "vercel_org_id" {
+  type = string
+}
+
 // secret for "sign in with github" feature
 variable "github_client_secret" {
   type      = string
