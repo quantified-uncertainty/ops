@@ -1,6 +1,5 @@
 resource "vercel_project" "squiggle-components" {
-  name           = "squiggle-components"
-  root_directory = "packages/components"
+  name = "squiggle-components"
 }
 
 resource "vercel_project_domain" "squiggle-components-preview" {
