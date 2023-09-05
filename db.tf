@@ -69,6 +69,30 @@ resource "postgresql_grant" "table_access" {
   depends_on  = [postgresql_database.quri_db]
 }
 
+resource "postgresql_default_privileges" "db_access" {
+  provider    = postgresql.quri
+  for_each    = var.quri_databases
+  role        = each.value.role
+  database    = each.value.database
+  owner       = "doadmin"
+  schema      = "public"
+  object_type = "schema"
+  privileges  = ["CREATE", "CONNECT", "TEMPORARY"]
+  depends_on  = [postgresql_database.quri_db]
+}
+
+resource "postgresql_default_privileges" "table_access" {
+  provider    = postgresql.quri
+  for_each    = var.quri_databases
+  role        = each.value.role
+  database    = each.value.database
+  owner       = "doadmin"
+  schema      = "public"
+  object_type = "table"
+  privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"]
+  depends_on  = [postgresql_database.quri_db]
+}
+
 # Tighten permissions; default since PostgreSQL 15.
 # https://www.depesz.com/2021/09/10/waiting-for-postgresql-15-revoke-public-create-from-public-schema-now-owned-by-pg_database_owner/
 # Revoking from `public` schema didn't work for some reason, but revoking on database level did.
