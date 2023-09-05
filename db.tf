@@ -76,7 +76,7 @@ resource "postgresql_default_privileges" "db_access" {
   database    = each.value.database
   owner       = "doadmin"
   object_type = "schema"
-  privileges  = ["CREATE", "CONNECT", "TEMPORARY"]
+  privileges  = ["CREATE", "TEMPORARY"]
   depends_on  = [postgresql_database.quri_db]
 }
 
