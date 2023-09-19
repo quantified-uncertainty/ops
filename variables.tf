@@ -34,6 +34,14 @@ variable "github_token" {
   type      = string
   sensitive = true
 }
+
+
+variable "vsce_pat" {
+  type        = string
+  description = "Token for uploading extensions to VS Code marketplace"
+  sensitive   = true
+}
+
 // public, defined in main.auto.tfvars
 variable "github_client_id" {
   type = string

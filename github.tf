@@ -63,3 +63,9 @@ resource "github_actions_secret" "vercel_project_ids" {
   secret_name     = "VERCEL_${upper(each.key)}_PROJECT_ID"
   plaintext_value = each.value
 }
+
+resource "github_actions_secret" "vsce_pat" {
+  repository      = "squiggle"
+  secret_name     = "VSCE_PAT"
+  plaintext_value = var.vsce_pat
+}
