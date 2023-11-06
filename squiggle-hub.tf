@@ -20,6 +20,11 @@ resource "vercel_project" "hub" {
       target = ["preview"]
     },
     {
+      key    = "ROOT_EMAILS"
+      value  = var.hub_root_emails
+      target = ["production", "preview"]
+    },
+    {
       key    = "GITHUB_CLIENT_ID"
       value  = var.github_client_id
       target = ["production"]

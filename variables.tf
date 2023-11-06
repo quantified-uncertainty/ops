@@ -51,6 +51,10 @@ variable "hub_email_from" {
   type = string
 }
 
+variable "hub_root_emails" {
+  type = string
+}
+
 variable "quri_databases" {
   type = map(object({
     database  = string
