@@ -1,5 +1,5 @@
 resource "digitalocean_kubernetes_cluster" "quri" {
-  name    = "QURI"
+  name    = "quri"
   region  = "nyc1"
   version = "1.29.1-do.0"
 
