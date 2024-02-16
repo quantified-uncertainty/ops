@@ -9,7 +9,7 @@ resource "digitalocean_app" "guesstimate-server" {
   spec {
     name     = "guesstimate-server"
     region   = "nyc1"
-    features = ["buildpack-stack=heroku-20"]
+    features = ["buildpack-stack=ubuntu-18"]
 
     service {
       name               = "guesstimate-server"
