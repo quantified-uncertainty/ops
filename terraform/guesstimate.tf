@@ -1,5 +1,5 @@
 resource "digitalocean_project" "guesstimate" {
-  name        = "www.getguesstimate.com"
+  name        = "Guesstimate"
   description = "Guesstimate resources."
 
   resources = [digitalocean_app.guesstimate-server.urn]
@@ -7,8 +7,9 @@ resource "digitalocean_project" "guesstimate" {
 
 resource "digitalocean_app" "guesstimate-server" {
   spec {
-    name   = "guesstimate-server"
-    region = "nyc1"
+    name     = "guesstimate-server"
+    region   = "nyc1"
+    features = ["buildpack-stack=ubuntu-20"]
 
     service {
       name               = "guesstimate-server"
