@@ -24,109 +24,106 @@ provider "postgresql" {
   superuser = false
 }
 
-resource "random_password" "quri_db_role" {
-  for_each = var.quri_databases
-  length   = 16
-  special  = false # to avoid trouble with https://www.prisma.io/docs/reference/database-reference/connection-urls#special-characters
-}
+module "prod_db" {
+  source = "./database"
 
-resource "postgresql_role" "quri_db_role" {
-  provider = postgresql.quri
-  for_each = var.quri_databases
-  name     = each.value.role
-  login    = true
-  password = random_password.quri_db_role[each.key].result
-}
-
-# owned by `doadmin`
-resource "postgresql_database" "quri_db" {
-  for_each = {
-    for k, v in var.quri_databases :
-    k => v if v.create == true
+  providers = {
+    postgresql = postgresql.quri
   }
-  provider = postgresql.quri
-  name     = each.value.database
+
+  cluster   = digitalocean_database_cluster.quri
+  name      = "prod"
+  database  = "defaultdb"
+  role      = "quri_prod_role"
+  pool_size = 5
+  create    = false # already exists
 }
 
-resource "postgresql_grant" "db_access" {
-  provider    = postgresql.quri
-  for_each    = var.quri_databases
-  role        = each.value.role
-  database    = each.value.database
-  object_type = "database"
-  privileges  = ["CREATE", "CONNECT", "TEMPORARY"]
-  depends_on  = [postgresql_database.quri_db]
-}
+module "dev_db" {
+  source = "./database"
 
-resource "postgresql_grant" "table_access" {
-  provider    = postgresql.quri
-  for_each    = var.quri_databases
-  role        = each.value.role
-  database    = each.value.database
-  schema      = "public"
-  object_type = "table"
-  privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"]
-  depends_on  = [postgresql_database.quri_db]
-}
-
-resource "postgresql_default_privileges" "db_access" {
-  provider    = postgresql.quri
-  for_each    = var.quri_databases
-  role        = each.value.role
-  database    = each.value.database
-  owner       = "doadmin"
-  object_type = "schema"
-  privileges  = ["CREATE"]
-  depends_on  = [postgresql_database.quri_db]
-}
-
-resource "postgresql_default_privileges" "table_access" {
-  provider    = postgresql.quri
-  for_each    = var.quri_databases
-  role        = each.value.role
-  database    = each.value.database
-  owner       = "doadmin"
-  schema      = "public"
-  object_type = "table"
-  privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"]
-  depends_on  = [postgresql_database.quri_db]
-}
-
-# Tighten permissions; default since PostgreSQL 15.
-# https://www.depesz.com/2021/09/10/waiting-for-postgresql-15-revoke-public-create-from-public-schema-now-owned-by-pg_database_owner/
-# Revoking from `public` schema didn't work for some reason, but revoking on database level did.
-resource "postgresql_grant" "revoke_public" {
-  provider    = postgresql.quri
-  for_each    = var.quri_databases
-  database    = each.value.database
-  role        = "public"
-  schema      = "public"
-  object_type = "database"
-  privileges  = []
-  depends_on  = [postgresql_database.quri_db]
-}
-
-# Each DB gets its own connection pool.
-resource "digitalocean_database_connection_pool" "per_db" {
-  for_each   = var.quri_databases
-  cluster_id = digitalocean_database_cluster.quri.id
-  name       = each.key
-  mode       = "transaction"
-  size       = each.value.pool_size
-  db_name    = each.value.database
-  user       = each.value.role
-  depends_on = [postgresql_database.quri_db]
-}
-
-locals {
-  database_urls = {
-    for k, v in var.quri_databases :
-    k => {
-      # Direct URLs are used for prisma migrations.
-      # Can't go through pool, migration fails with "must be owner of table" error.
-      direct_url = "postgresql://${digitalocean_database_cluster.quri.user}:${digitalocean_database_cluster.quri.password}@${digitalocean_database_cluster.quri.host}:${digitalocean_database_cluster.quri.port}/${v.database}?sslmode=require"
-      # `digitalocean_database_connection_pool.prod.uri` won't work because the user is created via Terraform and DigitalOcean doesn't expose the password in such URIs.
-      bouncer_url = "postgresql://${v.role}:${postgresql_role.quri_db_role[k].password}@${digitalocean_database_connection_pool.per_db[k].host}:${digitalocean_database_connection_pool.per_db[k].port}/${digitalocean_database_connection_pool.per_db[k].name}?sslmode=require"
-    }
+  providers = {
+    postgresql = postgresql.quri
   }
+
+  cluster   = digitalocean_database_cluster.quri
+  name      = "dev"
+  database  = "quri_dev"
+  role      = "quri_dev_role"
+  pool_size = 3
+  create    = true
+}
+
+
+
+moved {
+  from = postgresql_database.quri_db["dev"]
+  to   = module.dev_db.postgresql_database.db[0]
+}
+
+moved {
+  from = postgresql_default_privileges.db_access["dev"]
+  to   = module.dev_db.postgresql_default_privileges.db_access
+}
+
+moved {
+  from = postgresql_default_privileges.db_access["prod"]
+  to   = module.prod_db.postgresql_default_privileges.db_access
+}
+
+moved {
+  from = postgresql_default_privileges.table_access["dev"]
+  to   = module.dev_db.postgresql_default_privileges.table_access
+}
+
+moved {
+  from = postgresql_default_privileges.table_access["prod"]
+  to   = module.prod_db.postgresql_default_privileges.table_access
+}
+
+moved {
+  from = postgresql_grant.db_access["dev"]
+  to   = module.dev_db.postgresql_grant.db_access
+}
+
+moved {
+  from = postgresql_grant.db_access["prod"]
+  to   = module.prod_db.postgresql_grant.db_access
+}
+
+moved {
+  from = postgresql_grant.revoke_public["dev"]
+  to   = module.dev_db.postgresql_grant.revoke_public
+}
+moved {
+  from = postgresql_grant.revoke_public["prod"]
+  to   = module.prod_db.postgresql_grant.revoke_public
+}
+
+moved {
+  from = postgresql_role.quri_db_role["dev"]
+  to   = module.dev_db.postgresql_role.role
+}
+moved {
+  from = postgresql_role.quri_db_role["prod"]
+  to   = module.prod_db.postgresql_role.role
+}
+
+moved {
+  from = random_password.quri_db_role["dev"]
+  to   = module.dev_db.random_password.password
+}
+moved {
+  from = random_password.quri_db_role["prod"]
+  to   = module.prod_db.random_password.password
+}
+
+moved {
+  from = digitalocean_database_connection_pool.per_db["dev"]
+  to   = module.dev_db.digitalocean_database_connection_pool.pool
+}
+
+moved {
+  from = digitalocean_database_connection_pool.per_db["prod"]
+  to   = module.prod_db.digitalocean_database_connection_pool.pool
 }
