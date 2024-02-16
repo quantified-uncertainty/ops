@@ -1,11 +1,13 @@
 resource "digitalocean_project" "guesstimate" {
   name        = "www.getguesstimate.com"
   description = "Guesstimate resources."
+
+  resources = [digitalocean_app.guesstimate-server.urn]
 }
 
 resource "digitalocean_app" "guesstimate-server" {
   spec {
-    name   = "golang-sample"
+    name   = "guesstimate-server"
     region = "nyc1"
 
     service {
