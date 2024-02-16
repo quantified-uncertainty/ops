@@ -11,12 +11,12 @@ resource "vercel_project" "hub" {
     {
       key = "DATABASE_URL"
       // https://www.prisma.io/docs/guides/performance-and-optimization/connection-management/configure-pg-bouncer#add-pgbouncer-to-the-connection-url
-      value  = "${local.database_urls.prod.bouncer_url}&pgbouncer=true"
+      value  = "${module.prod_db.bouncer_url}&pgbouncer=true"
       target = ["production"]
     },
     {
       key    = "DATABASE_URL"
-      value  = "${local.database_urls.dev.bouncer_url}&pgbouncer=true"
+      value  = "${module.dev_db.bouncer_url}&pgbouncer=true"
       target = ["preview"]
     },
     {
