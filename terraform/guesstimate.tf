@@ -9,7 +9,7 @@ resource "digitalocean_project" "guesstimate" {
 resource "digitalocean_app" "guesstimate-server" {
   spec {
     name     = "guesstimate-server"
-    region   = "nyc1"
+    region   = "nyc"
     features = ["buildpack-stack=ubuntu-18"]
 
     service {
@@ -35,6 +35,15 @@ resource "heroku_app" "guesstimate" {
 
   organization {
     name = "quantified-uncertainty-researc"
+  }
+
+  # TODO
+  config_vars = {
+    PORT                     = 3000
+    RACK_ENV                 = production
+    RAILS_ENV                = production
+    RAILS_SERVE_STATIC_FILES = enabled
+
   }
 }
 

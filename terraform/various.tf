@@ -16,10 +16,9 @@ resource "vercel_project_domain" "squiggle-components" {
 
 resource "vercel_project_domain" "squiggle-components-preview" {
   domain               = "preview-components.squiggle-language.com"
-  redirect             = "components.squiggle-language.com"
+  redirect             = vercel_project_domain.squiggle-components.domain
   redirect_status_code = 308
   project_id           = vercel_project.squiggle-components.id
-  depends_on           = [vercel_project_domain.squiggle-components]
 }
 
 resource "vercel_project" "quri-ui" {
