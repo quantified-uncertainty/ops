@@ -36,5 +36,9 @@ resource "heroku_app" "guesstimate" {
   organization {
     name = "quantified-uncertainty-researc"
   }
+}
 
+import {
+  to = heroku_app.guesstimate
+  id = "guesstimate"
 }
