@@ -28,3 +28,13 @@ resource "digitalocean_app" "guesstimate-server" {
     # }
   }
 }
+
+resource "heroku_app" "guesstimate" {
+  name   = "guesstimate"
+  region = "us"
+
+  organization {
+    name = "quantified-uncertainty-researc"
+  }
+
+}
