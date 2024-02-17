@@ -40,10 +40,9 @@ resource "heroku_app" "guesstimate" {
   # TODO
   config_vars = {
     PORT                     = 3000
-    RACK_ENV                 = production
-    RAILS_ENV                = production
-    RAILS_SERVE_STATIC_FILES = enabled
-
+    RACK_ENV                 = "production"
+    RAILS_ENV                = "production"
+    RAILS_SERVE_STATIC_FILES = "enabled"
   }
 }
 
