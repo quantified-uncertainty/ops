@@ -5,6 +5,7 @@ resource "digitalocean_project" "guesstimate" {
   resources = [digitalocean_app.guesstimate-server.urn]
 }
 
+# Not ready for usage, env is not configured yet
 resource "digitalocean_app" "guesstimate-server" {
   spec {
     name     = "guesstimate-server"
@@ -18,8 +19,12 @@ resource "digitalocean_app" "guesstimate-server" {
 
       git {
         repo_clone_url = "https://github.com/getguesstimate/guesstimate-server"
-        branch         = "master"
+        branch         = "production"
       }
     }
+    # database {
+    #   name         = "db"
+    #   cluster_name = digitalocean_database_cluster.quri.name
+    # }
   }
 }
