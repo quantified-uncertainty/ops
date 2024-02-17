@@ -1,4 +1,4 @@
-// secrets
+// Provider secrets
 variable "do_token" {
   type      = string
   sensitive = true
@@ -11,6 +11,11 @@ variable "vercel_api_token" {
 
 variable "vercel_org_id" {
   type = string
+}
+
+variable "heroku_api_key" {
+  type      = string
+  sensitive = true
 }
 
 // secret for "sign in with github" feature
