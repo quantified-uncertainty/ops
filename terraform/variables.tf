@@ -1,18 +1,25 @@
 // Provider secrets
+
+// Get here: https://cloud.digitalocean.com/account/api/tokens
 variable "do_token" {
   type      = string
   sensitive = true
 }
 
+// Get here: https://vercel.com/account/tokens
 variable "vercel_api_token" {
   type      = string
   sensitive = true
 }
 
+// Get here: https://vercel.com/quantified-uncertainty/~/settings
+// (not that secret, but still not stored in repo, just in case)
 variable "vercel_org_id" {
   type = string
 }
 
+// Get through `heroku authorizations:create` in CLI.
+// Note: Heroku tokens are global!
 variable "heroku_api_key" {
   type      = string
   sensitive = true
@@ -24,23 +31,27 @@ variable "github_client_secret" {
   sensitive = true
 }
 
+// Get on Sendgrid website
 variable "sendgrid_key" {
   type      = string
   sensitive = true
 }
 
+// Random string; TODO - move to state.
 variable "hub_nextauth_secret" {
   type      = string
   sensitive = true
 }
 
-// token for controlling github, e.g. configuring action secrets in Squiggle repo
+// Token for controlling github, e.g. configuring action secrets in Squiggle repo.
+// Get here: https://github.com/settings/tokens?type=beta (choose QURI org)
 variable "github_token" {
   type      = string
   sensitive = true
 }
 
 
+// Get here: https://code.visualstudio.com/api/working-with-extensions/publishing-extension#get-a-personal-access-token
 variable "vsce_pat" {
   type        = string
   description = "Token for uploading extensions to VS Code marketplace"

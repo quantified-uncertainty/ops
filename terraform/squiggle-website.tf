@@ -22,9 +22,9 @@ resource "vercel_project_domain" "squiggle-website-redirects" {
   project_id           = vercel_project.squiggle-website.id
 }
 
-resource "vercel_dns_record" "squiggle-website-old-playground" {
-  domain = "squiggle-language.com"
-  name   = "playground"
-  type   = "A"
-  value  = "104.198.14.52"
-}
+# resource "vercel_dns_record" "squiggle-website-old-playground" {
+#   domain = "squiggle-language.com"
+#   name   = "playground"
+#   type   = "A"
+#   value  = "104.198.14.52"
+# }
