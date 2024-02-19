@@ -33,13 +33,18 @@ resource "digitalocean_record" "subdomains" {
 }
 
 resource "vercel_project_domain" "main" {
-  domain     = "www.${var.domain}"
+  domain     = var.www ? "www.${var.domain}" : var.domain
   project_id = var.project_id
 }
 
-resource "vercel_project_domain" "redirect_to_www" {
-  domain               = var.domain
-  redirect             = "www.${var.domain}"
+resource "vercel_project_domain" "www_redirect" {
+  domain               = var.www ? var.domain : "www.${var.domain}"
+  redirect             = var.www ? "www.${var.domain}" : var.domain
   redirect_status_code = 308
   project_id           = var.project_id
+}
+
+moved {
+  from = vercel_project_domain.redirect_to_www
+  to   = vercel_project_domain.www_redirect
 }

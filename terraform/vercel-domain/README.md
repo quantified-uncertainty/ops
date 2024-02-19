@@ -5,8 +5,10 @@ This module does two things:
 
 By default, it fill follow the standard Vercel recommendations:
 
-- `www.domain.com` will redirect to `domain.com`
 - `*.domain.com` will CNAME to Vercel, while apex `domain.com` will point to the Vercel's primary IP (76.76.21.21)
+- `domain.com` will redirect to `www.domain.com`
+
+If you configure `www` var to be `false`, the redirect will go in the opposite direction: `www.domain.com` -> `domain.com`.
 
 Notes:
 
