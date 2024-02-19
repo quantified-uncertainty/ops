@@ -32,19 +32,36 @@ resource "digitalocean_record" "subdomains" {
   ttl    = var.ttl
 }
 
+# Main can point to www.domain.com or to domain.com, depending on whether `www` flag is set.
+# Note that if `redirect` is also set, this won't matter, because both domain.com and www.domain.com will point to the same external domain.
 resource "vercel_project_domain" "main" {
-  domain     = var.www ? "www.${var.domain}" : var.domain
   project_id = var.project_id
+
+  domain = var.www ? "www.${var.domain}" : var.domain
+
+  redirect             = var.redirect == "" ? null : local.primary_domain
+  redirect_status_code = var.redirect == "" ? null : 308
 }
 
 resource "vercel_project_domain" "www_redirect" {
-  domain               = var.www ? var.domain : "www.${var.domain}"
-  redirect             = var.www ? "www.${var.domain}" : var.domain
+  project_id = var.project_id
+
+  # Inverted compared to `main` domain
+  domain = var.www ? var.domain : "www.${var.domain}"
+
+  redirect             = local.primary_domain
   redirect_status_code = 308
-  project_id           = var.project_id
 }
 
 moved {
   from = vercel_project_domain.redirect_to_www
   to   = vercel_project_domain.www_redirect
+}
+
+locals {
+  apex_domain = var.domain
+
+  primary_domain = var.redirect == "" ? (
+    var.www ? "www.${var.domain}" : var.domain
+  ) : var.redirect
 }
