@@ -118,12 +118,12 @@ resource "digitalocean_record" "hub-sendgrid" {
 resource "digitalocean_record" "hub_google_verification" {
   for_each = {
     # Which one is correct?
-    "@" : "google-site-verification=Hsd2Gnz5SHJyJYyZMbdZDXzDnYovWfwiF2cWnIBH0C0",
-    "@" : "google-site-verification=msJjgrChhh6V0p1pp0c0kj4Q_RdPEWrJk4yhRcN4uE4"
+    "1" : "google-site-verification=Hsd2Gnz5SHJyJYyZMbdZDXzDnYovWfwiF2cWnIBH0C0",
+    "2" : "google-site-verification=msJjgrChhh6V0p1pp0c0kj4Q_RdPEWrJk4yhRcN4uE4"
   }
 
   domain = local.squiggle_hub_domain
-  name   = each.key
+  name   = "@"
   type   = "TXT"
   ttl    = 300
   value  = each.value
