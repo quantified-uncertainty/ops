@@ -1,3 +1,7 @@
+locals {
+  squiggle_hub_domain = "squigglehub.org"
+}
+
 resource "vercel_project" "hub" {
   name           = "quri-hub"
   root_directory = "packages/hub"
@@ -58,19 +62,9 @@ resource "vercel_project" "hub" {
 module "squiggle_hub_domain" {
   source = "./vercel-domain"
 
-  domain     = "squigglehub.org"
+  domain     = local.squiggle_hub_domain
   project_id = vercel_project.hub.id
   www        = false
-}
-
-moved {
-  from = vercel_project_domain.squigglehub-org
-  to   = module.squiggle_hub_domain.vercel_project_domain.main
-}
-
-moved {
-  from = vercel_project_domain.squigglehub-redirects["www.squigglehub.org"]
-  to   = module.squiggle_hub_domain.vercel_project_domain.www_redirect
 }
 
 module "squiggle_hub_alternative_domains" {
@@ -83,39 +77,8 @@ module "squiggle_hub_alternative_domains" {
   ])
 
   domain     = each.key
-  redirect   = "squigglehub.org"
+  redirect   = local.squiggle_hub_domain
   project_id = vercel_project.hub.id
-  www        = false
-}
-
-moved {
-  from = vercel_project_domain.squigglehub-redirects["squigglehub.com"]
-  to   = module.squiggle_hub_alternative_domains["squigglehub.com"].vercel_project_domain.main
-}
-
-moved {
-  from = vercel_project_domain.squigglehub-redirects["www.squigglehub.com"]
-  to   = module.squiggle_hub_alternative_domains["squigglehub.com"].vercel_project_domain.www_redirect
-}
-
-moved {
-  from = vercel_project_domain.squigglehub-redirects["squiggle-hub.org"]
-  to   = module.squiggle_hub_alternative_domains["squiggle-hub.org"].vercel_project_domain.main
-}
-
-moved {
-  from = vercel_project_domain.squigglehub-redirects["www.squiggle-hub.org"]
-  to   = module.squiggle_hub_alternative_domains["squiggle-hub.org"].vercel_project_domain.www_redirect
-}
-
-moved {
-  from = vercel_project_domain.squigglehub-redirects["squiggle-hub.com"]
-  to   = module.squiggle_hub_alternative_domains["squiggle-hub.com"].vercel_project_domain.main
-}
-
-moved {
-  from = vercel_project_domain.squigglehub-redirects["www.squiggle-hub.com"]
-  to   = module.squiggle_hub_alternative_domains["squiggle-hub.com"].vercel_project_domain.www_redirect
 }
 
 # Sendgrid DNS configuration; obtained from https://app.sendgrid.com/settings/sender_auth/domain/get/18308809
@@ -128,7 +91,7 @@ resource "vercel_dns_record" "squigglehub-sendgrid" {
     "s2._domainkey" : "s2.domainkey.u34091428.wl179.sendgrid.net",
   }
 
-  domain = "squigglehub.org"
+  domain = local.squiggle_hub_domain
   name   = each.key
   type   = "CNAME"
   ttl    = 300

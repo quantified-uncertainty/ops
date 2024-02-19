@@ -12,6 +12,14 @@ terraform {
   }
 }
 
+locals {
+  apex_domain = var.domain
+
+  primary_domain = var.redirect == "" ? (
+    var.www ? "www.${var.domain}" : var.domain
+  ) : var.redirect
+}
+
 resource "digitalocean_domain" "main" {
   name = var.domain
 }
@@ -51,17 +59,4 @@ resource "vercel_project_domain" "www_redirect" {
 
   redirect             = local.primary_domain
   redirect_status_code = 308
-}
-
-moved {
-  from = vercel_project_domain.redirect_to_www
-  to   = vercel_project_domain.www_redirect
-}
-
-locals {
-  apex_domain = var.domain
-
-  primary_domain = var.redirect == "" ? (
-    var.www ? "www.${var.domain}" : var.domain
-  ) : var.redirect
 }
