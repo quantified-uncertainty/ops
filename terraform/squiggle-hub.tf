@@ -101,11 +101,11 @@ resource "vercel_dns_record" "squigglehub-sendgrid" {
 # Sendgrid DNS configuration; obtained from https://app.sendgrid.com/settings/sender_auth/domain/get/18308809
 resource "digitalocean_record" "hub-sendgrid" {
   for_each = {
-    "url1940" : "sendgrid.net",
-    "34091428" : "sendgrid.net",
-    "em6594" : "u34091428.wl179.sendgrid.net",
-    "s1._domainkey" : "s1.domainkey.u34091428.wl179.sendgrid.net",
-    "s2._domainkey" : "s2.domainkey.u34091428.wl179.sendgrid.net",
+    "url1940" : "sendgrid.net.",
+    "34091428" : "sendgrid.net.",
+    "em6594" : "u34091428.wl179.sendgrid.net.",
+    "s1._domainkey" : "s1.domainkey.u34091428.wl179.sendgrid.net.",
+    "s2._domainkey" : "s2.domainkey.u34091428.wl179.sendgrid.net.",
   }
 
   domain = local.squiggle_hub_domain
