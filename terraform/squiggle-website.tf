@@ -25,7 +25,7 @@ resource "vercel_project_domain" "squiggle_website_old_preview_redirect" {
 }
 
 resource "digitalocean_record" "squiggle-website-old-playground" {
-  domain = squiggle_website_domain.domain # not from locals, waits for dependency
+  domain = module.squiggle_website_domain.domain # not from locals, waits for dependency
   name   = "playground"
   type   = "A"
   value  = "104.198.14.52"
@@ -33,20 +33,4 @@ resource "digitalocean_record" "squiggle-website-old-playground" {
 
 locals {
   squiggle_website_domain = "squiggle-language.com"
-}
-
-// migration to module
-moved {
-  from = vercel_project_domain.squiggle-website
-  to   = module.squiggle_website_domain.vercel_project_domain.main
-}
-
-moved {
-  from = vercel_project_domain.squiggle-website-redirects["squiggle-language.com"]
-  to   = module.squiggle_website_domain.vercel_project_domain.redirect_to_www
-}
-
-moved {
-  from = vercel_project_domain.squiggle-website-redirects["preview.squiggle-language.com"]
-  to   = vercel_project_domain.squiggle_website_old_preview_redirect
 }

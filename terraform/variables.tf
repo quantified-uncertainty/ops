@@ -70,27 +70,3 @@ variable "hub_email_from" {
 variable "hub_root_emails" {
   type = string
 }
-
-variable "quri_databases" {
-  type = map(object({
-    database  = string
-    role      = string
-    pool_size = number
-    create    = bool
-  }))
-
-  default = {
-    prod = {
-      database  = "defaultdb"
-      role      = "quri_prod_role"
-      pool_size = 5
-      create    = false # already exists
-    }
-    dev = {
-      database  = "quri_dev"
-      role      = "quri_dev_role"
-      pool_size = 3
-      create    = true
-    }
-  }
-}
