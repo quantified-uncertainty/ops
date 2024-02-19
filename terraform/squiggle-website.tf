@@ -25,7 +25,7 @@ resource "vercel_project_domain" "squiggle_website_old_preview_redirect" {
 }
 
 resource "digitalocean_record" "squiggle-website-old-playground" {
-  domain = local.squiggle_website_domain
+  domain = squiggle_website_domain.domain # not from locals, waits for dependency
   name   = "playground"
   type   = "A"
   value  = "104.198.14.52"
