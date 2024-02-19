@@ -55,14 +55,27 @@ resource "vercel_project" "hub" {
   serverless_function_region = "iad1"
 }
 
-resource "vercel_project_domain" "squigglehub-org" {
+module "squiggle_hub_domain" {
+  source = "./vercel-domain"
+
   domain     = "squigglehub.org"
   project_id = vercel_project.hub.id
+  www        = false
 }
+
+moved {
+  from = vercel_project_domain.squigglehub-org
+  to   = module.squiggle_hub_domain.vercel_project_domain.main
+}
+
+moved {
+  from = vercel_project_domain.squigglehub-redirects["www.squigglehub.org"]
+  to   = module.squiggle_hub_domain.vercel_project_domain.www_redirect
+}
+
 
 resource "vercel_project_domain" "squigglehub-redirects" {
   for_each = toset([
-    "www.squigglehub.org",
     "squigglehub.com",
     "www.squigglehub.com",
     "squiggle-hub.org",
