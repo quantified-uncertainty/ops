@@ -21,6 +21,7 @@ resource "digitalocean_record" "apex_a" {
   name   = "@"
   type   = "A"
   value  = var.vercel_ip
+  ttl    = var.ttl
 }
 
 resource "digitalocean_record" "subdomains" {
@@ -28,6 +29,7 @@ resource "digitalocean_record" "subdomains" {
   name   = "*"
   type   = "CNAME"
   value  = "cname.vercel-dns.com."
+  ttl    = var.ttl
 }
 
 resource "vercel_project_domain" "main" {

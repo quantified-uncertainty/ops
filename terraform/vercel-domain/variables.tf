@@ -1,5 +1,6 @@
 variable "domain" {
-  type = string
+  type        = string
+  description = "Primary domain without www."
 }
 
 variable "vercel_ip" {
@@ -7,7 +8,12 @@ variable "vercel_ip" {
   default = "76.76.21.21"
 }
 
-// Vercel project id
 variable "project_id" {
-  type = string
+  type        = string
+  description = "Vercel project id"
+}
+
+variable "ttl" {
+  type    = number
+  default = 600
 }
