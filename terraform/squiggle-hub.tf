@@ -79,7 +79,7 @@ module "squiggle_hub_alternative_domains" {
   for_each = toset([
     "squigglehub.com",
     "squiggle-hub.org",
-    "squiglge-hub.com"
+    "squiggle-hub.com"
   ])
 
   domain     = each.key
