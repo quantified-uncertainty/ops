@@ -39,7 +39,7 @@ resource "vercel_project_domain" "main" {
 
   domain = var.www ? "www.${var.domain}" : var.domain
 
-  redirect             = var.redirect == "" ? null : locals.primary_domain
+  redirect             = var.redirect == "" ? null : local.primary_domain
   redirect_status_code = var.redirect == "" ? null : 308
 }
 
@@ -49,7 +49,7 @@ resource "vercel_project_domain" "www_redirect" {
   # Inverted compared to `main` domain
   domain = var.www ? var.domain : "www.${var.domain}"
 
-  redirect             = locals.primary_domain
+  redirect             = local.primary_domain
   redirect_status_code = 308
 }
 
