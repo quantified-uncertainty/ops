@@ -20,7 +20,7 @@ resource "vercel_project_domain" "squiggle_website_old_preview_redirect" {
   project_id = vercel_project.squiggle-website.id
 
   domain               = "preview.${local.squiggle_website_domain}"
-  redirect             = local.squiggle_website_domain
+  redirect             = "www.${local.squiggle_website_domain}"
   redirect_status_code = 308
 }
 
