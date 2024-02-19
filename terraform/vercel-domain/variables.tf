@@ -21,10 +21,11 @@ variable "ttl" {
 variable "www" {
   type        = bool
   default     = true
-  description = "If set to false, redirect will happen from www.domain.com to domain.com, instead of the default domain.com -> www.domain.com."
+  description = "If set to false, redirect will happen from www.domain.com to domain.com, instead of the default domain.com -> www.domain.com. If `redirect` is set, this var won't affect anything."
 }
 
 variable "redirect" {
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
+  description = "If set, both www.domain.com and domain.com will redirect to the given target"
 }
