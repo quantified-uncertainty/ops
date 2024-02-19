@@ -9,22 +9,44 @@ resource "vercel_project" "squiggle-website" {
   }
 }
 
-resource "vercel_project_domain" "squiggle-website" {
-  domain     = "www.squiggle-language.com"
+module "squiggle_website_domain" {
+  source = "./vercel-domain"
+
+  domain     = local.squiggle_website_domain
   project_id = vercel_project.squiggle-website.id
 }
 
-resource "vercel_project_domain" "squiggle-website-redirects" {
-  for_each             = toset(["squiggle-language.com", "preview.squiggle-language.com"])
-  domain               = each.key
-  redirect             = vercel_project_domain.squiggle-website.domain
+resource "vercel_project_domain" "squiggle_website_old_preview_redirect" {
+  project_id = vercel_project.squiggle-website.id
+
+  domain               = "preview.${local.squiggle_website_domain}"
+  redirect             = local.squiggle_website_domain
   redirect_status_code = 308
-  project_id           = vercel_project.squiggle-website.id
 }
 
-# resource "vercel_dns_record" "squiggle-website-old-playground" {
-#   domain = "squiggle-language.com"
-#   name   = "playground"
-#   type   = "A"
-#   value  = "104.198.14.52"
-# }
+resource "digitalocean_record" "squiggle-website-old-playground" {
+  domain = local.squiggle_website_domain
+  name   = "playground"
+  type   = "A"
+  value  = "104.198.14.52"
+}
+
+locals {
+  squiggle_website_domain = "squiggle-language.com"
+}
+
+// migration to module
+moved {
+  from = vercel_project_domain.squiggle-website
+  to   = module.squiggle_website_domain.vercel_project_domain.main
+}
+
+moved {
+  from = vercel_project_domain.squiggle-website-redirects["squiggle-language.com"]
+  to   = module.squiggle_website_domain.vercel_project_domain.redirect_to_www
+}
+
+moved {
+  from = vercel_project_domain.squiggle-website-redirects["preview.squiggle-language.com"]
+  to   = vercel_project_domain.squiggle_website_old_preview_redirect
+}
