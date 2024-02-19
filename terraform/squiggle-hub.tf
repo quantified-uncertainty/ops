@@ -97,3 +97,22 @@ resource "vercel_dns_record" "squigglehub-sendgrid" {
   ttl    = 300
   value  = each.value
 }
+
+# Sendgrid DNS configuration; obtained from https://app.sendgrid.com/settings/sender_auth/domain/get/18308809
+resource "digitalocean_record" "hub-sendgrid" {
+  for_each = {
+    "url1940" : "sendgrid.net",
+    "34091428" : "sendgrid.net",
+    "em6594" : "u34091428.wl179.sendgrid.net",
+    "s1._domainkey" : "s1.domainkey.u34091428.wl179.sendgrid.net",
+    "s2._domainkey" : "s2.domainkey.u34091428.wl179.sendgrid.net",
+    "@" : "google-site-verification=Hsd2Gnz5SHJyJYyZMbdZDXzDnYovWfwiF2cWnIBH0C0",
+    "@" : "google-site-verification=msJjgrChhh6V0p1pp0c0kj4Q_RdPEWrJk4yhRcN4uE4"
+  }
+
+  domain = local.squiggle_hub_domain
+  name   = each.key
+  type   = "CNAME"
+  ttl    = 300
+  value  = each.value
+}
