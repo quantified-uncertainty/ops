@@ -17,6 +17,13 @@ const PROVIDERS = {
     "ns3.digitalocean.com",
   ],
   vercel: ["ns1.vercel-dns.com", "ns2.vercel-dns.com"],
+  namecheap: ["dns1.registrar-servers.com", "dns2.registrar-servers.com"],
+  "name.com": [
+    "ns1mtw.name.com",
+    "ns2hjl.name.com",
+    "ns3gxy.name.com",
+    "ns4lpv.name.com",
+  ],
 };
 
 function findProviderName(nameservers) {
