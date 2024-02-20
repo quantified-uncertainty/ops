@@ -8,6 +8,6 @@ module "bootstrap" {
   version = "5.2.0"
 
   region               = "us-east-1"
-  account_alias        = "berekuk"
+  account_alias        = "quri"
   manage_account_alias = false
 }

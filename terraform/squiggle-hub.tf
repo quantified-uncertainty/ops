@@ -2,6 +2,10 @@ locals {
   squiggle_hub_domain = "squigglehub.org"
 }
 
+resource "random_password" "hub_nextauth_secret" {
+  length = 44
+}
+
 resource "vercel_project" "hub" {
   name           = "quri-hub"
   root_directory = "packages/hub"
@@ -35,12 +39,12 @@ resource "vercel_project" "hub" {
     },
     {
       key    = "GITHUB_CLIENT_SECRET"
-      value  = var.github_client_secret
+      value  = data.onepassword_item.github_client_secret.password
       target = ["production"]
     },
     {
       key    = "SENDGRID_KEY"
-      value  = var.sendgrid_key
+      value  = data.onepassword_item.sendgrid_key.password
       target = ["production", "preview"]
     },
     {
@@ -50,7 +54,7 @@ resource "vercel_project" "hub" {
     },
     {
       key    = "NEXTAUTH_SECRET"
-      value  = var.hub_nextauth_secret
+      value  = random_password.hub_nextauth_secret.result
       target = ["production", "preview"]
     },
   ]

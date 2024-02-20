@@ -3,19 +3,20 @@ terraform {
   # Please don't update it; we might migrate to OpenTofu in the future.
   required_version = "1.5.7"
 
-  # Previously tried for state management:
-  # 1. Local state - impossible to share with the team.
-  # 2. Terraform Cloud - slow, feature-incomplete, proprietary.
-  # 3. Spacelift with Spacelift-managed state - expensive for 3+ users, no Slack notifications on free plan, too many features for our current needs.
   backend "s3" {
     region         = "us-east-1"
-    bucket         = "berekuk-tf-state-us-east-1"
-    key            = "quri.tfstate"
+    bucket         = "quri-tf-state-us-east-1"
+    key            = "main.tfstate"
     dynamodb_table = "terraform-state-lock"
     encrypt        = "true"
   }
 
   required_providers {
+    onepassword = {
+      source  = "1Password/onepassword"
+      version = "1.4.1"
+    }
+
     digitalocean = {
       source  = "digitalocean/digitalocean"
       version = "2.34.1"
@@ -44,20 +45,28 @@ terraform {
   }
 }
 
+provider "onepassword" {
+  account = "team-quri.1password.com"
+}
+
+data "onepassword_vault" "main" {
+  name = "Infra"
+}
+
 provider "digitalocean" {
-  token = var.do_token
+  token = data.onepassword_item.do_token.password
 }
 
 provider "vercel" {
-  api_token = var.vercel_api_token
+  api_token = data.onepassword_item.vercel_api_token.password
   team      = "quantified-uncertainty"
 }
 
 provider "github" {
-  token = var.github_token
+  token = data.onepassword_item.github_token.password
   owner = "quantified-uncertainty"
 }
 
 provider "heroku" {
-  api_key = var.heroku_api_key
+  api_key = data.onepassword_item.heroku_api_key.password
 }

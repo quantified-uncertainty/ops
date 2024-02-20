@@ -31,7 +31,7 @@ resource "github_repository_environment_deployment_policy" "production" {
 resource "github_actions_secret" "vercel_api_token" {
   repository      = "squiggle"
   secret_name     = "VERCEL_API_TOKEN"
-  plaintext_value = var.vercel_api_token
+  plaintext_value = data.onepassword_item.vercel_api_token.password
 }
 
 resource "github_actions_environment_secret" "database_url" {
@@ -52,7 +52,7 @@ resource "github_actions_environment_secret" "database_dev_url" {
 resource "github_actions_secret" "vercel_org_id" {
   repository      = "squiggle"
   secret_name     = "VERCEL_ORG_ID"
-  plaintext_value = var.vercel_org_id
+  plaintext_value = data.onepassword_item.vercel_team_id.password
 }
 
 resource "github_actions_secret" "vercel_project_ids" {
@@ -67,5 +67,5 @@ resource "github_actions_secret" "vercel_project_ids" {
 resource "github_actions_secret" "vsce_pat" {
   repository      = "squiggle"
   secret_name     = "VSCE_PAT"
-  plaintext_value = var.vsce_pat
+  plaintext_value = data.onepassword_item.vsce_pat.password
 }
