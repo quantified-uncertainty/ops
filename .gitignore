@@ -1,4 +1,4 @@
-/*.tfstate
-/*.tfstate.backup
-/*.tfstate.*.backup
-/secrets.*
+*.tfstate
+*.tfstate.backup
+*.tfstate.*.backup
+.terraform

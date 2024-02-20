@@ -1,3 +1,7 @@
+# TODO: this file duplicates Terraform configuration in metaforecast github repo!
+# That configuration should be folded here somehow, maybe through the private
+# module or git submodule, or just moved here.
+
 locals {
   metaforecast_domain = "metaforecast.org"
 }

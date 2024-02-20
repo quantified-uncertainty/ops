@@ -3,6 +3,18 @@ terraform {
   # Please don't update it; we might migrate to OpenTofu in the future.
   required_version = "1.5.7"
 
+  # Previously tried for state management:
+  # 1. Local state - impossible to share with the team.
+  # 2. Terraform Cloud - slow, feature-incomplete, proprietary.
+  # 3. Spacelift with Spacelift-managed state - expensive for 3+ users, no Slack notifications on free plan, too many features for our current needs.
+  backend "s3" {
+    region         = "us-east-1"
+    bucket         = "berekuk-tf-state-us-east-1"
+    key            = "quri.tfstate"
+    dynamodb_table = "terraform-state-lock"
+    encrypt        = "true"
+  }
+
   required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"
@@ -24,7 +36,7 @@ terraform {
       version = "~> 5.0"
     }
 
-    // configured in db.tf
+    # Configured in db.tf
     postgresql = {
       source  = "cyrilgdn/postgresql"
       version = "~> 1.20"
