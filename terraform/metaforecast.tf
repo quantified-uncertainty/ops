@@ -32,10 +32,10 @@ resource "digitalocean_project_resources" "metaforecast_resources" {
 
 import {
   to = module.metaforecast_domain.vercel_project_domain.main
-  id = "${vercel_org_id}/${vercel_project.metaforecast.id}/${metaforecast_domain}"
+  id = "team_rtBRiFLJJzdbwXiEcgYyJ6ji/prj_PamguVNGEisOv9VJni6FKylJPUiA/metaforecast.org"
 }
 
 import {
   to = module.metaforecast_domain.vercel_project_domain.www_redirect
-  id = "${vercel_org_id}/${vercel_project.metaforecast.id}/www.${metaforecast_domain}"
+  id = "team_rtBRiFLJJzdbwXiEcgYyJ6ji/prj_PamguVNGEisOv9VJni6FKylJPUiA/www.metaforecast.org"
 }
