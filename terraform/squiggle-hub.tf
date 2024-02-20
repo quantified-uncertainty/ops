@@ -55,7 +55,7 @@ resource "vercel_project" "hub" {
     },
   ]
 
-  # close to digitalocean_database_cluster.quri
+  # close to QURI database on DigitalOcean
   serverless_function_region = "iad1"
 }
 
