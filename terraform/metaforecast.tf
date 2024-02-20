@@ -29,13 +29,3 @@ resource "digitalocean_project_resources" "metaforecast_resources" {
   project   = digitalocean_project.metaforecast.id
   resources = module.metaforecast_domain.digitalocean_urns
 }
-
-import {
-  to = module.metaforecast_domain.vercel_project_domain.main
-  id = "team_rtBRiFLJJzdbwXiEcgYyJ6ji/prj_PamguVNGEisOv9VJni6FKylJPUiA/metaforecast.org"
-}
-
-import {
-  to = module.metaforecast_domain.vercel_project_domain.www_redirect
-  id = "team_rtBRiFLJJzdbwXiEcgYyJ6ji/prj_PamguVNGEisOv9VJni6FKylJPUiA/www.metaforecast.org"
-}
