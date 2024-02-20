@@ -3,13 +3,6 @@ terraform {
   # Please don't update it; we might migrate to OpenTofu in the future.
   required_version = "1.5.7"
 
-  cloud {
-    organization = "quantified-uncertainty"
-    workspaces {
-      name = "ops"
-    }
-  }
-
   required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"

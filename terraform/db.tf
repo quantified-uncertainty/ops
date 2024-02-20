@@ -12,6 +12,10 @@ resource "digitalocean_database_cluster" "quri" {
   region     = "nyc1"
   node_count = 1
   project_id = digitalocean_project.quri.id
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 provider "postgresql" {

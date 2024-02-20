@@ -1,3 +1,7 @@
+locals {
+  squiggle_hub_domain = "squigglehub.org"
+}
+
 resource "vercel_project" "hub" {
   name           = "quri-hub"
   root_directory = "packages/hub"
@@ -51,29 +55,30 @@ resource "vercel_project" "hub" {
     },
   ]
 
-  # close to digitalocean_database_cluster.quri
+  # close to QURI database on DigitalOcean
   serverless_function_region = "iad1"
 }
 
-resource "vercel_project_domain" "squigglehub-org" {
-  domain     = "squigglehub.org"
+module "squiggle_hub_domain" {
+  source = "./vercel-domain"
+
+  domain     = local.squiggle_hub_domain
   project_id = vercel_project.hub.id
+  www        = false
 }
 
-resource "vercel_project_domain" "squigglehub-redirects" {
+module "squiggle_hub_alternative_domains" {
+  source = "./vercel-domain"
+
   for_each = toset([
-    "www.squigglehub.org",
     "squigglehub.com",
-    "www.squigglehub.com",
     "squiggle-hub.org",
-    "www.squiggle-hub.org",
-    "squiggle-hub.com",
-    "www.squiggle-hub.com",
+    "squiggle-hub.com"
   ])
-  domain               = each.key
-  redirect             = "squigglehub.org"
-  redirect_status_code = 308
-  project_id           = vercel_project.hub.id
+
+  domain     = each.key
+  redirect   = local.squiggle_hub_domain
+  project_id = vercel_project.hub.id
 }
 
 # Sendgrid DNS configuration; obtained from https://app.sendgrid.com/settings/sender_auth/domain/get/18308809
@@ -86,9 +91,40 @@ resource "vercel_dns_record" "squigglehub-sendgrid" {
     "s2._domainkey" : "s2.domainkey.u34091428.wl179.sendgrid.net",
   }
 
-  domain = "squigglehub.org"
+  domain = local.squiggle_hub_domain
   name   = each.key
   type   = "CNAME"
+  ttl    = 300
+  value  = each.value
+}
+
+# Sendgrid DNS configuration; obtained from https://app.sendgrid.com/settings/sender_auth/domain/get/18308809
+resource "digitalocean_record" "hub-sendgrid" {
+  for_each = {
+    "url1940" : "sendgrid.net.",
+    "34091428" : "sendgrid.net.",
+    "em6594" : "u34091428.wl179.sendgrid.net.",
+    "s1._domainkey" : "s1.domainkey.u34091428.wl179.sendgrid.net.",
+    "s2._domainkey" : "s2.domainkey.u34091428.wl179.sendgrid.net.",
+  }
+
+  domain = local.squiggle_hub_domain
+  name   = each.key
+  type   = "CNAME"
+  ttl    = 300
+  value  = each.value
+}
+
+resource "digitalocean_record" "hub_google_verification" {
+  for_each = {
+    # Which one is correct?
+    "1" : "google-site-verification=Hsd2Gnz5SHJyJYyZMbdZDXzDnYovWfwiF2cWnIBH0C0",
+    "2" : "google-site-verification=msJjgrChhh6V0p1pp0c0kj4Q_RdPEWrJk4yhRcN4uE4"
+  }
+
+  domain = local.squiggle_hub_domain
+  name   = "@"
+  type   = "TXT"
   ttl    = 300
   value  = each.value
 }
