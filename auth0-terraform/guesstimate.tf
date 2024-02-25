@@ -19,31 +19,25 @@ provider "auth0" {
   client_secret = data.onepassword_item.auth0_dev_client_secret.password
 }
 
-resource "auth0_client" "guesstimate_frontend" {
-  name     = "guesstimate-app/dev"
-  app_type = "regular_web"
-  sso      = true
-  callbacks = [
-    "${local.frontend_url}/", "${local.frontend_url}/auth-redirect", "${local.frontend_url}/api/auth/callback/auth0"
-  ]
+module "guesstimate_dev" {
+  source = "./guesstimate"
 
-  allowed_logout_urls = [local.frontend_url]
-
-  web_origins = [local.frontend_url]
-
-  jwt_configuration {
-    alg = "RS256"
-  }
-
-  oidc_conformant = true
+  frontend_url = "http://localhost:3000"
+  backend_url  = "http://localhost:4000"
+  suffix       = "/dev"
 }
 
-resource "auth0_resource_server" "guesstimate_backend" {
-  name       = "guesstimate-backend/dev"
-  identifier = local.backend_url
+moved {
+  from = auth0_resource_server.guesstimate_backend
+  to   = module.guesstimate_dev.auth0_resource_server.backend
 }
 
-# To be imported and deleted
+moved {
+  from = auth0_client.guesstimate_frontend
+  to   = module.guesstimate_dev.auth0_client.frontend
+}
+
+# Imported to be deleted after Terraform migration is complete
 resource "auth0_client" "legacy_guesstimate_client" {
   for_each = toset([
     "2023",

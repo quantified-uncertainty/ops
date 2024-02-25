@@ -21,7 +21,6 @@ terraform {
       source  = "auth0/auth0"
       version = "1.1.2"
     }
-
   }
 }
 
