@@ -8,9 +8,8 @@ terraform {
 }
 
 resource "auth0_client" "frontend" {
-  name     = "guesstimate-app${var.suffix}"
-  app_type = "regular_web"
-  sso      = true
+  name     = var.application_name
+  app_type = var.app_type
   callbacks = [
     "${var.frontend_url}/", "${var.frontend_url}/auth-redirect", "${var.frontend_url}/api/auth/callback/auth0"
   ]
@@ -20,14 +19,17 @@ resource "auth0_client" "frontend" {
   web_origins = [var.frontend_url]
 
   jwt_configuration {
-    alg = "RS256"
+    alg = var.jwt_alg
   }
 
-  oidc_conformant = true
+  oidc_conformant = var.oidc_conformant
+  sso             = var.sso
 }
 
 resource "auth0_resource_server" "backend" {
-  name       = "guesstimate-backend${var.suffix}"
+  name       = "Guesstimate API"
   identifier = var.backend_url
+
+  signing_alg = var.jwt_alg
 }
 
