@@ -29,7 +29,7 @@ provider "postgresql" {
 }
 
 module "prod_db" {
-  source = "./database"
+  source = "../../modules/database"
 
   providers = {
     postgresql = postgresql.quri
@@ -44,7 +44,7 @@ module "prod_db" {
 }
 
 module "dev_db" {
-  source = "./database"
+  source = "../../modules/database"
 
   providers = {
     postgresql = postgresql.quri
@@ -60,7 +60,7 @@ module "dev_db" {
 
 # Not used yet - we're still using Heroku for Guesstimate prod
 module "guesstimate_db" {
-  source = "./database"
+  source = "../../modules/database"
 
   providers = {
     postgresql = postgresql.quri

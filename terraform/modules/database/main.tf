@@ -1,14 +1,7 @@
 terraform {
   required_providers {
-    postgresql = {
-      source  = "cyrilgdn/postgresql"
-      version = "~> 1.20"
-    }
-
-    digitalocean = {
-      source  = "digitalocean/digitalocean"
-      version = "~> 2.0"
-    }
+    postgresql   = { source = "cyrilgdn/postgresql" }
+    digitalocean = { source = "digitalocean/digitalocean" }
   }
 }
 

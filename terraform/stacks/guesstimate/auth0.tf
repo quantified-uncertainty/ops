@@ -32,17 +32,17 @@ provider "auth0" {
 
 provider "auth0" {
   alias         = "prod"
-  domain        = var.guesstimate_auth0_domain
+  domain        = var.auth0_domain
   client_id     = data.onepassword_item.auth0_prod_client_id.password
   client_secret = data.onepassword_item.auth0_prod_client_secret.password
 }
 
-module "guesstimate_dev" {
+module "auth0_dev" {
   providers = {
     auth0 = auth0.dev
   }
 
-  source = "./guesstimate"
+  source = "./auth0"
 
   frontend_url     = "http://localhost:3000"
   backend_url      = "http://localhost:4000"
@@ -50,16 +50,16 @@ module "guesstimate_dev" {
   connection_name  = "Username-Password-Authentication"
 }
 
-module "guesstimate_prod" {
+module "auth0_prod" {
   providers = {
     auth0 = auth0.prod
   }
 
-  source = "./guesstimate"
+  source = "./auth0"
 
   frontend_url    = "https://www.getguesstimate.com"
   backend_url     = "http://guesstimate.herokuapp.com"
-  connection_name = var.guesstimate_auth0_connection_name
+  connection_name = var.auth0_connection_name
 
   jwt_alg         = "HS256"
   oidc_conformant = false
@@ -69,7 +69,7 @@ module "guesstimate_prod" {
 
 
 # Imported to be deleted after Terraform migration is complete
-resource "auth0_client" "legacy_guesstimate_client" {
+resource "auth0_client" "legacy_dev_client" {
   provider = auth0.dev
 
   for_each = toset([

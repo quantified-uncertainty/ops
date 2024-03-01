@@ -1,27 +1,15 @@
-resource "digitalocean_project" "guesstimate" {
+resource "digitalocean_project" "main" {
   name        = "Guesstimate"
   description = "Guesstimate resources."
 
-  resources = [digitalocean_app.guesstimate-server.urn]
+  resources = [digitalocean_app.backend.urn]
 }
 
-data "terraform_remote_state" "auth0" {
-  backend = "s3"
-
-  config = {
-    region         = "us-east-1"
-    bucket         = "quri-tf-state-us-east-1"
-    key            = "auth0.tfstate"
-    dynamodb_table = "terraform-state-lock"
-    encrypt        = "true"
-  }
-}
-
-resource "random_bytes" "guesstimate_rails_secret" {
+resource "random_bytes" "rails_secret" {
   length = 64
 }
 
-resource "digitalocean_app" "guesstimate-server" {
+resource "digitalocean_app" "backend" {
   spec {
     name     = "guesstimate-server"
     region   = "nyc"
@@ -41,34 +29,33 @@ resource "digitalocean_app" "guesstimate-server" {
     # The following are mostly secrets
     env {
       key   = "ALGOLIA_API_KEY"
-      value = data.onepassword_item.algolia_api_key_guesstimate.password
+      value = data.onepassword_item.algolia_api_key.password
       type  = "SECRET"
     }
     env {
       key   = "AUTH0_API_DOMAIN"
-      value = data.terraform_remote_state.auth0.outputs.guesstimate_domain
+      value = var.auth0_domain
     }
     env {
       key   = "AUTH0_AUDIENCE"
-      value = data.terraform_remote_state.auth0.outputs.guesstimate_backend_audience
+      value = module.auth0_prod.backend_audience
     }
     env {
       key   = "AUTH0_API_TOKEN"
-      value = data.onepassword_item.guesstimate_auth0_api_token.password
+      value = data.onepassword_item.auth0_api_token.password
       type  = "SECRET"
     }
     env {
       key   = "AUTH0_CLIENT_ID"
-      value = data.terraform_remote_state.auth0.outputs.guesstimate_client_id
+      value = module.auth0_prod.client_id
     }
-
     env {
       key   = "AUTH0_CLIENT_SECRET"
-      value = data.terraform_remote_state.auth0.outputs.guesstimate_client_secret
+      value = module.auth0_prod.client_secret
     }
     env {
       key   = "AUTH0_CONNECTION"
-      value = data.terraform_remote_state.auth0.outputs.guesstimate_connection_name
+      value = var.auth0_connection_name
     }
 
     env {
@@ -78,17 +65,17 @@ resource "digitalocean_app" "guesstimate-server" {
 
     env {
       key   = "DATABASE_URL"
-      value = heroku_addon.guesstimate_db.config_var_values["DATABASE_URL"]
+      value = heroku_addon.db.config_var_values["DATABASE_URL"]
     }
 
     env {
       key   = "SECRET_KEY_BASE"
-      value = random_bytes.guesstimate_rails_secret.hex
+      value = random_bytes.rails_secret.hex
     }
 
     env {
       key   = "SENDGRID_PASSWORD"
-      value = data.onepassword_item.sendgrid_key_guesstimate.password
+      value = data.onepassword_item.sendgrid_key.password
     }
     env {
       key   = "SENDGRID_USERNAME"
@@ -104,18 +91,4 @@ resource "digitalocean_app" "guesstimate-server" {
       value = data.onepassword_item.urlbox_secret.password
     }
   }
-}
-
-resource "heroku_app" "guesstimate" {
-  name   = "guesstimate"
-  region = "us"
-
-  organization {
-    name = "quantified-uncertainty-researc"
-  }
-}
-
-resource "heroku_addon" "guesstimate_db" {
-  app_id = heroku_app.guesstimate.id
-  plan   = "heroku-postgresql:standard-0"
 }
