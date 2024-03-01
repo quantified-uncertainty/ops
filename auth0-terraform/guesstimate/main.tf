@@ -26,10 +26,20 @@ resource "auth0_client" "frontend" {
   sso             = var.sso
 }
 
+resource "auth0_client_credentials" "frontend" {
+  client_id             = auth0_client.frontend.client_id
+  authentication_method = "client_secret_post"
+}
+
 resource "auth0_resource_server" "backend" {
   name       = "Guesstimate API"
   identifier = var.backend_url
 
-  signing_alg = var.jwt_alg
+  signing_alg   = var.jwt_alg
+  token_dialect = "access_token"
 }
 
+resource "auth0_connection" "main" {
+  name     = var.connection_name
+  strategy = "auth0"
+}

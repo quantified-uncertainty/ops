@@ -58,6 +58,7 @@ module "dev_db" {
   create    = true
 }
 
+# Not used yet - we're still using Heroku for Guesstimate prod
 module "guesstimate_db" {
   source = "./database"
 

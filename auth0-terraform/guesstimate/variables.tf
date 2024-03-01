@@ -11,6 +11,11 @@ variable "application_name" {
   default = "Guesstimate"
 }
 
+variable "connection_name" {
+  description = "Auth0 connection name. For historical reasons, this is called Guesstimate-test for prod."
+  type        = string
+}
+
 variable "jwt_alg" {
   type    = string
   default = "RS256"
