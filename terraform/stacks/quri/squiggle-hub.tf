@@ -64,7 +64,7 @@ resource "vercel_project" "hub" {
 }
 
 module "squiggle_hub_domain" {
-  source = "./vercel-domain"
+  source = "../../modules/vercel-domain"
 
   domain     = local.squiggle_hub_domain
   project_id = vercel_project.hub.id
@@ -72,7 +72,7 @@ module "squiggle_hub_domain" {
 }
 
 module "squiggle_hub_alternative_domains" {
-  source = "./vercel-domain"
+  source = "../../modules/vercel-domain"
 
   for_each = toset([
     "squigglehub.com",

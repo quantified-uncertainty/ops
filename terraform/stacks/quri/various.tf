@@ -43,17 +43,6 @@ resource "vercel_project" "squiggle-stories" {
   }
 }
 
-resource "vercel_project" "guesstimate-app" {
-  name      = "guesstimate-app"
-  framework = "nextjs"
-
-  git_repository = {
-    production_branch = "nextjs"
-    repo              = "berekuk/guesstimate-app"
-    type              = "github"
-  }
-}
-
 resource "vercel_project" "squiggle-tweaker" {
   name      = "squiggle-tweaker"
   framework = "nextjs"

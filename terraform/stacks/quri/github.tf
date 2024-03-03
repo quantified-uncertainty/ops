@@ -1,13 +1,3 @@
-import {
-  to = github_repository_environment.preview
-  id = "squiggle:Preview"
-}
-
-import {
-  to = github_repository_environment.production
-  id = "squiggle:Production"
-}
-
 resource "github_repository_environment" "preview" {
   environment = "Preview"
   repository  = "squiggle"

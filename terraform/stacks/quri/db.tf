@@ -29,7 +29,7 @@ provider "postgresql" {
 }
 
 module "prod_db" {
-  source = "./database"
+  source = "../../modules/database"
 
   providers = {
     postgresql = postgresql.quri
@@ -44,7 +44,7 @@ module "prod_db" {
 }
 
 module "dev_db" {
-  source = "./database"
+  source = "../../modules/database"
 
   providers = {
     postgresql = postgresql.quri
@@ -55,21 +55,5 @@ module "dev_db" {
   database  = "quri_dev"
   role      = "quri_dev_role"
   pool_size = 3
-  create    = true
-}
-
-# Not used yet - we're still using Heroku for Guesstimate prod
-module "guesstimate_db" {
-  source = "./database"
-
-  providers = {
-    postgresql = postgresql.quri
-  }
-
-  cluster   = digitalocean_database_cluster.quri
-  name      = "guesstimate"
-  database  = "guesstimate"
-  role      = "guesstimate_role"
-  pool_size = 5
   create    = true
 }

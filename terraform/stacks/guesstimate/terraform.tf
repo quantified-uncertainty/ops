@@ -6,7 +6,7 @@ terraform {
   backend "s3" {
     region         = "us-east-1"
     bucket         = "quri-tf-state-us-east-1"
-    key            = "main.tfstate"
+    key            = "stacks/guesstimate.tfstate"
     dynamodb_table = "terraform-state-lock"
     encrypt        = "true"
   }
@@ -15,6 +15,11 @@ terraform {
     onepassword = {
       source  = "1Password/onepassword"
       version = "1.4.1"
+    }
+
+    auth0 = {
+      source  = "auth0/auth0"
+      version = "1.1.2"
     }
 
     digitalocean = {
@@ -31,17 +36,6 @@ terraform {
       source  = "heroku/heroku"
       version = "5.2.8"
     }
-
-    github = {
-      source  = "integrations/github"
-      version = "~> 5.0"
-    }
-
-    # Configured in db.tf
-    postgresql = {
-      source  = "cyrilgdn/postgresql"
-      version = "~> 1.20"
-    }
   }
 }
 
@@ -53,6 +47,20 @@ data "onepassword_vault" "main" {
   name = "Infra"
 }
 
+// TODO - copy-pasted between stacks
+// DigitalOcan token
+// Get here: https://cloud.digitalocean.com/account/api/tokens
+data "onepassword_item" "do_token" {
+  vault = data.onepassword_vault.main.uuid
+  title = "DigitalOcean token"
+}
+// Vercel API token
+// Get here: https://vercel.com/account/tokens
+data "onepassword_item" "vercel_api_token" {
+  vault = data.onepassword_vault.main.uuid
+  title = "Vercel API token"
+}
+
 provider "digitalocean" {
   token = data.onepassword_item.do_token.password
 }
@@ -60,13 +68,4 @@ provider "digitalocean" {
 provider "vercel" {
   api_token = data.onepassword_item.vercel_api_token.password
   team      = "quantified-uncertainty"
-}
-
-provider "github" {
-  token = data.onepassword_item.github_token.password
-  owner = "quantified-uncertainty"
-}
-
-provider "heroku" {
-  api_key = data.onepassword_item.heroku_api_key.password
 }
