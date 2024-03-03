@@ -22,7 +22,7 @@ resource "vercel_project" "metaforecast" {
 }
 
 module "metaforecast_domain" {
-  source = "./vercel-domain"
+  source = "../../modules/vercel-domain"
 
   domain     = local.metaforecast_domain
   project_id = vercel_project.metaforecast.id

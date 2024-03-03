@@ -14,14 +14,14 @@ resource "vercel_project" "squiggle-website" {
 }
 
 module "squiggle_website_domain" {
-  source = "./vercel-domain"
+  source = "../../modules/vercel-domain"
 
   domain     = local.squiggle_website_domain
   project_id = vercel_project.squiggle-website.id
 }
 
 module "squiggle_website_alternative_domains" {
-  source = "./vercel-domain"
+  source = "../../modules/vercel-domain"
 
   for_each = toset([
     "squigglelang.com",
