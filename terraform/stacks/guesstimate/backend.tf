@@ -2,7 +2,7 @@ resource "digitalocean_project" "main" {
   name        = "Guesstimate"
   description = "Guesstimate resources."
 
-  resources = [digitalocean_app.backend.urn]
+  resources = [digitalocean_app.backend.urn, digitalocean_domain.main.urn]
 }
 
 resource "random_bytes" "rails_secret" {
@@ -15,6 +15,12 @@ resource "digitalocean_app" "backend" {
     region   = "nyc"
     features = ["buildpack-stack=ubuntu-18"] # can't use ubuntu-22 because of legacy Ruby/Rails stack
 
+    domain {
+      name = "api.getguesstimate.com"
+      type = "PRIMARY"
+      zone = "getguesstimate.com"
+    }
+
     service {
       name               = "guesstimate-server"
       instance_count     = 1
@@ -22,7 +28,7 @@ resource "digitalocean_app" "backend" {
 
       git {
         repo_clone_url = "https://github.com/getguesstimate/guesstimate-server"
-        branch         = "production"
+        branch         = "2024"
       }
     }
 
@@ -44,14 +50,6 @@ resource "digitalocean_app" "backend" {
       key   = "AUTH0_API_TOKEN"
       value = data.onepassword_item.auth0_api_token.password
       type  = "SECRET"
-    }
-    env {
-      key   = "AUTH0_CLIENT_ID"
-      value = module.auth0_prod.client_id
-    }
-    env {
-      key   = "AUTH0_CLIENT_SECRET"
-      value = module.auth0_prod.client_secret
     }
     env {
       key   = "AUTH0_CONNECTION"

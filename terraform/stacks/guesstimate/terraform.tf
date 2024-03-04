@@ -36,6 +36,11 @@ terraform {
       source  = "heroku/heroku"
       version = "5.2.8"
     }
+
+    github = {
+      source  = "integrations/github"
+      version = "~> 5.0"
+    }
   }
 }
 

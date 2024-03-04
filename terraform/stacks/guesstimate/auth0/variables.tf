@@ -2,8 +2,14 @@ variable "frontend_url" {
   type = string
 }
 
-variable "backend_url" {
-  type = string
+variable "extra_frontend_urls" {
+  type    = list(string)
+  default = []
+}
+
+variable "api_audience" {
+  type     = string
+  nullable = true # can be null for the legacy prod configuration
 }
 
 variable "application_name" {
@@ -14,6 +20,7 @@ variable "application_name" {
 variable "connection_name" {
   description = "Auth0 connection name. For historical reasons, this is called Guesstimate-test for prod."
   type        = string
+  nullable    = true # can be null for the smooth migration to 2024 configuration
 }
 
 variable "jwt_alg" {

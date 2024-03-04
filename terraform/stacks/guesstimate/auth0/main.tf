@@ -10,13 +10,17 @@ terraform {
 resource "auth0_client" "frontend" {
   name     = var.application_name
   app_type = var.app_type
-  callbacks = [
-    "${var.frontend_url}/", "${var.frontend_url}/auth-redirect", "${var.frontend_url}/api/auth/callback/auth0"
-  ]
+  callbacks = flatten([
+    for url in local.all_frontend_urls : [
+      "${url}/",
+      "${url}/auth-redirect",
+      "${url}/api/auth/callback/auth0"
+    ]
+  ])
 
-  allowed_logout_urls = [var.frontend_url]
+  allowed_logout_urls = local.all_frontend_urls
 
-  web_origins = [var.frontend_url]
+  web_origins = local.all_frontend_urls
 
   jwt_configuration {
     alg = var.jwt_alg
@@ -32,14 +36,25 @@ resource "auth0_client_credentials" "frontend" {
 }
 
 resource "auth0_resource_server" "backend" {
+  count      = var.api_audience == null ? 0 : 1
   name       = "Guesstimate API"
-  identifier = var.backend_url
+  identifier = var.api_audience
 
-  signing_alg   = var.jwt_alg
-  token_dialect = "access_token"
+  signing_alg                                     = var.jwt_alg
+  token_dialect                                   = "access_token"
+  skip_consent_for_verifiable_first_party_clients = true
 }
 
 resource "auth0_connection" "main" {
+  count    = var.connection_name == null ? 0 : 1
   name     = var.connection_name
   strategy = "auth0"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+locals {
+  all_frontend_urls = concat([var.frontend_url], var.extra_frontend_urls)
 }
