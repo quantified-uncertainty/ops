@@ -38,7 +38,7 @@ resource "vercel_project" "frontend" {
     },
     {
       key    = "AUTH0_CLIENT_SECRET"
-      value  = "${module.auth0_2024.client_secret}!"
+      value  = module.auth0_2024.client_secret
       target = ["production", "preview"]
     },
     {
