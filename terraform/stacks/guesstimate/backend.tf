@@ -64,16 +64,19 @@ resource "digitalocean_app" "backend" {
     env {
       key   = "DATABASE_URL"
       value = heroku_addon.db.config_var_values["DATABASE_URL"]
+      type  = "SECRET"
     }
 
     env {
       key   = "SECRET_KEY_BASE"
       value = random_bytes.rails_secret.hex
+      type  = "SECRET"
     }
 
     env {
       key   = "SENDGRID_PASSWORD"
       value = data.onepassword_item.sendgrid_key.password
+      type  = "SECRET"
     }
     env {
       key   = "SENDGRID_USERNAME"
@@ -87,6 +90,7 @@ resource "digitalocean_app" "backend" {
     env {
       key   = "URLBOX_SECRET"
       value = data.onepassword_item.urlbox_secret.password
+      type  = "SECRET"
     }
   }
 }

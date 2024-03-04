@@ -8,6 +8,5 @@ output "client_secret" {
 }
 
 output "backend_audience" {
-  value     = length(auth0_resource_server.backend) == 1 ? auth0_resource_server.backend[0].identifier : null
-  sensitive = true
+  value = length(auth0_resource_server.backend) == 1 ? auth0_resource_server.backend[0].identifier : null
 }

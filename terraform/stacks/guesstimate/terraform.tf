@@ -41,6 +41,12 @@ terraform {
       source  = "integrations/github"
       version = "~> 5.0"
     }
+
+    sentry = {
+      # Not official, but blessed by Sentry; https://blog.sentry.io/introducing-terraform-for-sentry/
+      source  = "jianyuan/sentry"
+      version = "0.12.2"
+    }
   }
 }
 
@@ -74,3 +80,13 @@ provider "vercel" {
   api_token = data.onepassword_item.vercel_api_token.password
   team      = "quantified-uncertainty"
 }
+
+data "onepassword_item" "sentry" {
+  vault = data.onepassword_vault.main.uuid
+  title = "Sentry root token"
+}
+
+provider "sentry" {
+  token = data.onepassword_item.sentry.password
+}
+

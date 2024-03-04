@@ -2,13 +2,21 @@ resource "random_password" "nextauth_secret" {
   length = 44
 }
 
+# Note that is different from "Sentry root token".
+# Root token is used to configure Sentry resources, while auth token is used to authenticate from Vercel to upload source maps.
+# Auth token has less permissions than root token.
+data "onepassword_item" "sentry_auth_token" {
+  vault = data.onepassword_vault.main.uuid
+  title = "Sentry auth token"
+}
+
 resource "vercel_project" "frontend" {
   name      = "guesstimate-app"
   framework = "nextjs"
 
   git_repository = {
     type              = "github"
-    repo              = "berekuk/guesstimate-app"
+    repo              = "getguesstimate/guesstimate-app"
     production_branch = "2024"
   }
 
@@ -30,7 +38,7 @@ resource "vercel_project" "frontend" {
     },
     {
       key    = "AUTH0_CLIENT_SECRET"
-      value  = module.auth0_2024.client_secret
+      value  = "${module.auth0_2024.client_secret}!"
       target = ["production", "preview"]
     },
     {
@@ -38,6 +46,26 @@ resource "vercel_project" "frontend" {
       value  = "https://${var.auth0_domain}"
       target = ["production", "preview"]
     },
+    {
+      key    = "NEXT_PUBLIC_SENTRY_DSN"
+      value  = data.sentry_key.main.dsn_public
+      target = ["production", "preview"]
+    },
+    {
+      key    = "SENTRY_ORG"
+      value  = sentry_project.main.organization
+      target = ["production", "preview"]
+    },
+    {
+      key    = "SENTRY_PROJECT"
+      value  = sentry_project.main.id
+      target = ["production", "preview"]
+    },
+    {
+      key    = "SENTRY_AUTH_TOKEN"
+      value  = data.onepassword_item.sentry_auth_token.password
+      target = ["production", "preview"]
+    }
   ]
 }
 
