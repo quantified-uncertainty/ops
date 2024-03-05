@@ -17,7 +17,7 @@ resource "vercel_project" "frontend" {
   git_repository = {
     type              = "github"
     repo              = "getguesstimate/guesstimate-app"
-    production_branch = "2024"
+    production_branch = "main"
   }
 
   environment = [

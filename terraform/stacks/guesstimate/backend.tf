@@ -28,7 +28,7 @@ resource "digitalocean_app" "backend" {
 
       git {
         repo_clone_url = "https://github.com/getguesstimate/guesstimate-server"
-        branch         = "2024"
+        branch         = "main"
       }
     }
 
