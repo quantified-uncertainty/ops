@@ -32,6 +32,11 @@ resource "vercel_project" "frontend" {
       target = ["production"]
     },
     {
+      key    = "NEXT_PUBLIC_API_BASE_URL"
+      value  = "https://${var.api_domain}"
+      target = ["production", "preview"]
+    },
+    {
       key    = "AUTH0_CLIENT_ID"
       value  = module.auth0_2024.client_id
       target = ["production", "preview"]
@@ -65,7 +70,7 @@ resource "vercel_project" "frontend" {
       key    = "SENTRY_AUTH_TOKEN"
       value  = data.onepassword_item.sentry_auth_token.password
       target = ["production", "preview"]
-    }
+    },
   ]
 }
 

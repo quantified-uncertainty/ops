@@ -16,7 +16,7 @@ resource "digitalocean_app" "backend" {
     features = ["buildpack-stack=ubuntu-18"] # can't use ubuntu-22 because of legacy Ruby/Rails stack
 
     domain {
-      name = "api.getguesstimate.com"
+      name = var.api_domain # assuming that this is api.getguesstimate.com, but extracted to var because we also need it in frontend.tf
       type = "PRIMARY"
       zone = "getguesstimate.com"
     }

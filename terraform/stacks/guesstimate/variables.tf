@@ -6,3 +6,7 @@ variable "auth0_domain" {
 variable "auth0_connection_name" {
   default = "Guesstimate-test"
 }
+
+variable "api_domain" {
+  default = "api.getguesstimate.com"
+}
