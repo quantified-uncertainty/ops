@@ -43,6 +43,7 @@ resource "auth0_resource_server" "backend" {
   signing_alg                                     = var.jwt_alg
   token_dialect                                   = "access_token"
   skip_consent_for_verifiable_first_party_clients = true
+  allow_offline_access                            = true # enable refresh tokens
 }
 
 resource "auth0_connection" "main" {
