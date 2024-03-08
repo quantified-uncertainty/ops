@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-metabase
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-metabase
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 3000
+  selector:
+    app: {{ .Release.Name }}-metabase
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-metabase
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-metabase
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-metabase
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-metabase
+    spec:
+      containers:
+        - name: metabase
+          image: "metabase/metabase:{{ .Values.version }}"
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: MB_DB_TYPE
+            value: postgres
+          - name: MB_DB_HOST
+            value: TODO
+          - name: MB_DB_PORT
+            value: 5432
+          - name: MB_DB_DBNAME
+            value: metabase
+          - name: MB_DB_USER
+            value: metabase
+          - name: MB_DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: TODO
+                key: password
+          - name: MAX_SESSION_AGE
+            value: "129600" # 3 months; https://www.metabase.com/docs/latest/operations-guide/changing-session-expiration.html
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 120
+            timeoutSeconds: 30
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "700Mi"
+            limits:
+              memory: "2048Mi"
+---
+# Enable metabase.k8s.quantifieduncertainty.org website.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-metabase
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-metabase
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - {{ .Values.host }}
+    secretName: {{ .Release.Name }}-metabase-tls
