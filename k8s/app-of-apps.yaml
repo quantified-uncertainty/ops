@@ -1,0 +1,22 @@
+# This app-of-apps guarantees that all apps from ./apps folder are automatically
+# applied with GitOps.
+# Explained here in docs:
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#app-of-apps,
+# and in this video: https://www.youtube.com/watch?v=2pvGL0zqf9o
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  source:
+    path: k8s/apps
+    repoURL: 'https://github.com/quantified-uncertainty/ops'
+    targetRevision: HEAD
+  project: default
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+  #     selfHeal: true

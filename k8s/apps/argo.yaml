@@ -1,0 +1,48 @@
+# Basic Argo CD config; see https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-cm-yaml/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  # Important workaround for DigitalOcean Kubernetes; otherwise apps will be
+  # permanently out of sync.
+  # See also: https://github.com/argoproj/argo-cd/issues/10456#issuecomment-1249381338
+  resource.exclusions: |
+    - apiGroups:
+      - cilium.io
+      kinds:
+      - CiliumIdentity
+      clusters:
+      - "*"
+---
+# Enable argo.k8s.quantifieduncertainty.org website.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress
+  namespace: argocd
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: argo.k8s.quantifieduncertainty.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              name: https
+  tls:
+  - hosts:
+    - argo.k8s.quantifieduncertainty.org
+    secretName: argocd-server-tls # as expected by argocd-server
