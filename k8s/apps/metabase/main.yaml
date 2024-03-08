@@ -56,8 +56,7 @@ spec:
         backend:
           service:
             name: metabase-service
-            port:
-              name: https
+            port: 80
   tls:
   - hosts:
     - metabase.k8s.quantifieduncertainty.org
