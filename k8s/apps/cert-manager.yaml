@@ -6,18 +6,14 @@ metadata:
 spec:
   project: default
   syncPolicy:
-    automated:
-      prune: true
-  sources:
-    - chart: cert-manager
-      repoURL: https://charts.jetstack.io
-      targetRevision: v1.14.3
-      helm:
-        valuesObject:
-          installCRDs: true
-    - path: k8s/apps/cert-manager
-      repoURL: 'https://github.com/quantified-uncertainty/ops'
-      targetRevision: HEAD
+    # automated:
+    #   prune: true
+  syncOptions:
+    - CreateNamespace=true
+  source:
+    repoURL: 'https://github.com/quantified-uncertainty/ops'
+    path: k8s/charts/cert-maanger
+    targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
