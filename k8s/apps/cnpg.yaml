@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cnpg
+  namespace: argocd
+spec:
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+  sources:
+    - chart: cloudnative-pg
+      repoURL: https://cloudnative-pg.github.io/charts
+      targetRevision: 0.20.1
+    - path: k8s/apps/cnpg
+      repoURL: 'https://github.com/quantified-uncertainty/ops'
+      targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cnpg-system # default namespace used in cnpg docs
