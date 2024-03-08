@@ -15,3 +15,13 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: metabase
+
+# Note: we configure Metabase users and databases (e.g. Guesstimate and Squiggle
+# Hub) in Metabase UI, for now.
+#
+# In theory, I could use Terraform for that, and there are a few decent
+# Terraform providers built on top of Metabase API, but the value of this work
+# is too low to bother.
+#
+# It could become more necessary in the future, if we spin up more Postgres
+# clusters and it becomes necessary to sync up their endpoints and credentials.
