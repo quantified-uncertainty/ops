@@ -9,8 +9,8 @@ spec:
     automated:
       prune: true
   source:
-    path: k8s/apps/metabase
     repoURL: 'https://github.com/quantified-uncertainty/ops'
+    path: k8s/apps/metabase
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
