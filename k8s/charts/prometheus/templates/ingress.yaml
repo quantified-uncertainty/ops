@@ -22,3 +22,53 @@ spec:
   - hosts:
     - {{ .Values.grafana_host }}
     secretName: grafana-ingress-tls
+---
+# Enable prometheus.k8s.quantifieduncertainty.org website.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.prometheus_host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-operated
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - {{ .Values.prometheus_host }}
+    secretName: prometheus-ingress-tls
+---
+# Enable alerts.k8s.quantifieduncertainty.org website.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alertmanager
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.alertmanager_host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-operated
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - {{ .Values.alertmanager_host }}
+    secretName: alertmanager-ingress-tls
