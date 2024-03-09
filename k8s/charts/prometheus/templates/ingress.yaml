@@ -1,0 +1,24 @@
+# Enable grafana.k8s.quantifieduncertainty.org website.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grafana
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.grafana_host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-grafana
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - {{ .Values.grafana_host }}
+    secretName: grafana-ingress-tls
