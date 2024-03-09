@@ -25,7 +25,8 @@ kube-prometheus-stack:
 
   grafana:
     enabled: true
-    existingSecret: grafana-credentials # created by terraform/stacks/secrets-for-k8s
+    admin:
+      existingSecret: grafana-credentials # created by terraform/stacks/secrets-for-k8s
 
     # Starter Kit setup for DigitalOcean Block Storage
     persistence:
