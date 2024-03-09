@@ -24,6 +24,12 @@ variable "www" {
   description = "If set to false, redirect will happen from www.domain.com to domain.com, instead of the default domain.com -> www.domain.com. If `redirect` is set, this var won't affect anything."
 }
 
+variable "subdomain" {
+  type     = string
+  default  = null
+  nullable = true
+}
+
 variable "redirect" {
   type        = string
   default     = ""
