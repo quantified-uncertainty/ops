@@ -27,11 +27,6 @@ terraform {
       version = "~> 0.4"
     }
 
-    heroku = {
-      source  = "heroku/heroku"
-      version = "5.2.8"
-    }
-
     github = {
       source  = "integrations/github"
       version = "~> 5.0"
@@ -65,8 +60,4 @@ provider "vercel" {
 provider "github" {
   token = data.onepassword_item.github_token.password
   owner = "quantified-uncertainty"
-}
-
-provider "heroku" {
-  api_key = data.onepassword_item.heroku_api_key.password
 }

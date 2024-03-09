@@ -22,14 +22,6 @@ data "onepassword_item" "vercel_team_id" {
   title = "Vercel Team ID"
 }
 
-// Heroku API key
-// Get through `heroku authorizations:create` in CLI.
-// Note: Heroku tokens are global!
-data "onepassword_item" "heroku_api_key" {
-  vault = data.onepassword_vault.main.uuid
-  title = "Heroku API key"
-}
-
 // Secret for "sign in with github" feature
 data "onepassword_item" "github_client_secret" {
   vault = data.onepassword_vault.main.uuid

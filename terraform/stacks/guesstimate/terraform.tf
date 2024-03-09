@@ -90,3 +90,13 @@ provider "sentry" {
   token = data.onepassword_item.sentry.password
 }
 
+// Get through `heroku authorizations:create` in CLI.
+// Note: Heroku tokens are global!
+data "onepassword_item" "heroku_api_key" {
+  vault = data.onepassword_vault.main.uuid
+  title = "Heroku API key"
+}
+
+provider "heroku" {
+  api_key = data.onepassword_item.heroku_api_key.password
+}
