@@ -42,7 +42,7 @@ spec:
           service:
             name: prometheus-operated
             port:
-              number: 80
+              number: 9090
   tls:
   - hosts:
     - {{ .Values.prometheus_host }}
@@ -67,7 +67,7 @@ spec:
           service:
             name: prometheus-operated
             port:
-              number: 80
+              number: 9100
   tls:
   - hosts:
     - {{ .Values.alertmanager_host }}
