@@ -19,7 +19,7 @@ spec:
       prune: true
   source:
     repoURL: 'https://github.com/quantified-uncertainty/ops'
-    path: k8s/charts/prometheus
+    path: k8s/apps/prometheus
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
