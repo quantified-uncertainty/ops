@@ -8,13 +8,16 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
+    # Argo CD is having some trouble with Prometheus CRDs (they're too large).
+    # It might be useful to deploy
+    # https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-operator-crds
+    # as a separate Application instead of enabling ServerSideApply for all
+    # Prometheus resources.
+    # See also: https://github.com/argoproj/argo-cd/issues/820
       - ServerSideApply=true
     automated:
       prune: true
   source:
-    # TODO: Argo CD is having some trouble with Prometheus CRDs (they're too large).
-    # It might be useful to deploy https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-operator-crds as a separate Application, with Replace=true or ServerSideApply=true.
-    # See also: https://github.com/argoproj/argo-cd/issues/820
     repoURL: 'https://github.com/quantified-uncertainty/ops'
     path: k8s/charts/prometheus
     targetRevision: HEAD
