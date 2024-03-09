@@ -8,8 +8,6 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
-    automated:
-      prune: true
   sources:
     - chart: cloudnative-pg
       repoURL: https://cloudnative-pg.github.io/charts
