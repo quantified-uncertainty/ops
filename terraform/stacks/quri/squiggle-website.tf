@@ -47,8 +47,9 @@ resource "vercel_project_domain" "squiggle_website_old_preview_redirect" {
 # Very old instance of Squiggle Playground, still hosted on Netlify.
 # TODO: remove Netlify deployment and redirect to squiggle-language.com/playground (will require vercel.json config update)
 resource "digitalocean_record" "squiggle-website-old-playground" {
-  domain = module.squiggle_website_domain.domain # not from locals, waits for dependency
-  name   = "playground"
-  type   = "A"
-  value  = "104.198.14.52"
+  depends_on = [module.squiggle_website_domain] # waits for domain to be created on DO
+  domain     = local.squiggle_website_domain
+  name       = "playground"
+  type       = "A"
+  value      = "104.198.14.52"
 }
