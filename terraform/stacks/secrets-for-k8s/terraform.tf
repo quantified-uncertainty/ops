@@ -48,7 +48,7 @@ resource "kubernetes_secret" "grafana" {
   }
 
   data = {
-    username = data.onepassword_item.grafana_admin.username
-    password = data.onepassword_item.grafana_admin.password
+    admin-user     = data.onepassword_item.grafana_admin.username
+    admin-password = data.onepassword_item.grafana_admin.password
   }
 }
