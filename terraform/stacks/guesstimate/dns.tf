@@ -23,14 +23,6 @@ resource "digitalocean_record" "star_a" {
   value  = "75.126.100.17" # is this Netlify too?
 }
 
-resource "digitalocean_record" "docs" {
-  domain = digitalocean_domain.main.id
-  name   = "docs"
-  type   = "CNAME"
-  value  = "www.gitbooks.io."
-}
-
-
 # Sendgrid DNS configuration; copied from old name.com DNS
 resource "digitalocean_record" "sendgrid" {
   for_each = {

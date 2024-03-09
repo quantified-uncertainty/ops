@@ -2,7 +2,7 @@ locals {
   # trick from https://github.com/hashicorp/terraform/issues/25609#issuecomment-1057614400
   validate_www_with_subdomain = (var.subdomain != null && var.www) ? tobool("subdomain and www can't be set at the same time") : true
 
-  primary_domain    = var.www ? "www.${var.domain}" : var.domain
+  primary_domain    = var.www ? "www.${var.domain}" : (var.subdomain == null ? var.domain : "${var.subdomain}.${var.domain}")
   redirected_domain = var.redirect == "" ? local.primary_domain : var.redirect
 }
 
