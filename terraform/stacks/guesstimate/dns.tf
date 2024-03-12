@@ -2,27 +2,6 @@ resource "digitalocean_domain" "main" {
   name = "getguesstimate.com"
 }
 
-resource "digitalocean_record" "apex_a" {
-  domain = digitalocean_domain.main.id
-  name   = "@"
-  type   = "A"
-  value  = "104.198.14.52" # Netlify (legacy)
-}
-
-resource "digitalocean_record" "www" {
-  domain = digitalocean_domain.main.id
-  name   = "www"
-  type   = "CNAME"
-  value  = "guesstimate.netlify.com."
-}
-
-resource "digitalocean_record" "star_a" {
-  domain = digitalocean_domain.main.id
-  name   = "*"
-  type   = "A"
-  value  = "75.126.100.17" # is this Netlify too?
-}
-
 # Sendgrid DNS configuration; copied from old name.com DNS
 resource "digitalocean_record" "sendgrid" {
   for_each = {
@@ -51,4 +30,14 @@ resource "digitalocean_record" "mx" {
   type     = "MX"
   value    = each.key
   priority = each.value
+}
+
+moved {
+  from = digitalocean_record.apex_a
+  to   = module.domain.digitalocean_record.apex_a
+}
+
+moved {
+  from = digitalocean_record.star_a
+  to   = module.domain.digitalocean_record.subdomains[0]
 }

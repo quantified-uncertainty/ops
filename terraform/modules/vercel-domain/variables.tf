@@ -35,3 +35,10 @@ variable "redirect" {
   default     = ""
   description = "If set, both www.domain.com and domain.com will redirect to the given target"
 }
+
+variable "create_domain" {
+  type        = bool
+  nullable    = true
+  default     = null
+  description = "If true (default when redirects are not enabled), the domain will be created. If false, the domain will be assumed to exist and only the records will be created."
+}

@@ -74,16 +74,11 @@ resource "vercel_project" "frontend" {
   ]
 }
 
-# frontend; note that `api.getguesstimate.com` is managed by DigitalOcean (see `domain` block in `backend.tf`)
-# TODO - when we deploy this as prod, we can switch to `vercel-domain` module.
-resource "digitalocean_record" "next" {
-  domain = digitalocean_domain.main.id
-  name   = "next"
-  type   = "CNAME"
-  value  = "cname.vercel-dns.com."
-}
+module "domain" {
+  source = "../../modules/vercel-domain"
 
-resource "vercel_project_domain" "next" {
-  project_id = vercel_project.frontend.id
-  domain     = digitalocean_record.next.fqdn
+  domain        = "getguesstimate.com"
+  project_id    = vercel_project.frontend.id
+  ttl           = 60 # TODO - roll back after we're sure that new Guesstimate works fine
+  create_domain = false
 }
