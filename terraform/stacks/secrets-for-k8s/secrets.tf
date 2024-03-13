@@ -23,6 +23,9 @@ resource "kubernetes_secret" "dex_auth" {
   metadata {
     name      = "dex-github-auth" # must be in sync with `k8s/apps/argocd/config.yaml`
     namespace = "argocd"
+    labels = {
+      "app.kubernetes.io/part-of" = "argocd"
+    }
   }
 
   data = {
