@@ -1,0 +1,7 @@
+apiVersion: v2
+name: argo-workflows
+version: "0.1.0"
+dependencies:
+  - name: argo-workflows
+    repository: https://argoproj.github.io/argo-helm
+    version: 0.40.14 # https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/Chart.yaml

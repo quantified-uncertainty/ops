@@ -6,4 +6,3 @@ metadata:
     app.kubernetes.io/part-of: argocd
 data:
   policy.default: role:admin # everyone is an admin, for now
-

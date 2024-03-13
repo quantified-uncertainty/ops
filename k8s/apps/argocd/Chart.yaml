@@ -1,0 +1,4 @@
+apiVersion: v2
+name: argocd
+version: "0.1.0"
+# TODO - depend on Argo CD Helm chart, then we'll be able to upgrade our Argo CD installation through Argo CD itself.

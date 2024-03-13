@@ -11,7 +11,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: argo.k8s.quantifieduncertainty.org
+  - host: {{ .Values.host }}
     http:
       paths:
       - path: /
@@ -23,5 +23,5 @@ spec:
               name: https
   tls:
   - hosts:
-    - argo.k8s.quantifieduncertainty.org
+    - {{ .Values.host }}
     secretName: argocd-server-tls # as expected by argocd-server

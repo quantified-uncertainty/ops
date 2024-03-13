@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
-  url: https://argo.k8s.quantifieduncertainty.org
+  url: "https://{{ .Values.host }}"
   # Recommended by https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#disable-admin-user, we use SSO.
   admin.enabled: "false"
   # Important workaround for DigitalOcean Kubernetes; otherwise apps will be
@@ -22,14 +22,21 @@ data:
       - "*"
   # Github auth.
   dex.config: |
+    # Allow Argo Workflows to use Argo CD Dex
+    staticClients:
+    - id: argo-workflows-sso
+      name: Argo Workflow
+      redirectURIs:
+        - {{ .Values.workflows_url }}/oauth2/callback
+      secretEnv: $argo-workflows-sso:clientSecret
     connectors:
-      - type: github
-        id: github
-        name: GitHub
-        config:
-          clientID: $dex-github-auth:clientID
-          clientSecret: $dex-github-auth:clientSecret
-          orgs:
-          - name: quantified-uncertainty
-            teams:
-            - "Kubernetes Admins"
+    - type: github
+      id: github
+      name: GitHub
+      config:
+        clientID: $dex-github-auth:clientID
+        clientSecret: $dex-github-auth:clientSecret
+        orgs:
+        - name: quantified-uncertainty
+          teams:
+          - "{{ .Values.github_team }}"

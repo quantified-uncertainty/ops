@@ -1,0 +1,23 @@
+argo-workflows:
+  server:
+    authModes:
+    - sso
+    sso:
+      enabled: true
+      issuer: https://argo.k8s.quantifieduncertainty.org/api/dex
+      clientId:
+        name: argo-workflows-sso
+        key: clientID
+      clientSecret:
+        name: argo-workflows-sso
+        key: clientSecret
+      redirectUrl: https://workflows.k8s.quantifieduncertainty.org/oauth2/callback
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      ingressClassName: nginx
+      tls:
+      - hosts:
+        - workflows.k8s.quantifieduncertainty.org
+        secretName: argo-workflows-tls
