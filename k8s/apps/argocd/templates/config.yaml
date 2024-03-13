@@ -24,7 +24,7 @@ data:
   dex.config: |
     # Allow Argo Workflows to use Argo CD Dex
     staticClients:
-    - id: argo-workflows-sso
+    - id: $argo-workflows-sso:clientID
       name: Argo Workflow
       redirectURIs:
         - {{ .Values.workflows_url }}/oauth2/callback
