@@ -5,17 +5,6 @@ resources:
 - https://raw.githubusercontent.com/argoproj/argo-cd/v2.10.3/manifests/install.yaml
 
 patches:
-- path: inject-workflows-sso-secret.yaml
-# created by argocd-configs source, with Helm
-- |-
-  $patch: delete
-  apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: argocd-cm
-- |-
-  $patch: delete
-  apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: argocd-rbac-cm
+- path: patches/inject-workflows-sso-secret.yaml
+- path: patches/config.yaml
+- path: patches/rbac.yaml
