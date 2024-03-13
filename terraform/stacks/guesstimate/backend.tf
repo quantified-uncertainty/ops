@@ -1,3 +1,20 @@
+locals {
+  backend_env = {
+    "ALGOLIA_API_KEY"   = data.onepassword_item.algolia_api_key.password
+    "AUTH0_API_DOMAIN"  = var.auth0_domain
+    "AUTH0_AUDIENCE"    = module.auth0_prod.backend_audience
+    "AUTH0_API_TOKEN"   = data.onepassword_item.auth0_api_token.password
+    "AUTH0_CONNECTION"  = var.auth0_connection_name
+    "CHARGEBEE_API_KEY" = data.onepassword_item.chargebee_api_key.password
+    "DATABASE_URL"      = heroku_addon.db.config_var_values["DATABASE_URL"]
+    "SECRET_KEY_BASE"   = random_bytes.rails_secret.hex
+    "SENDGRID_PASSWORD" = data.onepassword_item.sendgrid_key.password
+    "SENDGRID_USERNAME" = "apikey"
+    "URLBOX_API_KEY"    = data.onepassword_item.urlbox_api_key.password
+    "URLBOX_SECRET"     = data.onepassword_item.urlbox_secret.password
+  }
+}
+
 resource "digitalocean_project" "main" {
   name        = "Guesstimate"
   description = "Guesstimate resources."
@@ -32,65 +49,14 @@ resource "digitalocean_app" "backend" {
       }
     }
 
-    # The following are mostly secrets
-    env {
-      key   = "ALGOLIA_API_KEY"
-      value = data.onepassword_item.algolia_api_key.password
-      type  = "SECRET"
-    }
-    env {
-      key   = "AUTH0_API_DOMAIN"
-      value = var.auth0_domain
-    }
-    env {
-      key   = "AUTH0_AUDIENCE"
-      value = module.auth0_prod.backend_audience
-    }
-    env {
-      key   = "AUTH0_API_TOKEN"
-      value = data.onepassword_item.auth0_api_token.password
-      type  = "SECRET"
-    }
-    env {
-      key   = "AUTH0_CONNECTION"
-      value = var.auth0_connection_name
-    }
-
-    env {
-      key   = "CHARGEBEE_API_KEY"
-      value = data.onepassword_item.chargebee_api_key.password
-    }
-
-    env {
-      key   = "DATABASE_URL"
-      value = heroku_addon.db.config_var_values["DATABASE_URL"]
-      type  = "SECRET"
-    }
-
-    env {
-      key   = "SECRET_KEY_BASE"
-      value = random_bytes.rails_secret.hex
-      type  = "SECRET"
-    }
-
-    env {
-      key   = "SENDGRID_PASSWORD"
-      value = data.onepassword_item.sendgrid_key.password
-      type  = "SECRET"
-    }
-    env {
-      key   = "SENDGRID_USERNAME"
-      value = "apikey"
-    }
-
-    env {
-      key   = "URLBOX_API_KEY"
-      value = data.onepassword_item.urlbox_api_key.password
-    }
-    env {
-      key   = "URLBOX_SECRET"
-      value = data.onepassword_item.urlbox_secret.password
-      type  = "SECRET"
+    dynamic "env" {
+      for_each = local.backend_env
+      content {
+        key   = env.key
+        value = env.value
+        # Not all env vars are strictly secret, but it's easier to mark them all as secret
+        type = "SECRET"
+      }
     }
   }
 }
@@ -110,3 +76,18 @@ resource "digitalocean_app" "backend" {
 #   pool_size = 5
 #   create    = true
 # }
+
+resource "kubernetes_namespace" "main" {
+  metadata {
+    name = "guesstimate"
+  }
+}
+
+resource "kubernetes_secret" "backend_env" {
+  metadata {
+    name      = "guesstimate-server"
+    namespace = "guesstimate"
+  }
+
+  data = local.backend_env
+}

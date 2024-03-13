@@ -47,6 +47,11 @@ terraform {
       source  = "jianyuan/sentry"
       version = "0.12.2"
     }
+
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.27.0"
+    }
   }
 }
 
@@ -99,4 +104,8 @@ data "onepassword_item" "heroku_api_key" {
 
 provider "heroku" {
   api_key = data.onepassword_item.heroku_api_key.password
+}
+
+provider "kubernetes" {
+  config_path = "~/.kube/config"
 }
