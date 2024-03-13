@@ -31,3 +31,5 @@ data:
           clientSecret: $dex-github-auth:clientSecret
           orgs:
           - name: quantified-uncertainty
+            teams:
+            - "Kubernetes Admins"
