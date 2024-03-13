@@ -18,3 +18,14 @@ data:
       - CiliumIdentity
       clusters:
       - "*"
+  # Github auth.
+  dex.config: |
+    connectors:
+      - type: github
+        id: github
+        name: GitHub
+        config:
+          clientID: $dex-github-auth.clientID
+          clientSecret: $dex-github-auth.clientSecret
+          orgs:
+          - name: quantified-uncertainty
