@@ -59,3 +59,23 @@ resource "github_actions_secret" "vsce_pat" {
   secret_name     = "VSCE_PAT"
   plaintext_value = data.onepassword_item.vsce_pat.password
 }
+
+resource "github_team" "k8s_admins" {
+  name        = "Kubernetes Admins"
+  description = "SSO in Kubernetes (e.g. for Argo CD) relies on this team for authorization."
+  privacy     = "closed"
+}
+
+resource "github_team_members" "k8s_admins" {
+  team_id = github_team.k8s_admins.id
+
+  members {
+    username = "OAGr"
+    role     = "member"
+  }
+
+  members {
+    username = "berekuk"
+    role     = "member"
+  }
+}
