@@ -45,9 +45,16 @@ resource "random_password" "argo_workflows_auth_secret" {
 # This secret is used by Argo Workflows configuration to authenticate against Argo CD Dex.
 # TODO: it should be possible to create it in Kubernetes instead of Terraform, since it doesn't rely on 1Password secrets.
 resource "kubernetes_secret" "argo_workflows_github_auth" {
+  for_each = toset([
+    # https://argo-workflows.readthedocs.io/en/latest/argo-server-sso-argocd/:
+    # "If Argo CD and Argo Workflows are installed in different namespaces the secret must be present in both of them."
+    "argocd",
+    "argo-workflows",
+  ])
+
   metadata {
     name      = "argo-workflows-sso"
-    namespace = "argocd"
+    namespace = each.key
   }
 
   data = {
