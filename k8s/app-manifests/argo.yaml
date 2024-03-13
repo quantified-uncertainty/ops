@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: argocd-things
-  namespace: argocd
+  namespace: argocd # TODO - rename to argo, this is not just argocd anymore
 spec:
   project: default
   syncPolicy:
@@ -12,6 +12,21 @@ spec:
     - path: k8s/apps/argocd
       repoURL: 'https://github.com/quantified-uncertainty/ops'
       targetRevision: HEAD
+    - chart: argo-workflows
+      repoURL: https://argoproj.github.io/argo-helm
+      targetRevision: 0.40.14 # https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/Chart.yaml
+      helm:
+        valuesObject:
+          server:
+            ingress:
+              # enabled: true
+              # annotations:
+              #   cert-manager.io/cluster-issuer: letsencrypt-prod
+              # ingressClassName: nginx
+              # tls:
+              # - hosts:
+              #   - argo-workflows.k8s.quantifieduncertainty.org
+              #   secretName: argo-workflows-tls
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
