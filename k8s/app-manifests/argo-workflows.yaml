@@ -13,9 +13,9 @@ spec:
       repoURL: https://argoproj.github.io/argo-helm
       targetRevision: 0.40.14 # https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/Chart.yaml
       helm:
-        valuesObject:
-          server:
-            ingress:
+        valuesObject: {}
+        #   server:
+            # ingress:
               # enabled: true
               # annotations:
               #   cert-manager.io/cluster-issuer: letsencrypt-prod
