@@ -37,6 +37,6 @@ data:
         clientID: $dex-github-auth:clientID
         clientSecret: $dex-github-auth:clientSecret
         orgs:
-        - name: quantified-uncertainty
+        - name: {{ .Values.github.org }}
           teams:
-          - "{{ .Values.github_team }}"
+          - "{{ .Values.github.team }}"
