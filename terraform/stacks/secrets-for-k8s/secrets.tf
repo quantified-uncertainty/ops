@@ -12,14 +12,13 @@ resource "kubernetes_secret" "grafana" {
   }
 }
 
-// Secret for "Sign in with GitHub" feature
 data "onepassword_item" "argocd_github_oauth" {
   vault = data.onepassword_vault.main.uuid
   title = "GitHub Argo CD Client Secret"
 }
 
 # This secret is used by Argo CD configuration to authenticate with GitHub.
-resource "kubernetes_secret" "dex_auth" {
+resource "kubernetes_secret" "argocd_github_auth" {
   metadata {
     name      = "dex-github-auth" # must be in sync with `k8s/apps/argocd/config.yaml`
     namespace = "argocd"
@@ -31,5 +30,28 @@ resource "kubernetes_secret" "dex_auth" {
   data = {
     clientID     = data.onepassword_item.argocd_github_oauth.username
     clientSecret = data.onepassword_item.argocd_github_oauth.password
+  }
+}
+
+moved {
+  from = kubernetes_secret.dex_auth
+  to   = kubernetes_secret.argocd_github_auth
+}
+
+resource "random_password" "argo_workflows_auth_secret" {
+  length = 32
+}
+
+# This secret is used by Argo Workflows configuration to authenticate against Argo CD Dex.
+# TODO: it should be possible to create it in Kubernetes instead of Terraform, since it doesn't rely on 1Password secrets.
+resource "kubernetes_secret" "argo_workflows_github_auth" {
+  metadata {
+    name      = "argo-workflows-sso"
+    namespace = "argocd"
+  }
+
+  data = {
+    clientID     = "argo-workflows-sso"
+    clientSecret = random_password.argo_workflows_auth_secret.result
   }
 }
