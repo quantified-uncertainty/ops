@@ -6,3 +6,16 @@ resources:
 
 patches:
 - path: inject-workflows-sso-secret.yaml
+# created by argocd-configs source, with Helm
+- |-
+  $patch: delete
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: argocd-cm
+- |-
+  $patch: delete
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: argocd-rbac-cm
