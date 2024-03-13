@@ -23,7 +23,7 @@ data:
     connectors:
       - type: github
         id: github
-        name: GitHub
+        name: GitHub2
         config:
           clientID: $dex-github-auth.clientID
           clientSecret: $dex-github-auth.clientSecret
