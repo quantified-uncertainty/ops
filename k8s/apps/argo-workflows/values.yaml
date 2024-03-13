@@ -1,5 +1,6 @@
 argo-workflows:
   server:
+    # explained here: https://argo-workflows.readthedocs.io/en/latest/argo-server-sso-argocd/
     authModes:
     - sso
     sso:
@@ -12,6 +13,8 @@ argo-workflows:
         name: argo-workflows-sso
         key: clientSecret
       redirectUrl: https://workflows.k8s.quantifieduncertainty.org/oauth2/callback
+
+    # Public hostname with HTTPS
     ingress:
       enabled: true
       hosts:
