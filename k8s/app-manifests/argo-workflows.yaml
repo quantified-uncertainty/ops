@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   syncPolicy:
-    automated:
-      prune: true
+    syncOptions:
+      - CreateNamespace=true
   sources:
     - chart: argo-workflows
       repoURL: https://argoproj.github.io/argo-helm
