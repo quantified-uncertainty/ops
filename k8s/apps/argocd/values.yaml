@@ -9,10 +9,10 @@ github:
   org: quantified-uncertainty
   team: "Kubernetes Admins"
 
-argo-cd:
-  # we create the configs ourselves in templates/
-  configs:
-    cm:
-      create: false
-    rbac:
-      create: false
+# argo-cd:
+#   # we create the configs ourselves in templates/
+#   configs:
+#     cm:
+#       create: false
+#     rbac:
+#       create: false
