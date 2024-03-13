@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+  sources:
+    - path: k8s/apps/argocd
+      repoURL: 'https://github.com/quantified-uncertainty/ops'
+      targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd

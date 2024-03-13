@@ -1,17 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-things
-  namespace: argocd # TODO - rename to argo, this is not just argocd anymore
+  name: argo-workflows
+  namespace: argocd
 spec:
   project: default
   syncPolicy:
     automated:
       prune: true
   sources:
-    - path: k8s/apps/argocd
-      repoURL: 'https://github.com/quantified-uncertainty/ops'
-      targetRevision: HEAD
     - chart: argo-workflows
       repoURL: https://argoproj.github.io/argo-helm
       targetRevision: 0.40.14 # https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/Chart.yaml
@@ -29,4 +26,4 @@ spec:
               #   secretName: argo-workflows-tls
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: argo-workflows
