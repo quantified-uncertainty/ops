@@ -10,6 +10,9 @@ github:
   team: "Kubernetes Admins"
 
 argo-cd:
+  # we create the configs ourselves in templates/
   configs:
     cm:
-      create: false # we create the config ourselves in templates/config.yaml
+      create: false
+    rbac:
+      create: false
