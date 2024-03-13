@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - https://raw.githubusercontent.com/argoproj/argo-cd/v2.10.3/manifests/install.yaml
+- resources/ingress.yaml
 
 patches:
 - path: patches/inject-workflows-sso-secret.yaml

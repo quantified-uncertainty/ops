@@ -1,4 +1,3 @@
-# Enable argo.k8s.quantifieduncertainty.org website.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -11,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: {{ .Values.host }}
+  - host: argo.k8s.quantifieduncertainty.org
     http:
       paths:
       - path: /
@@ -23,5 +22,5 @@ spec:
               name: https
   tls:
   - hosts:
-    - {{ .Values.host }}
+    - argo.k8s.quantifieduncertainty.org
     secretName: argocd-server-tls # as expected by argocd-server

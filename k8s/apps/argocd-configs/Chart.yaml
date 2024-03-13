@@ -1,7 +1,0 @@
-apiVersion: v2
-name: argocd
-version: "0.1.0"
-
-# Note: most of Argo CD configs are specified in apps/argocd, through Kustomize.
-# Helm would be nicer to use, for managing argocd-cm and so on (because of
-# templates), but it's not easy to install Argo CD with Helm.
