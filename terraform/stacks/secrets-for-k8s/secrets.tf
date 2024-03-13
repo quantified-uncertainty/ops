@@ -12,15 +12,13 @@ resource "kubernetes_secret" "grafana" {
   }
 }
 
-// Secret for "sign in with github" feature
-data "onepassword_item" "github_client_secret" {
+// Secret for "Sign in with GitHub" feature
+data "onepassword_item" "argocd_github_oauth" {
   vault = data.onepassword_vault.main.uuid
-  title = "GitHub client secret"
+  title = "GitHub Argo CD Client Secret"
 }
 
 # This secret is used by Argo CD configuration to authenticate with GitHub.
-# Since Argo CD bundles Dex, it might also be used by other SSO integrations in the future.
-# In other words, this is _very important_.
 resource "kubernetes_secret" "dex_auth" {
   metadata {
     name      = "dex-github-auth" # must be in sync with `k8s/apps/argocd/config.yaml`
@@ -28,9 +26,7 @@ resource "kubernetes_secret" "dex_auth" {
   }
 
   data = {
-    # Sorry for inlining; this could be loaded from a shared data-only module.
-    # Note that this is also used in `quri` terraform stack, for configuring Squiggle Hub.
-    clientID     = "e5e420b981eea10688c0"
-    clientSecret = data.onepassword_item.github_client_secret.password
+    clientID     = data.onepassword_item.argocd_github_oauth.username
+    clientSecret = data.onepassword_item.argocd_github_oauth.password
   }
 }
