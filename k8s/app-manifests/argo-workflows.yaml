@@ -7,23 +7,11 @@ spec:
   project: default
   syncPolicy:
     syncOptions:
-      - CreateNamespace=true
+    - CreateNamespace=true
   sources:
-    - chart: argo-workflows
-      repoURL: https://argoproj.github.io/argo-helm
-      targetRevision: 0.40.14 # https://github.com/argoproj/argo-helm/blob/main/charts/argo-workflows/Chart.yaml
-      helm:
-        valuesObject: {}
-        #   server:
-            # ingress:
-              # enabled: true
-              # annotations:
-              #   cert-manager.io/cluster-issuer: letsencrypt-prod
-              # ingressClassName: nginx
-              # tls:
-              # - hosts:
-              #   - argo-workflows.k8s.quantifieduncertainty.org
-              #   secretName: argo-workflows-tls
+  - path: k8s/apps/argo-workflows
+    repoURL: 'https://github.com/quantified-uncertainty/ops'
+    targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
     namespace: argo-workflows
