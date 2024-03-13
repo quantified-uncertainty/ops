@@ -28,7 +28,7 @@ data:
       name: Argo Workflow
       redirectURIs:
         - {{ .Values.workflows_url }}/oauth2/callback
-      secretEnv: $argo-workflows-sso:clientSecret
+      secretEnv: ARGO_WORKFLOWS_SSO_CLIENT_SECRET
     connectors:
     - type: github
       id: github

@@ -1,9 +1,0 @@
-apiVersion: v2
-name: argocd
-version: "0.1.0"
-# dependencies:
-#   # Because we use Helm everywhere else, we use Argo CD as a Helm chart.
-#   - name: argo-cd
-#     repository: https://argoproj.github.io/argo-helm
-#     # https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/Chart.yaml, app v2.10.3
-#     version: 6.7.2

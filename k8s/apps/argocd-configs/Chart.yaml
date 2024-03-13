@@ -1,0 +1,7 @@
+apiVersion: v2
+name: argocd
+version: "0.1.0"
+# Note: it would be nice to install Argo CD itself here, but our initial
+# installation can't be easily upgraded to the Helm chart, and I don't want to
+# learn Kustomize just for this task. (We don't use Kustomize for anything
+# else.)

@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- https://raw.githubusercontent.com/argoproj/argo-cd/v2.10.3/manifests/install.yaml
+
+patches:
+- path: inject-workflows-sso-secret.yaml

@@ -8,11 +8,3 @@ workflows_url: https://workflows.k8s.quantifieduncertainty.org
 github:
   org: quantified-uncertainty
   team: "Kubernetes Admins"
-
-# argo-cd:
-#   # we create the configs ourselves in templates/
-#   configs:
-#     cm:
-#       create: false
-#     rbac:
-#       create: false
