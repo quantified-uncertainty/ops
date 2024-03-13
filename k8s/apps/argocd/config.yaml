@@ -26,7 +26,7 @@ data:
         id: github
         name: GitHub
         config:
-          clientID: $dex-github-auth.clientID
-          clientSecret: $dex-github-auth.clientSecret
+          clientID: $dex-github-auth:clientID
+          clientSecret: $dex-github-auth:clientSecret
           orgs:
           - name: quantified-uncertainty
