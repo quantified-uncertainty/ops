@@ -1,0 +1,39 @@
+# Basic Argo CD config; see https://argo-cd.readthedocs.io/en/stable/operator-manual/argocd-cm-yaml/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  url: https://argo.k8s.quantifieduncertainty.org
+  # Recommended by https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#disable-admin-user, we use SSO.
+  admin.enabled: "false"
+  # Important workaround for DigitalOcean Kubernetes; otherwise apps will be
+  # permanently out of sync.
+  # See also: https://github.com/argoproj/argo-cd/issues/10456#issuecomment-1249381338
+  resource.exclusions: |
+    - apiGroups:
+      - cilium.io
+      kinds:
+      - CiliumIdentity
+      clusters:
+      - "*"
+  # Github auth.
+  dex.config: |
+    # Allow Argo Workflows to use Argo CD Dex
+    staticClients:
+    - id: $argo-workflows-sso:clientID
+      name: Argo Workflow
+      redirectURIs:
+        - https://workflows.k8s.quantifieduncertainty.org/oauth2/callback
+      secretEnv: ARGO_WORKFLOWS_SSO_CLIENT_SECRET
+    connectors:
+    - type: github
+      id: github
+      name: GitHub
+      config:
+        clientID: $dex-github-auth:clientID
+        clientSecret: $dex-github-auth:clientSecret
+        orgs:
+        - name: quantified-uncertainty
+          teams:
+          - "Kubernetes Admins"

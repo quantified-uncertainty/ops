@@ -1,10 +1,1 @@
 host: argo.k8s.quantifieduncertainty.org
-
-# Used for sharing Dex with Argo Workflows; see https://argo-workflows.readthedocs.io/en/latest/argo-server-sso-argocd/
-# Must be in sync with the public domain in argo-workflows app.
-workflows_url: https://workflows.k8s.quantifieduncertainty.org
-
-# All users from this org and team will be able to sign in.
-github:
-  org: quantified-uncertainty
-  team: "Kubernetes Admins"
