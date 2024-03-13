@@ -40,15 +40,3 @@ data "onepassword_item" "grafana_admin" {
   vault = data.onepassword_vault.main.uuid
   title = "Grafana admin"
 }
-
-resource "kubernetes_secret" "grafana" {
-  metadata {
-    name      = "grafana-credentials" # must be in sync with `k8s/apps/prometheus/values.yaml`
-    namespace = "prometheus"          # must be in sync with `k8s/app-manifests/prometheus-stack.yaml`
-  }
-
-  data = {
-    admin-user     = data.onepassword_item.grafana_admin.username
-    admin-password = data.onepassword_item.grafana_admin.password
-  }
-}
