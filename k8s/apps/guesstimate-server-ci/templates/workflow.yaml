@@ -83,7 +83,8 @@ spec:
     container:
       image: gcr.io/kaniko-project/executor:latest
       args: ["--destination=getguesstimate/guesstimate-server",
-             "--skip-default-registry-fallback"] # TODO - tag
+             "--skip-default-registry-fallback",
+             "--verbosity=debug"] # TODO - tag
 
   - name: apply-argocd-application
     resource:
