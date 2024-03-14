@@ -85,7 +85,8 @@ spec:
       workingDir: /src
       args: ["--dockerfile=/src/Dockerfile",
               "--context=dir://src",
-              "--destination=getguesstimate/guesstimate-server"] # TODO - tag
+              "--destination=getguesstimate/guesstimate-server",
+              "--skip-default-registry-fallback"] # TODO - tag
 
   - name: apply-argocd-application
     resource:
