@@ -5,6 +5,7 @@ metadata:
 spec:
   serviceAccountName: guesstimate-server-ci
   entrypoint: all
+
   templates:
   - name: all
     steps:
