@@ -3,8 +3,9 @@ kind: WorkflowTemplate
 metadata:
   name: guesstimate-server-ci
 spec:
+  entrypoint: all
   templates:
-  - name: ci-cd
+  - name: all
     steps:
     - - name: build-and-push
         template: build-and-push
@@ -55,7 +56,7 @@ spec:
       # - app name based on git branch
       # - remove app if branch is deleted
       # - correct image tag
-      manifest: |
+      manifest: |-
         apiVersion: argoproj.io/v1alpha1
         kind: Application
         metadata:
@@ -71,4 +72,4 @@ spec:
             targetRevision: HEAD
             helm
               valuesObject:
-                version: $image-tag
+                version: "image-tag"
