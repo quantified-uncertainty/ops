@@ -14,7 +14,7 @@ spec:
         arguments:
           parameters:
           - name: github-token
-            value: "{{`{{ steps.obtain-github-token.outputs.github-token }}`}}"
+            value: "{{`{{ steps.obtain-github-token.outputs.parameters.github-token }}`}}"
     - - name: apply-argocd-application
         template: apply-argocd-application
 
