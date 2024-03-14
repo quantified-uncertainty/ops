@@ -43,33 +43,32 @@ spec:
             secretKeyRef:
               name: github-credentials
               key: token
-
-    - name: apply-argocd-application
-      inputs:
-        parameters:
-          - name: argocd-app-name
-          - name: image-name
-          - name: image-tag
-      resource:
-        action: apply
-        # TODO:
-        # - app name based on git branch
-        # - remove app if branch is deleted
-        # - correct image tag
-        manifest: |
-          apiVersion: argoproj.io/v1alpha1
-          kind: Application
-          metadata:
-            name: guesstimate-server
-            namespace: argocd
-          spec:
-            syncPolicy:
-              automated:
-                prune: true
-            source:
-              repoURL: 'https://github.com/quantified-uncertainty/ops'
-              path: k8s/apps/guesstimate-server
-              targetRevision: HEAD
-              helm
-                valuesObject:
-                  version: $image-tag
+  - name: apply-argocd-application
+    inputs:
+      parameters:
+        - name: argocd-app-name
+        - name: image-name
+        - name: image-tag
+    resource:
+      action: apply
+      # TODO:
+      # - app name based on git branch
+      # - remove app if branch is deleted
+      # - correct image tag
+      manifest: |
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: guesstimate-server
+          namespace: argocd
+        spec:
+          syncPolicy:
+            automated:
+              prune: true
+          source:
+            repoURL: 'https://github.com/quantified-uncertainty/ops'
+            path: k8s/apps/guesstimate-server
+            targetRevision: HEAD
+            helm
+              valuesObject:
+                version: $image-tag
