@@ -75,11 +75,9 @@ spec:
       env:
       - name: GITHUB_TOKEN
         value: "{{`{{ inputs.parameters.github-token }}`}}"
-      # FIXME:
-      # - parameterize from inputs or .Values
-      #   - repo
       args:
         - |
+          export GIT_REVISION=$(git rev-parse HEAD)
           docker build -t getguesstimate/guesstimate-server:$GIT_REVISION .
           echo $GITHUB_TOKEN | docker login ghcr.io -u unused --password-stdin
           docker push getguesstimate:guesstimate-server:$GIT_REVISION
