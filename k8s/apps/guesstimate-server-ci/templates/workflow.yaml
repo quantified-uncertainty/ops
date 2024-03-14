@@ -66,13 +66,13 @@ spec:
         git:
           repo: {{ .Values.git.repo }}
           revision: {{ .Values.git.revision }}
-    env:
-    - name: GITHUB_TOKEN
-      value: "{{`{{ inputs.parameters.github-token }}`}}"
     container:
       image: docker:20.10.16
       workingDir: /src
       command: [sh, -c]
+      env:
+      - name: GITHUB_TOKEN
+        value: "{{`{{ inputs.parameters.github-token }}`}}"
       # FIXME:
       # - parameterize from inputs or .Values
       #   - repo
@@ -81,17 +81,6 @@ spec:
           docker build -t getguesstimate/guesstimate-server:$GIT_REVISION .
           echo $GITHUB_TOKEN | docker login ghcr.io -u unused --password-stdin
           docker push getguesstimate:guesstimate-server:$GIT_REVISION
-      env:
-        - name: GITHUB_USER
-          valueFrom:
-            secretKeyRef:
-              name: github-credentials
-              key: username
-        - name: GITHUB_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: github-credentials
-              key: token
 
   - name: apply-argocd-application
     resource:
