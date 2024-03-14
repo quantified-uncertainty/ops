@@ -5,6 +5,8 @@ argo-workflows:
     - sso
     sso:
       enabled: true
+      rbac:
+        enabled: false
       issuer: https://argo.k8s.quantifieduncertainty.org/api/dex
       clientId:
         name: argo-workflows-sso
