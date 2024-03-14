@@ -7,19 +7,67 @@ spec:
   templates:
   - name: all
     steps:
+    - - name: obtain-github-token
+        template: obtain-github-token
     - - name: build-and-push
         template: build-and-push
+        arguments:
+          parameters:
+          - name: github-token
+            value: "{{steps.obtain-github-token.outputs.github-token}}"
     - - name: apply-argocd-application
         template: apply-argocd-application
 
+  - name: obtain-github-token
+    container:
+      image: node:latest
+      env:
+      - name: PRIVATE_KEY
+      valueFrom:
+        secretKeyRef:
+          name: quri-integrations-github-app
+          key: private-key
+      - name: APP_ID
+      valueFrom:
+        secretKeyRef:
+          name: quri-integrations-github-app
+          key: app-id
+      - name: INSTALLATION_ID
+        secretKeyRef:
+          name: quri-integrations-github-app
+          key: getguesstimate-installation-id
+      command: [sh, -c]
+      args:
+      - |
+        npm install @octokit/auth-app
+        cat <<EOF > script.js
+        const { createAppAuth } = require("@octokit/auth-app");
+        const auth = createAppAuth({ appId: process.env.APP_ID, privateKey: process.env.PRIVATE_KEY });
+        auth({
+          type: "installation",
+          installationId: process.env.INSTALLATION_ID,
+        }).then(appAuthentication => console.log(appAuthentication.token));
+        EOF
+        node script.js >/tmp/github-token
+      outputs:
+        parameters:
+        - name: github-token
+          valueFrom:
+            path: /tmp/github-token
+
   - name: build-and-push
     inputs:
+      parameters:
+      - name: github-token
       artifacts:
-        - name: source
-          path: /src
-          git:
-            repo: {{ .Values.git.repo }}
-            revision: {{ .Values.git.revision }}
+      - name: source
+        path: /src
+        git:
+          repo: {{ .Values.git.repo }}
+          revision: {{ .Values.git.revision }}
+    env:
+    - name: GITHUB_TOKEN
+      value: "{{ inputs.parameters.github-token }}"
     container:
       image: docker:20.10.16
       workingDir: /src
@@ -27,11 +75,10 @@ spec:
       # FIXME:
       # - parameterize from inputs or .Values
       #   - repo
-      #   - git credentials
       args:
         - |
           docker build -t getguesstimate/guesstimate-server:$GIT_REVISION .
-          echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_USER --password-stdin
+          echo $GITHUB_TOKEN | docker login ghcr.io -u unused --password-stdin
           docker push getguesstimate:guesstimate-server:$GIT_REVISION
       env:
         - name: GITHUB_USER
@@ -44,6 +91,7 @@ spec:
             secretKeyRef:
               name: github-credentials
               key: token
+
   - name: apply-argocd-application
     resource:
       action: apply
