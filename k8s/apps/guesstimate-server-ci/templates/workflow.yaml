@@ -15,7 +15,7 @@ spec:
         arguments:
           artifacts:
           - name: docker-config
-            value: "{{`{{ steps.obtain-github-token.outputs.artifacts.docker-config }}`}}"
+            from: "{{`{{ steps.obtain-github-token.outputs.artifacts.docker-config }}`}}"
     - - name: apply-argocd-application
         template: apply-argocd-application
 
