@@ -82,7 +82,7 @@ spec:
           data: "{{`{{ inputs.parameters.docker-config }}`}}"
     container:
       image: gcr.io/kaniko-project/executor:latest
-      args: ["--destination=getguesstimate/guesstimate-server",
+      args: ["--destination=ghcr.io/getguesstimate/guesstimate-server",
              "--skip-default-registry-fallback",
              "--verbosity=debug"] # TODO - tag
 
