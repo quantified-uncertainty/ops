@@ -15,7 +15,7 @@ spec:
         arguments:
           parameters:
           - name: docker-config
-            from: "{{`{{ steps.obtain-github-token.outputs.parameters.docker-config }}`}}"
+            value: "{{`{{ steps.obtain-github-token.outputs.parameters.docker-config }}`}}"
     - - name: apply-argocd-application
         template: apply-argocd-application
 
