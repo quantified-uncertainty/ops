@@ -13,9 +13,9 @@ spec:
     - - name: build-and-push
         template: build-and-push
         arguments:
-          parameters:
-          - name: github-token
-            value: "{{`{{ steps.obtain-github-token.outputs.parameters.github-token }}`}}"
+          artifacts:
+          - name: docker-config
+            value: "{{`{{ steps.obtain-github-token.outputs.artifacts.docker-config }}`}}"
     - - name: apply-argocd-application
         template: apply-argocd-application
 
@@ -43,6 +43,7 @@ spec:
       args:
       - |
         npm install @octokit/auth-app
+
         cat <<EOF > script.js
         const { createAppAuth } = require("@octokit/auth-app");
         const auth = createAppAuth({ appId: process.env.APP_ID, privateKey: process.env.PRIVATE_KEY });
@@ -51,12 +52,19 @@ spec:
           installationId: process.env.INSTALLATION_ID,
         }).then(appAuthentication => console.log(appAuthentication.token));
         EOF
+
         node script.js >/tmp/github-token
+
+        DOCKER_CONFIG_AUTH=$(echo -n unused:$(cat /tmp/github-token) | base64)
+        echo '{ "auths": { "artprod.company.com": { "auth": "'$DOCKER_CONFIG_AUTH'"}}}' >/tmp/docker-config.json
     outputs:
       parameters:
       - name: github-token
         valueFrom:
           path: /tmp/github-token
+      artifacts:
+      - name: docker-config
+        path: /tmp/docker-config.json
 
   - name: build-and-push
     inputs:
@@ -68,19 +76,14 @@ spec:
         git:
           repo: {{ .Values.git.repo }}
           revision: {{ .Values.git.revision }}
+      - name: docker-config
+        path: /kaniko/.docker/config.json
     container:
-      image: docker:20.10.16
+      image: gcr.io/kaniko-project/executor:latest
       workingDir: /src
-      command: [sh, -c]
-      env:
-      - name: GITHUB_TOKEN
-        value: "{{`{{ inputs.parameters.github-token }}`}}"
-      args:
-        - |
-          export GIT_REVISION=$(git rev-parse HEAD)
-          docker build -t getguesstimate/guesstimate-server:$GIT_REVISION .
-          echo $GITHUB_TOKEN | docker login ghcr.io -u unused --password-stdin
-          docker push getguesstimate:guesstimate-server:$GIT_REVISION
+      args: ["--dockerfile=/src/Dockerfile",
+              "--context=dir://src",
+              "--destination=getguesstimate/guesstimate-server"] # TODO - tag
 
   - name: apply-argocd-application
     resource:
