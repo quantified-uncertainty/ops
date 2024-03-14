@@ -21,42 +21,24 @@ spec:
 
   - name: obtain-github-token
     container:
-      image: node:latest
+      image: ghcr.io/quantified-uncertainty/github-credentials-obtainer:latest
       workingDir: /tmp
       env:
       - name: PRIVATE_KEY
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-github-app
+            name: quri-integrations-for-guesstimate-github-app
             key: private-key
       - name: APP_ID
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-github-app
+            name: quri-integrations-for-guesstimate-github-app
             key: app-id
       - name: INSTALLATION_ID
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-github-app
+            name: quri-integrations-for-guesstimate-github-app
             key: getguesstimate-installation-id
-      command: [sh, -c]
-      args:
-      - |
-        npm install @octokit/auth-app
-
-        cat <<EOF > script.js
-        const { createAppAuth } = require("@octokit/auth-app");
-        const auth = createAppAuth({ appId: process.env.APP_ID, privateKey: process.env.PRIVATE_KEY });
-        auth({
-          type: "installation",
-          installationId: process.env.INSTALLATION_ID,
-        }).then(appAuthentication => console.log(appAuthentication.token));
-        EOF
-
-        node script.js >/tmp/github-token
-
-        DOCKER_CONFIG_AUTH=$(echo -n unused:$(cat /tmp/github-token) | base64)
-        echo '{ "auths": { "ghcr.io": { "auth": "'$DOCKER_CONFIG_AUTH'" } } }' >/tmp/docker-config.json
     outputs:
       parameters:
       - name: github-token
