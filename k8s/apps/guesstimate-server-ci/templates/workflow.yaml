@@ -45,11 +45,6 @@ spec:
               name: github-credentials
               key: token
   - name: apply-argocd-application
-    inputs:
-      parameters:
-        - name: argocd-app-name
-        - name: image-name
-        - name: image-tag
     resource:
       action: apply
       # TODO:
