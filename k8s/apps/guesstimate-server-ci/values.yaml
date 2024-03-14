@@ -1,0 +1,3 @@
+git:
+  repo: https://github.com/getguesstimate/guesstimate-server.git
+  revision: dockerize

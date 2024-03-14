@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: guesstimate-server-ci
+spec:
+  templates:
+  - name: ci-cd
+    steps:
+    - - name: build-and-push
+        template: build-and-push
+    - - name: apply-argocd-application
+        template: apply-argocd-application
+
+  - name: build-and-push
+    inputs:
+      artifacts:
+        - name: source
+          path: /src
+          git:
+            repo: {{ .Values.git.repo }}
+            revision: {{ .Values.git.revision }}
+    container:
+      image: docker:20.10.16
+      workingDir: /src
+      command: [sh, -c]
+      # FIXME:
+      # - parameterize from inputs or .Values
+      #   - repo
+      #   - git credentials
+      args:
+        - |
+          docker build -t getguesstimate/guesstimate-server:$GIT_REVISION .
+          echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_USER --password-stdin
+          docker push getguesstimate:guesstimate-server:$GIT_REVISION
+      env:
+        - name: GITHUB_USER
+          valueFrom:
+            secretKeyRef:
+              name: github-credentials
+              key: username
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: github-credentials
+              key: token
+
+    - name: apply-argocd-application
+      inputs:
+        parameters:
+          - name: argocd-app-name
+          - name: image-name
+          - name: image-tag
+      resource:
+        action: apply
+        # TODO:
+        # - app name based on git branch
+        # - remove app if branch is deleted
+        # - correct image tag
+        manifest: |
+          apiVersion: argoproj.io/v1alpha1
+          kind: Application
+          metadata:
+            name: guesstimate-server
+            namespace: argocd
+          spec:
+            syncPolicy:
+              automated:
+                prune: true
+            source:
+              repoURL: 'https://github.com/quantified-uncertainty/ops'
+              path: k8s/apps/guesstimate-server
+              targetRevision: HEAD
+              helm
+                valuesObject:
+                  version: $image-tag

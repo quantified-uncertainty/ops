@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guesstimate-server-ci
+  namespace: argocd
+spec:
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+  source:
+    repoURL: 'https://github.com/quantified-uncertainty/ops'
+    path: k8s/apps/guesstimate-server-ci
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: guesstimate
