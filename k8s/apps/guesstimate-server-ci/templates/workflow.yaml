@@ -3,6 +3,7 @@ kind: WorkflowTemplate
 metadata:
   name: guesstimate-server-ci
 spec:
+  serviceAccountName: guesstimate-server-ci
   entrypoint: all
   templates:
   - name: all
