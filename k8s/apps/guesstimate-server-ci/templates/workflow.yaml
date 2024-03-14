@@ -14,7 +14,7 @@ spec:
         arguments:
           parameters:
           - name: github-token
-            value: "{{steps.obtain-github-token.outputs.github-token}}"
+            value: "{{`{{ steps.obtain-github-token.outputs.github-token }}`}}"
     - - name: apply-argocd-application
         template: apply-argocd-application
 
@@ -23,19 +23,20 @@ spec:
       image: node:latest
       env:
       - name: PRIVATE_KEY
-      valueFrom:
-        secretKeyRef:
-          name: quri-integrations-github-app
-          key: private-key
+        valueFrom:
+          secretKeyRef:
+            name: quri-integrations-github-app
+            key: private-key
       - name: APP_ID
-      valueFrom:
-        secretKeyRef:
-          name: quri-integrations-github-app
-          key: app-id
+        valueFrom:
+          secretKeyRef:
+            name: quri-integrations-github-app
+            key: app-id
       - name: INSTALLATION_ID
-        secretKeyRef:
-          name: quri-integrations-github-app
-          key: getguesstimate-installation-id
+        valueFrom:
+          secretKeyRef:
+            name: quri-integrations-github-app
+            key: getguesstimate-installation-id
       command: [sh, -c]
       args:
       - |
@@ -67,7 +68,7 @@ spec:
           revision: {{ .Values.git.revision }}
     env:
     - name: GITHUB_TOKEN
-      value: "{{ inputs.parameters.github-token }}"
+      value: "{{`{{ inputs.parameters.github-token }}`}}"
     container:
       image: docker:20.10.16
       workingDir: /src
