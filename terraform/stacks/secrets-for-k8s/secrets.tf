@@ -17,6 +17,11 @@ data "onepassword_item" "argocd_github_oauth" {
   title = "GitHub Argo CD Client Secret"
 }
 
+data "onepassword_item" "quri_integrations_github_app" {
+  vault = data.onepassword_vault.main.uuid
+  title = "QURI Integrations GitHub App Private Key"
+}
+
 # This secret is used by Argo CD configuration to authenticate with GitHub.
 resource "kubernetes_secret" "argocd_github_auth" {
   metadata {
@@ -31,11 +36,6 @@ resource "kubernetes_secret" "argocd_github_auth" {
     clientID     = data.onepassword_item.argocd_github_oauth.username
     clientSecret = data.onepassword_item.argocd_github_oauth.password
   }
-}
-
-moved {
-  from = kubernetes_secret.dex_auth
-  to   = kubernetes_secret.argocd_github_auth
 }
 
 resource "random_password" "argo_workflows_auth_secret" {
@@ -60,5 +60,25 @@ resource "kubernetes_secret" "argo_workflows_github_auth" {
   data = {
     clientID     = "argo-workflows-sso"
     clientSecret = random_password.argo_workflows_auth_secret.result
+  }
+}
+
+# This secret is used by Argo Workflows configuration to run GitHub Actions-like CI workflows.
+# Our custom GitHub app uses these credentials to obtain a short-lived GITHUB_TOKEN, which is used to authenticate against GitHub API.
+# Specifically, that token can be useful for:
+# - uploading Docker images to GitHub registry
+# - (TODO) posting comments to PRs
+# - (TODO) updating checks in PRs
+# Or anything else that's often done from GitHub Actions, but in our case it's done from Argo Workflows.
+resource "kubernetes_secret" "argo_workflows_github_token_credentials" {
+  metadata {
+    name      = "quri-integrations-github-app"
+    namespace = "argo-workflows"
+  }
+
+  data = {
+    app-id                         = 856293   # TODO - could this be obtained from a data source?
+    getguesstimate-installation-id = 48456163 # TODO - and this?
+    private-key                    = data.onepassword_item.quri_integrations_github_app.note_value
   }
 }
