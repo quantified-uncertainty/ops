@@ -23,7 +23,6 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: guesstimate-server-ci
-  apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role
   name: argo-executor
