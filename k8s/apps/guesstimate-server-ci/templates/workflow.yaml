@@ -70,6 +70,6 @@ spec:
             repoURL: 'https://github.com/quantified-uncertainty/ops'
             path: k8s/apps/guesstimate-server
             targetRevision: HEAD
-            helm
+            helm:
               valuesObject:
                 version: "image-tag"
