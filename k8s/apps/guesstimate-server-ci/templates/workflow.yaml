@@ -72,7 +72,7 @@ spec:
       - name: docker-config
       artifacts:
       - name: source
-        path: /src
+        path: /workspace
         git:
           repo: {{ .Values.git.repo }}
           revision: {{ .Values.git.revision }}
@@ -82,11 +82,8 @@ spec:
           data: "{{`{{ inputs.parameters.docker-config }}`}}"
     container:
       image: gcr.io/kaniko-project/executor:latest
-      workingDir: /src
-      args: ["--dockerfile=/src/Dockerfile",
-              "--context=dir://src",
-              "--destination=getguesstimate/guesstimate-server",
-              "--skip-default-registry-fallback"] # TODO - tag
+      args: ["--destination=getguesstimate/guesstimate-server",
+             "--skip-default-registry-fallback"] # TODO - tag
 
   - name: apply-argocd-application
     resource:
