@@ -1,3 +1,17 @@
+locals {
+  frontend_env = {
+    "NEXTAUTH_SECRET"          = random_password.nextauth_secret.result
+    "NEXT_PUBLIC_BASE_URL"     = "https://www.getguesstimate.com"
+    "NEXT_PUBLIC_API_BASE_URL" = "https://${var.api_domain}"
+    "AUTH0_CLIENT_ID"          = module.auth0_2024.client_id
+    "AUTH0_CLIENT_SECRET"      = module.auth0_2024.client_secret
+    "AUTH0_DOMAIN"             = "https://${var.auth0_domain}"
+    "NEXT_PUBLIC_SENTRY_DSN"   = data.sentry_key.main.dsn_public
+    "SENTRY_ORG"               = sentry_project.main.organization
+    "SENTRY_PROJECT"           = sentry_project.main.id
+    "SENTRY_AUTH_TOKEN"        = data.onepassword_item.sentry_auth_token.password
+  }
+}
 resource "random_password" "nextauth_secret" {
   length = 44
 }
@@ -20,58 +34,29 @@ resource "vercel_project" "frontend" {
     production_branch = "main"
   }
 
-  environment = [
-    {
-      key    = "NEXTAUTH_SECRET"
-      value  = random_password.nextauth_secret.result
-      target = ["production", "preview"]
-    },
-    {
-      key    = "NEXT_PUBLIC_BASE_URL"
-      value  = "https://www.getguesstimate.com"
+  environment = concat([
+    # TODO - env for preview deployments (but we need to make sure it's safe to expose these env vars to PRs)
+    for key, value in local.frontend_env : {
+      key    = key
+      value  = value
       target = ["production"]
-    },
+    }
+    ], [
+    # temporary config for k8s-backend branch
+    for key, value in local.frontend_env : {
+      key        = key
+      value      = value
+      target     = ["preview"]
+      git_branch = "k8s-backend"
+    } if key != "NEXT_PUBLIC_API_BASE_URL"
+    ], [
     {
-      key    = "NEXT_PUBLIC_API_BASE_URL"
-      value  = "https://${var.api_domain}"
-      target = ["production", "preview"]
-    },
-    {
-      key    = "AUTH0_CLIENT_ID"
-      value  = module.auth0_2024.client_id
-      target = ["production", "preview"]
-    },
-    {
-      key    = "AUTH0_CLIENT_SECRET"
-      value  = module.auth0_2024.client_secret
-      target = ["production", "preview"]
-    },
-    {
-      key    = "AUTH0_DOMAIN"
-      value  = "https://${var.auth0_domain}"
-      target = ["production", "preview"]
-    },
-    {
-      key    = "NEXT_PUBLIC_SENTRY_DSN"
-      value  = data.sentry_key.main.dsn_public
-      target = ["production", "preview"]
-    },
-    {
-      key    = "SENTRY_ORG"
-      value  = sentry_project.main.organization
-      target = ["production", "preview"]
-    },
-    {
-      key    = "SENTRY_PROJECT"
-      value  = sentry_project.main.id
-      target = ["production", "preview"]
-    },
-    {
-      key    = "SENTRY_AUTH_TOKEN"
-      value  = data.onepassword_item.sentry_auth_token.password
-      target = ["production", "preview"]
-    },
-  ]
+      key        = "NEXT_PUBLIC_API_BASE_URL"
+      value      = "https://guesstimate-server.k8s.quantifieduncertainty.org"
+      target     = ["preview"]
+      git_branch = "k8s-backend"
+    }
+  ])
 }
 
 module "domain" {
