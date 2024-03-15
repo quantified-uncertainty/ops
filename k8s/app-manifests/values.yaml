@@ -8,9 +8,9 @@ apps:
 - name: cert-manager
   automated: null
 
-- name: cpng
+- name: cnpg
   automated: null
-  namespace: cpng-system # default namespace used in cnpg docs
+  namespace: cnpg-system # default namespace used in cnpg docs
   source:
     repoURL: https://cloudnative-pg.github.io/charts
     chart: cloudnative-pg
