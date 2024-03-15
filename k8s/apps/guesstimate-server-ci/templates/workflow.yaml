@@ -3,7 +3,7 @@ kind: WorkflowTemplate
 metadata:
   name: guesstimate-server-ci
 spec:
-  serviceAccountName: guesstimate-server-ci
+  serviceAccountName: quri-ci
   entrypoint: all
 
   volumes:
@@ -63,8 +63,7 @@ spec:
       - name: quri-registry-secret
         mountPath: /kaniko/.docker
       args: ["--destination=registry.digitalocean.com/quri/guesstimate-server",
-             "--skip-default-registry-fallback",
-             "--verbosity=debug"]
+             "--skip-default-registry-fallback"]
 
   - name: apply-argocd-application
     resource:
@@ -81,6 +80,8 @@ spec:
           namespace: argocd
         spec:
           syncPolicy:
+            syncOptions:
+            - CreateNamespace=true
             automated:
               prune: true
           source:
@@ -89,4 +90,7 @@ spec:
             targetRevision: HEAD
             helm:
               valuesObject:
-                version: "image-tag"
+                version: TODO
+          destination:
+            server: https://kubernetes.default.svc
+            namespace: guesstimate

@@ -1,8 +1,9 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: guesstimate-server-ci
+  name: quri-ci
 ---
+# Basic role for CI to interact with Argo
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -16,14 +17,39 @@ rules:
       - create
       - patch
 ---
+# Allow CI to create and update applications
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argocd-app-manager
+rules:
+  - apiGroups:
+      - argoproj.io
+    resources:
+      - applications
+    verbs:
+      - '*'
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: enable-executor
 subjects:
 - kind: ServiceAccount
-  name: guesstimate-server-ci
+  name: quri-ci
 roleRef:
   kind: Role
   name: argo-executor
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: enable-argocd-app-manager
+subjects:
+- kind: ServiceAccount
+  name: quri-ci
+roleRef:
+  kind: Role
+  name: argocd-app-manager
   apiGroup: rbac.authorization.k8s.io

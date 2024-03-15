@@ -6,6 +6,8 @@ metadata:
 spec:
   project: default
   syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
     automated:
       prune: true
   source:
@@ -14,4 +16,4 @@ spec:
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
-    namespace: guesstimate
+    namespace: quri-ci
