@@ -10,4 +10,4 @@ COPY script.js ./
 
 LABEL org.opencontainers.image.source=https://github.com/quantified-uncertainty/ops
 
-CMD ["node", "./script.js"]
+CMD ["node", "/app/script.js"]

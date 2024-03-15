@@ -23,7 +23,6 @@ spec:
   - name: obtain-github-token
     container:
       image: ghcr.io/quantified-uncertainty/github-credentials-obtainer:latest
-      workingDir: /tmp
       env:
       - name: PRIVATE_KEY
         valueFrom:

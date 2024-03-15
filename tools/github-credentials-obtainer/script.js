@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const { writeFileSync } = "fs";
 const { createAppAuth } = require("@octokit/auth-app");
 
