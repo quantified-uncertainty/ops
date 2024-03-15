@@ -27,9 +27,11 @@ spec:
       labels:
         app: {{ .Release.Name }}-guesstimate-server
     spec:
+      imagePullSecrets:
+      - name: quri-registry
       containers:
         - name: server
-          image: "quri/guesstimate-server:{{ .Values.tag }}"
+          image: "registry.digitalocean.com/quri/guesstimate-server:{{ .Values.tag }}"
           imagePullPolicy: IfNotPresent
           # env:
           ports:
