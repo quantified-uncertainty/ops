@@ -6,7 +6,7 @@ locals {
   ])
 
   registry_credentials_rw_namespaces = toset([
-    "guesstimate"
+    "quri-ci"
   ])
 }
 
@@ -15,7 +15,7 @@ locals {
 
 resource "digitalocean_container_registry" "main" {
   name                   = "quri"
-  subscription_tier_slug = "starter"
+  subscription_tier_slug = "basic"
 }
 
 resource "digitalocean_container_registry_docker_credentials" "main" {

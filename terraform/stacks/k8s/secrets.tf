@@ -76,14 +76,16 @@ resource "kubernetes_secret" "argo_workflows_github_auth" {
 # This secret is used by Argo Workflows configuration to run GitHub Actions-like CI workflows.
 # Our custom GitHub app uses these credentials to obtain a short-lived GITHUB_TOKEN, which is used to authenticate against GitHub API.
 # Specifically, that token can be useful for:
-# - uploading Docker images to GitHub registry
 # - (TODO) posting comments to PRs
 # - (TODO) updating checks in PRs
 # Or anything else that's often done from GitHub Actions, but in our case it's done from Argo Workflows.
+#
+# We can't use this secret for uploading images to Github Container Registry, because it's not a personal access token.
+# I've spent ~4 hours trying to figure that out, and ended up switching to DigitalOcean Container Registry.
 resource "kubernetes_secret" "argo_workflows_github_token_credentials" {
   metadata {
     name      = "quri-integrations-for-guesstimate-github-app"
-    namespace = "guesstimate" # TODO - move to a common CI namespace?
+    namespace = "quri-ci"
   }
 
   data = {
