@@ -66,7 +66,7 @@ spec:
       image: gcr.io/kaniko-project/executor:latest
       args: ["--destination=ghcr.io/getguesstimate/guesstimate-server",
              "--skip-default-registry-fallback",
-             "--label org.opencontainers.image.source=https://github.com/getguesstimate/guesstimate-server"
+             "--label org.opencontainers.image.source=https://github.com/getguesstimate/guesstimate-server",
              "--verbosity=debug"]
 
   - name: apply-argocd-application
