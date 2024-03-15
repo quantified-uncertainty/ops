@@ -13,3 +13,8 @@ resource "digitalocean_kubernetes_cluster" "quri" {
     prevent_destroy = true
   }
 }
+
+resource "digitalocean_container_registry" "main" {
+  name                   = "quri"
+  subscription_tier_slug = "starter"
+}
