@@ -26,6 +26,11 @@ terraform {
       source  = "digitalocean/digitalocean"
       version = "2.34.1"
     }
+
+    github = {
+      source  = "integrations/github"
+      version = "~> 5.0"
+    }
   }
 }
 
@@ -48,4 +53,14 @@ data "onepassword_item" "do_token" {
 
 provider "digitalocean" {
   token = data.onepassword_item.do_token.password
+}
+
+data "onepassword_item" "github_token" {
+  vault = data.onepassword_vault.main.uuid
+  title = "GitHub token"
+}
+
+provider "github" {
+  token = data.onepassword_item.github_token.password
+  owner = "quantified-uncertainty"
 }
