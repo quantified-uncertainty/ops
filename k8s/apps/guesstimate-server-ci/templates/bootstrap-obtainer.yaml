@@ -18,12 +18,6 @@ spec:
     steps:
     - - name: prepare-docker-config
         inline:
-          artifacts:
-          - name: source
-            path: /workspace
-            git:
-              repo: https://github.com/quantified-uncertainty.org/ops
-              revision: master
           container:
             image: alpine:latest
             command: [sh, -c]
@@ -45,7 +39,7 @@ spec:
             - name: source
               path: /workspace
               git:
-                repo: https://github.com/quantified-uncertainty.org/ops
+                repo: https://github.com/quantified-uncertainty/ops
                 revision: master
             - name: docker-config
               path: /kaniko/.docker/config.json
