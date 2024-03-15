@@ -33,7 +33,9 @@ spec:
         - name: server
           image: "registry.digitalocean.com/quri/guesstimate-server:{{ .Values.tag }}"
           imagePullPolicy: IfNotPresent
-          # env:
+          envFrom:
+          - secretRef:
+              name: {{ .Values.envSecret }}
           ports:
             - containerPort: 4000
           livenessProbe:

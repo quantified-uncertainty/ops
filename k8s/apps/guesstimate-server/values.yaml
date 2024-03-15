@@ -1,3 +1,8 @@
-host: guesstimate-server.k8s.quantifieduncertainty.org # temporary name
+# Public name (TODO: replace with production name).
+host: guesstimate-server.k8s.quantifieduncertainty.org
 
+# Image tag, filled by Argo CD app that's dynamically created by CI workflow.
 tag: ""
+
+# Secret, created by Terraform.
+envSecret: guesstimate-server
