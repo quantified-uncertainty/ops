@@ -1,4 +1,5 @@
 apps:
+# Infra-level apps
 - name: argocd
   automated: null
 
@@ -16,19 +17,6 @@ apps:
     chart: cloudnative-pg
     targetRevision: 0.20.1
 
-- name: prometheus
-  # Argo CD is having some trouble with Prometheus CRDs (they're too large).
-  # It might be useful to deploy
-  # https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-operator-crds
-  # as a separate Application instead of enabling ServerSideApply for all
-  # Prometheus resources.
-  # See also: https://github.com/argoproj/argo-cd/issues/820
-  syncOptions:
-  - ServerSideApply=true
-
-- name: guesstimate-server-ci
-  namespace: quri-ci
-
 - name: ingress-nginx
   source:
     chart: ingress-nginx
@@ -40,4 +28,21 @@ apps:
           extraArgs:
             "enable-ssl-passthrough": "" # necessary for proxying to ArgoCD
 
+# Analytics and monitoring
 - name: metabase
+
+- name: prometheus
+  # Argo CD is having some trouble with Prometheus CRDs (they're too large).
+  # It might be useful to deploy
+  # https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-operator-crds
+  # as a separate Application instead of enabling ServerSideApply for all
+  # Prometheus resources.
+  # See also: https://github.com/argoproj/argo-cd/issues/820
+  syncOptions:
+  - ServerSideApply=true
+
+# CI and templates
+- name: guesstimate-server-ci
+  namespace: quri-ci
+
+# Note: guesstimate-server app is deployed by Argo Workflows dynamically, so it's not listed here.
