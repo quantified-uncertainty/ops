@@ -21,7 +21,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-guesstimate-serrer
+      app: {{ .Release.Name }}-guesstimate-server
   template:
     metadata:
       labels:
