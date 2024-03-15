@@ -1,0 +1,4 @@
+apiVersion: v2
+name: app-manifests
+description: All static apps
+version: 0.1.0

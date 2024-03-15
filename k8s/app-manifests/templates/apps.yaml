@@ -1,0 +1,34 @@
+{{- range $app := .Values.apps -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $app.name }}
+  namespace: argocd
+spec:
+  project: default
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      {{- with $app.syncOptions }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+    {{- with $app.automated }}
+    automated:
+      {{- $app.automated | toYaml | nindent 6 }}
+    {{- end }}
+    {{- if not (hasKey $app "automated") }}
+    automated: {}
+    {{- end }}
+  source:
+    {{- if $app.source }}
+    {{- toYaml $app.source | nindent 4 }}
+    {{- else }}
+    repoURL: https://github.com/quantified-uncertainty/ops
+    path: "k8s/apps/{{ $app.name }}"
+    targetRevision: HEAD
+    {{- end }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $app.namespace | default $app.name }}
+{{ end }}

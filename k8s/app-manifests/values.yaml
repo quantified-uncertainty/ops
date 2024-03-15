@@ -1,0 +1,43 @@
+apps:
+- name: argocd
+  automated: null
+
+- name: argo-workflows
+  automated: null
+
+- name: cert-manager
+  automated: null
+
+- name: cpng
+  automated: null
+  namespace: cpng-system # default namespace used in cnpg docs
+  source:
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cloudnative-pg
+    targetRevision: 0.20.1
+
+- name: prometheus
+  # Argo CD is having some trouble with Prometheus CRDs (they're too large).
+  # It might be useful to deploy
+  # https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-operator-crds
+  # as a separate Application instead of enabling ServerSideApply for all
+  # Prometheus resources.
+  # See also: https://github.com/argoproj/argo-cd/issues/820
+  syncOptions:
+  - ServerSideApply=true
+
+- name: guesstimate-server-ci
+  namespace: quri-ci
+
+- name: ingress-nginx
+  source:
+    chart: ingress-nginx
+    repoURL: https://kubernetes.github.io/ingress-nginx
+    targetRevision: 4.10.0
+    helm:
+      valuesObject:
+        controller:
+          extraArgs:
+            "enable-ssl-passthrough": "" # necessary for proxying to ArgoCD
+
+- name: metabase
