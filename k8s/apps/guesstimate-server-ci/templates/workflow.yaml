@@ -63,7 +63,8 @@ spec:
       - name: quri-registry-secret
         mountPath: /kaniko/.docker
       args: ["--destination=registry.digitalocean.com/quri/guesstimate-server",
-             "--skip-default-registry-fallback"]
+             "--skip-default-registry-fallback",
+             "--cache=true"]
 
   - name: apply-argocd-application
     resource:

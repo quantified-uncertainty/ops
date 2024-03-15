@@ -51,6 +51,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: quri-ci
+  namespace: {{ .Release.namespace }}
 roleRef:
   kind: Role
   name: argocd-app-manager
