@@ -22,6 +22,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: argocd-app-manager
+  namespace: argocd
 rules:
   - apiGroups:
       - argoproj.io
@@ -46,6 +47,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: enable-argocd-app-manager
+  namespace: argocd
 subjects:
 - kind: ServiceAccount
   name: quri-ci
