@@ -9,7 +9,7 @@ spec:
   volumes:
   - name: quri-registry-secret
     secret:
-      secretName: quri-registry
+      secretName: quri-registry-write
 
   templates:
   - name: all
