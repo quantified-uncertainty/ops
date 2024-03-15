@@ -36,6 +36,9 @@ spec:
           envFrom:
           - secretRef:
               name: {{ .Values.envSecret }}
+          env:
+          - name: RAILS_ENV
+            value: "production"
           ports:
             - containerPort: 4000
           livenessProbe:
