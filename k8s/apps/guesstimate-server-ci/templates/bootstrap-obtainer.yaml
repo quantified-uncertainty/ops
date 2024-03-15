@@ -5,6 +5,9 @@ metadata:
 spec:
   serviceAccountName: guesstimate-server-ci # FIXME
   entrypoint: all
+  arguments:
+    parameters:
+    - name: github-token
 
   templates:
   - name: all
