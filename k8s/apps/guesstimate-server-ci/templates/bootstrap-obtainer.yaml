@@ -29,12 +29,9 @@ spec:
             command: [sh, -c]
             args:
             - |
-              AUTH=$(echo -n unused:$(cat /tmp/github-token) | base64)
+              AUTH=$(echo -n "unused:{{`{{ inputs.parameters.github-token }}`}}" | base64)
               echo '{ "auths": { "ghcr.io": { "auth": "'$AUTH'" } } }' >/tmp/docker-config.json
             workingDir: /tmp
-            env:
-            - name: GITHUB_TOKEN
-              value: "{{`{{ inputs.parameters.github-token }}`}}"
           outputs:
             parameters:
             - name: docker-config
