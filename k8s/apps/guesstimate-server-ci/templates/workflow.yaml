@@ -62,6 +62,7 @@ spec:
       volumeMounts:
       - name: quri-registry-secret
         mountPath: /kaniko/.docker
+      # TODO - mount cache volume
       args: ["--destination=registry.digitalocean.com/quri/guesstimate-server",
              "--skip-default-registry-fallback",
              "--cache=true"]
