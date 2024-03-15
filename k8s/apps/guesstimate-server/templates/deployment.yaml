@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: "quri/guesstimate-server:{{ .Chart.AppVersion }}"
+          image: "quri/guesstimate-server:{{ .Values.tag }}"
           imagePullPolicy: IfNotPresent
           # env:
           ports:

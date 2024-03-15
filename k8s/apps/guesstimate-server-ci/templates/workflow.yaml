@@ -93,7 +93,7 @@ spec:
             targetRevision: HEAD
             helm:
               valuesObject:
-                version: latest # TODO
+                tag: latest # TODO
           destination:
             server: https://kubernetes.default.svc
             namespace: guesstimate
