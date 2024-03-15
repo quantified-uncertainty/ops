@@ -81,6 +81,7 @@ spec:
           name: guesstimate-server
           namespace: argocd
         spec:
+          project: default
           syncPolicy:
             syncOptions:
             - CreateNamespace=true
