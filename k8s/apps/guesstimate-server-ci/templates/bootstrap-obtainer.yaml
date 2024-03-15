@@ -48,6 +48,6 @@ spec:
           container:
             image: gcr.io/kaniko-project/executor:latest
             args: ["--destination=ghcr.io/quantified-uncertainty/github-credentials-obtainer",
-                   "--context=dir://workspace/tools/github-credentials-obtainer",
+                   "--context=dir:///workspace/tools/github-credentials-obtainer",
                    "--dockerfile=/workspace/tools/github-credentials-obtainer/Dockerfile",
                    "--skip-default-registry-fallback"]
