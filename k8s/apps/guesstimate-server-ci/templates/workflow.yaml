@@ -6,6 +6,11 @@ spec:
   serviceAccountName: guesstimate-server-ci
   entrypoint: all
 
+  volumes:
+  - name: quri-registry-secret
+    secret:
+      secretName: quri-registry
+
   templates:
   - name: all
     steps:
@@ -13,10 +18,6 @@ spec:
         template: obtain-github-token
     - - name: build-and-push
         template: build-and-push
-        arguments:
-          parameters:
-          - name: docker-config
-            value: "{{`{{ steps.obtain-github-token.outputs.parameters.docker-config }}`}}"
     - - name: apply-argocd-application
         template: apply-argocd-application
 
@@ -58,15 +59,13 @@ spec:
         git:
           repo: {{ .Values.git.repo }}
           revision: {{ .Values.git.revision }}
-      - name: docker-config
-        path: /kaniko/.docker/config.json
-        raw:
-          data: "{{`{{ inputs.parameters.docker-config }}`}}"
     container:
       image: gcr.io/kaniko-project/executor:latest
-      args: ["--destination=ghcr.io/getguesstimate/guesstimate-server",
+      volumeMounts:
+      - name: quri-registry-secret
+        mountPath: /kaniko/.docker/config.json
+      args: ["--destination=registry.digitalocean.com/quri/guesstimate-server",
              "--skip-default-registry-fallback",
-             "--label", "org.opencontainers.image.source=https://github.com/getguesstimate/guesstimate-server",
              "--verbosity=debug"]
 
   - name: apply-argocd-application
