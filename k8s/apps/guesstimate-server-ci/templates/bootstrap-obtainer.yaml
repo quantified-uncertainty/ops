@@ -3,7 +3,7 @@ kind: WorkflowTemplate
 metadata:
   name: build-github-credentials-obtainer
 spec:
-  serviceAccountName: guesstimate-server-ci # FIXME
+  serviceAccountName: quri-ci
   entrypoint: all
   arguments:
     parameters:
