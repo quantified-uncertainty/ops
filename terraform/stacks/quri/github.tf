@@ -71,11 +71,11 @@ resource "github_team_members" "k8s_admins" {
 
   members {
     username = "OAGr"
-    role     = "member"
+    role     = "maintainer"
   }
 
   members {
     username = "berekuk"
-    role     = "member"
+    role     = "maintainer"
   }
 }

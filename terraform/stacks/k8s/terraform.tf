@@ -21,6 +21,11 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "2.27.0"
     }
+
+    digitalocean = {
+      source  = "digitalocean/digitalocean"
+      version = "2.34.1"
+    }
   }
 }
 
@@ -36,7 +41,11 @@ data "onepassword_vault" "main" {
   name = "Infra"
 }
 
-data "onepassword_item" "grafana_admin" {
+data "onepassword_item" "do_token" {
   vault = data.onepassword_vault.main.uuid
-  title = "Grafana admin"
+  title = "DigitalOcean token"
+}
+
+provider "digitalocean" {
+  token = data.onepassword_item.do_token.password
 }
