@@ -5,11 +5,11 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  sources:
-  # This is a kustomize source, because we don't want to set up Argo CD from the Helm chart
-  # (I had some issues with it)
-  - path: k8s/apps/argocd
-    repoURL: 'https://github.com/quantified-uncertainty/ops'
+  source:
+    # This is a kustomize source, because we don't want to set up Argo CD from the Helm chart
+    # (I had some issues with it)
+    repoURL: https://github.com/quantified-uncertainty/ops
+    path: k8s/apps/argocd
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc

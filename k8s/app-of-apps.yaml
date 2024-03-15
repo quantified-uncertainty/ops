@@ -9,15 +9,12 @@ metadata:
   name: app-of-apps
   namespace: argocd
 spec:
+  # Auto-sync is intentionally not enabled, to avoid accidents.
+  project: default
+  source:
+    path: k8s/app-manifests
+    repoURL: https://github.com/quantified-uncertainty/ops
+    targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
-  source:
-    path: k8s/app-manifests
-    repoURL: 'https://github.com/quantified-uncertainty/ops'
-    targetRevision: HEAD
-  project: default
-  # syncPolicy:
-  #   automated:
-  #     prune: true
-  #     selfHeal: true

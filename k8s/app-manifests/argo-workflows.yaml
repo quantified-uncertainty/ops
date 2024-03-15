@@ -8,9 +8,9 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
-  sources:
-  - path: k8s/apps/argo-workflows
-    repoURL: 'https://github.com/quantified-uncertainty/ops'
+  source:
+    repoURL: https://github.com/quantified-uncertainty/ops
+    path: k8s/apps/argo-workflows
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc

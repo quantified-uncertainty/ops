@@ -18,7 +18,7 @@ spec:
     automated:
       prune: true
   source:
-    repoURL: 'https://github.com/quantified-uncertainty/ops'
+    repoURL: https://github.com/quantified-uncertainty/ops
     path: k8s/apps/prometheus
     targetRevision: HEAD
   destination:

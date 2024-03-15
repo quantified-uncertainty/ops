@@ -8,10 +8,10 @@ spec:
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
-  sources:
-    - chart: cloudnative-pg
-      repoURL: https://cloudnative-pg.github.io/charts
-      targetRevision: 0.20.1
+  source:
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cloudnative-pg
+    targetRevision: 0.20.1
   destination:
     server: https://kubernetes.default.svc
     namespace: cnpg-system # default namespace used in cnpg docs
