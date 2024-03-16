@@ -21,7 +21,7 @@ resource "github_repository_environment_deployment_policy" "production" {
 resource "github_actions_secret" "vercel_api_token" {
   repository      = "squiggle"
   secret_name     = "VERCEL_API_TOKEN"
-  plaintext_value = data.onepassword_item.vercel_api_token.password
+  plaintext_value = module.providers.vercel_api_token # necessary for some github actions (?)
 }
 
 resource "github_actions_environment_secret" "database_url" {

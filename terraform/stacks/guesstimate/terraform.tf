@@ -55,55 +55,29 @@ terraform {
   }
 }
 
+module "providers" {
+  source = "../../modules/providers"
+}
+
 provider "onepassword" {
-  account = "team-quri.1password.com"
-}
-
-data "onepassword_vault" "main" {
-  name = "Infra"
-}
-
-// TODO - copy-pasted between stacks
-// DigitalOcan token
-// Get here: https://cloud.digitalocean.com/account/api/tokens
-data "onepassword_item" "do_token" {
-  vault = data.onepassword_vault.main.uuid
-  title = "DigitalOcean token"
-}
-// Vercel API token
-// Get here: https://vercel.com/account/tokens
-data "onepassword_item" "vercel_api_token" {
-  vault = data.onepassword_vault.main.uuid
-  title = "Vercel API token"
+  account = module.providers.op_account
 }
 
 provider "digitalocean" {
-  token = data.onepassword_item.do_token.password
+  token = module.providers.do_token
 }
 
 provider "vercel" {
-  api_token = data.onepassword_item.vercel_api_token.password
-  team      = "quantified-uncertainty"
-}
-
-data "onepassword_item" "sentry" {
-  vault = data.onepassword_vault.main.uuid
-  title = "Sentry root token"
+  api_token = module.providers.vercel_api_token
+  team      = module.providers.vercel_team
 }
 
 provider "sentry" {
-  token = data.onepassword_item.sentry.password
-}
-
-// Get through `heroku authorizations:create` in CLI.
-// Note: Heroku tokens are global!
-data "onepassword_item" "heroku_api_key" {
-  vault = data.onepassword_vault.main.uuid
-  title = "Heroku API key"
+  token = module.providers.sentry_token
 }
 
 provider "heroku" {
-  api_key = data.onepassword_item.heroku_api_key.password
+  api_key = module.providers.heroku_api_key
 }
 
 provider "kubernetes" {

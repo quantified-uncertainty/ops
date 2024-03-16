@@ -34,37 +34,32 @@ terraform {
   }
 }
 
+module "providers" {
+  source = "../../modules/providers"
+}
+
 provider "onepassword" {
-  account = "team-quri.1password.com"
+  account = module.providers.op_account
 }
 
 provider "kubernetes" {
   config_path = "~/.kube/config"
 }
 
-data "onepassword_vault" "main" {
-  name = "Infra"
-}
-
-data "onepassword_item" "do_token" {
-  vault = data.onepassword_vault.main.uuid
-  title = "DigitalOcean token"
-}
-
 data "onepassword_item" "do_spaces_api_key" {
-  vault = data.onepassword_vault.main.uuid
+  vault = module.providers.op_vault
   title = "DigitalOcean Spaces API Key"
 }
 
 provider "digitalocean" {
-  token = data.onepassword_item.do_token.password
+  token = module.providers.do_token
 
   spaces_access_id  = data.onepassword_item.do_spaces_api_key.username
   spaces_secret_key = data.onepassword_item.do_spaces_api_key.password
 }
 
 data "onepassword_item" "github_token" {
-  vault = data.onepassword_vault.main.uuid
+  vault = module.providers.op_vault
   title = "GitHub token"
 }
 

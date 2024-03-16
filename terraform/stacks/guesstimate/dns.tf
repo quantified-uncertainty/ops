@@ -31,13 +31,3 @@ resource "digitalocean_record" "mx" {
   value    = each.key
   priority = each.value
 }
-
-moved {
-  from = digitalocean_record.apex_a
-  to   = module.domain.digitalocean_record.apex_a
-}
-
-moved {
-  from = digitalocean_record.star_a
-  to   = module.domain.digitalocean_record.subdomains[0]
-}

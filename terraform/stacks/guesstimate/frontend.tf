@@ -22,7 +22,7 @@ resource "random_password" "nextauth_secret" {
 # Root token is used to configure Sentry resources, while auth token is used to authenticate from Vercel to upload source maps.
 # Auth token has less permissions than root token.
 data "onepassword_item" "sentry_auth_token" {
-  vault = data.onepassword_vault.main.uuid
+  vault = module.providers.op_vault
   title = "Sentry auth token"
 }
 

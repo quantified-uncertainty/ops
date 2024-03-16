@@ -5,12 +5,12 @@ locals {
 }
 
 data "onepassword_item" "auth0_dev_client_id" {
-  vault = data.onepassword_vault.main.uuid
+  vault = module.providers.op_vault
   title = "Auth0 Client ID / Terraform guesstimate-development"
 }
 
 data "onepassword_item" "auth0_dev_client_secret" {
-  vault = data.onepassword_vault.main.uuid
+  vault = module.providers.op_vault
   title = "Auth0 Client Secret / Terraform guesstimate-development"
 }
 

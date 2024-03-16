@@ -1,5 +1,5 @@
 data "onepassword_item" "grafana_admin" {
-  vault = data.onepassword_vault.main.uuid
+  vault = module.providers.op_vault
   title = "Grafana admin"
 }
 
@@ -18,17 +18,17 @@ resource "kubernetes_secret" "grafana" {
 }
 
 data "onepassword_item" "argocd_github_oauth" {
-  vault = data.onepassword_vault.main.uuid
+  vault = module.providers.op_vault
   title = "GitHub Argo CD Client Secret"
 }
 
 data "onepassword_item" "quri_integrations_for_guesstimate_github_app" {
-  vault = data.onepassword_vault.main.uuid
+  vault = module.providers.op_vault
   title = "QURI Integrations GitHub App Private Key"
 }
 
 data "onepassword_item" "quri_integrations_github_app" {
-  vault = data.onepassword_vault.main.uuid
+  vault = module.providers.op_vault
   title = "QURI Integrations for Guesstimate GitHub App Private Key"
 }
 

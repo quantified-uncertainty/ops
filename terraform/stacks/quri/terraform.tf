@@ -40,21 +40,21 @@ terraform {
   }
 }
 
-provider "onepassword" {
-  account = "team-quri.1password.com"
+module "providers" {
+  source = "../../modules/providers"
 }
 
-data "onepassword_vault" "main" {
-  name = "Infra"
+provider "onepassword" {
+  account = module.providers.op_account
 }
 
 provider "digitalocean" {
-  token = data.onepassword_item.do_token.password
+  token = module.providers.do_token
 }
 
 provider "vercel" {
-  api_token = data.onepassword_item.vercel_api_token.password
-  team      = "quantified-uncertainty"
+  api_token = module.providers.vercel_api_token
+  team      = module.providers.vercel_team
 }
 
 provider "github" {
