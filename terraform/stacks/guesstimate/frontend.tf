@@ -1,8 +1,10 @@
 locals {
   frontend_env = {
-    "NEXTAUTH_SECRET"          = random_password.nextauth_secret.result
-    "NEXT_PUBLIC_BASE_URL"     = "https://www.getguesstimate.com"
-    "NEXT_PUBLIC_API_BASE_URL" = "https://${var.api_domain}"
+    "NEXTAUTH_SECRET"      = random_password.nextauth_secret.result
+    "NEXT_PUBLIC_BASE_URL" = "https://www.getguesstimate.com"
+    # "NEXT_PUBLIC_API_BASE_URL" = "https://${var.api_domain}"
+    # Temporary, we'll redirect DNS soon
+    "NEXT_PUBLIC_API_BASE_URL" = "https://guesstimate-server.k8s.quantifieduncertainty.org"
     "AUTH0_CLIENT_ID"          = module.auth0_2024.client_id
     "AUTH0_CLIENT_SECRET"      = module.auth0_2024.client_secret
     "AUTH0_DOMAIN"             = "https://${var.auth0_domain}"
@@ -40,21 +42,6 @@ resource "vercel_project" "frontend" {
       key    = key
       value  = value
       target = ["production"]
-    }
-    ], [
-    # temporary config for k8s-backend branch
-    for key, value in local.frontend_env : {
-      key        = key
-      value      = value
-      target     = ["preview"]
-      git_branch = "k8s-backend"
-    } if key != "NEXT_PUBLIC_API_BASE_URL"
-    ], [
-    {
-      key        = "NEXT_PUBLIC_API_BASE_URL"
-      value      = "https://guesstimate-server.k8s.quantifieduncertainty.org"
-      target     = ["preview"]
-      git_branch = "k8s-backend"
     }
   ])
 }
