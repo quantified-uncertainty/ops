@@ -45,7 +45,7 @@ argo-workflows:
   artifactRepository:
     s3:
       # Sorry for hardcoding these, Argo Workflows chart doesn't allow to read these from a configmap or secret.
-      bucket: argo-workflows-artifacts
+      bucket: quri-workflows-artifacts
       endpoint: nyc3.digitaloceanspaces.com
       accessKeySecret:
         name: workflows-artifacts-cred
@@ -53,5 +53,3 @@ argo-workflows:
       secretKeySecret:
         name: workflows-artifacts-cred
         key: secretKey
-
-    archiveLogs: true
