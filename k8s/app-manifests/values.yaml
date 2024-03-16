@@ -42,12 +42,13 @@ apps:
   - ServerSideApply=true
 
 - name: loki
-  chart: loki
-  repoURL: https://grafana.github.io/helm-charts
-  automated: null
-  helm:
-    valuesObject:
-      minio: true # good enough for now
+  source:
+    chart: loki
+    repoURL: https://grafana.github.io/helm-charts
+    automated: null
+    helm:
+      valuesObject:
+        minio: true # good enough for now
 
 # CI and templates
 - name: guesstimate-server-ci
