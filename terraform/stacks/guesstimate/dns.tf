@@ -1,5 +1,5 @@
 resource "digitalocean_domain" "main" {
-  name = "getguesstimate.com"
+  name = var.domain
 }
 
 # Sendgrid DNS configuration; copied from old name.com DNS
@@ -31,3 +31,5 @@ resource "digitalocean_record" "mx" {
   value    = each.key
   priority = each.value
 }
+
+# TODO - point api.getguesstimate.com to Kubernetes load balancer.

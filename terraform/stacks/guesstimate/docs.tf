@@ -12,7 +12,7 @@ resource "vercel_project" "docs" {
 module "docs_domain" {
   source = "../../modules/vercel-domain"
 
-  domain     = "getguesstimate.com"
+  domain     = var.domain
   project_id = vercel_project.docs.id
   www        = false
   subdomain  = "docs"

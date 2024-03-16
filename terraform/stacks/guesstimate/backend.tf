@@ -1,7 +1,3 @@
-resource "random_bytes" "rails_secret" {
-  length = 64
-}
-
 resource "digitalocean_project" "main" {
   name        = "Guesstimate"
   description = "Guesstimate resources."
@@ -11,14 +7,18 @@ resource "digitalocean_project" "main" {
 
 resource "kubernetes_namespace" "main" {
   metadata {
-    name = "guesstimate"
+    name = var.k8s_namespace
   }
+}
+
+resource "random_bytes" "rails_secret" {
+  length = 64
 }
 
 resource "kubernetes_secret" "backend_env" {
   metadata {
-    name      = "guesstimate-server"
-    namespace = "guesstimate"
+    name      = var.k8s_backend_env_secret
+    namespace = var.k8s_namespace
   }
 
   data = {

@@ -2,9 +2,7 @@ locals {
   frontend_env = {
     "NEXTAUTH_SECRET"      = random_password.nextauth_secret.result
     "NEXT_PUBLIC_BASE_URL" = "https://www.getguesstimate.com"
-    # "NEXT_PUBLIC_API_BASE_URL" = "https://${var.api_domain}"
-    # Temporary, we'll redirect DNS soon
-    "NEXT_PUBLIC_API_BASE_URL" = "https://guesstimate-server.k8s.quantifieduncertainty.org"
+    "NEXT_PUBLIC_API_BASE_URL" = "https://${var.api_domain}"
     "AUTH0_CLIENT_ID"          = module.auth0_2024.client_id
     "AUTH0_CLIENT_SECRET"      = module.auth0_2024.client_secret
     "AUTH0_DOMAIN"             = "https://${var.auth0_domain}"
@@ -14,6 +12,7 @@ locals {
     "SENTRY_AUTH_TOKEN"        = data.onepassword_item.sentry_auth_token.password
   }
 }
+
 resource "random_password" "nextauth_secret" {
   length = 44
 }
@@ -49,7 +48,7 @@ resource "vercel_project" "frontend" {
 module "domain" {
   source = "../../modules/vercel-domain"
 
-  domain        = "getguesstimate.com"
+  domain        = var.domain
   project_id    = vercel_project.frontend.id
   ttl           = 60 # TODO - roll back after we're sure that new Guesstimate works fine
   create_domain = false

@@ -46,7 +46,6 @@ module "auth0_2024" {
   source = "./auth0"
 
   frontend_url        = local.frontend_url
-  extra_frontend_urls = ["https://next.getguesstimate.com"]
   api_audience        = local.api_audience
   connection_name     = null # configured in auth0_prod, should be moved
 }
