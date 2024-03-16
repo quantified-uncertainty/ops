@@ -5,14 +5,24 @@ loki:
     auth_enabled: false
     storage:
       # env from secrets, idea from https://community.grafana.com/t/storing-s3-accesskeyid-and-secretaccesskey-securely/92133/3
+      bucketNames:
+        chunk: "${LOKI_S3_BUCKETNAME}"
+        ruler: "${LOKI_S3_BUCKETNAME}"
+        admin: "${LOKI_S3_BUCKETNAME}"
       s3:
         endpoint: "${LOKI_S3_ENDPOINT}"
         accessKeyId: "${LOKI_S3_ACCESKEYID}"
         secretAccessKey: "${LOKI_S3_SECRETACCESSKEY}"
+        s3ForcePathStyle: true
   backend:
     extraArgs:
       - '-config.expand-env=true'
     extraEnv:
+      - name: LOKI_S3_BUCKETNAME
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets
+            key: s3-bucketName
       - name: LOKI_S3_ENDPOINT
         valueFrom:
           secretKeyRef:
