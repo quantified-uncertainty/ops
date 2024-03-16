@@ -1,0 +1,37 @@
+# Loki subchart configuration
+loki:
+  loki:
+    storage:
+      # env from secrets, idea from https://community.grafana.com/t/storing-s3-accesskeyid-and-secretaccesskey-securely/92133/3
+      s3:
+        endpoint: "${LOKI_S3_ENDPOINT}"
+        accessKeyId: "${LOKI_S3_ACCESKEYID}"
+        secretAccessKey: "${LOKI_S3_SECRETACCESSKEY}"
+    backend:
+      extraArgs:
+        - '-config.expand-env=true'
+      extraEnv:
+        - name: LOKI_S3_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: loki-storage-secrets
+              key: s3-endpoint
+        - name: LOKI_S3_ACCESKEYID
+          valueFrom:
+            secretKeyRef:
+              name: loki-storage-secrets
+              key: s3-accessKeyId
+        - name: LOKI_S3_SECRETACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: loki-storage-secrets
+              key: s3-secretAccessKey
+# TODO - configure retention
+
+# Promtail subchart configuration
+promtail:
+  config:
+    # publish data to Loki
+    clients:
+      - url: http://loki-gateway/loki/api/v1/push
+        tenant_id: 1

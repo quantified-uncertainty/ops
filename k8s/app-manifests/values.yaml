@@ -45,24 +45,27 @@ apps:
   - ServerSideApply=true
 
 - name: loki
+  syncOptions:
+  - ServerSideApply=true
   automated: null
-  source:
-    chart: loki-stack
+  sources:
+  - chart: loki
     repoURL: https://grafana.github.io/helm-charts
-    targetRevision: 2.10.2
+    targetRevision: 5.44.1
     helm:
       valuesObject:
-        loki:
-          enabled: true
-          # TODO - persistence
-        promtail:
-          enabled: true
-        fluent-bit:
-          enabled: false
-        grafana:
-          enabled: false
-        prometheus:
-          enabled: false
+        minio:
+          enabled: true # good enough for now
+  - chart: promtail
+    repoURL: https://grafana.github.io/helm-charts
+    targetRevision: 5.44.1
+    helm:
+      valuesObject:
+        config:
+          # publish data to loki
+          clients:
+            - url: http://loki-gateway/loki/api/v1/push
+              tenant_id: 1
 
 # CI and templates
 - name: guesstimate-server-ci
