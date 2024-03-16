@@ -28,3 +28,30 @@ argo-workflows:
       - hosts:
         - workflows.k8s.quantifieduncertainty.org
         secretName: argo-workflows-tls
+
+  controller:
+    workflowDefaults: |
+      spec:
+        podGC:
+          strategy: OnPodCompletion
+
+    links:
+    - name: Pod Logs
+      scope: pod-logs
+      url: |-
+        http://grafana.k8s.quantifieduncertainty.org/explore?left=["${status.startedAt}","${status.finishedAt}","Loki",{"expr":"{namespace=\"${metadata.namespace}\", pod=\"${metadata.name}\"}}"]
+
+
+  artifactRepository:
+    s3:
+      # Sorry for hardcoding these, Argo Workflows chart doesn't allow to read these from a configmap or secret.
+      bucket: argo-workflows-artifacts
+      endpoint: nyc3.digitaloceanspaces.com
+      accessKeySecret:
+        name: workflows-artifacts-cred
+        key: accessKey
+      secretKeySecret:
+        name: workflows-artifacts-cred
+        key: secretKey
+
+    archiveLogs: true
