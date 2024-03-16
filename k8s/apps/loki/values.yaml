@@ -46,6 +46,8 @@ loki:
       enabled: false
       grafanaAgent:
         installOperator: false
+  test:
+    enabled: false
 
 # TODO - configure retention
 
