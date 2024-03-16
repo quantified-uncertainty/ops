@@ -35,15 +35,16 @@ argo-workflows:
         podGC:
           strategy: OnPodCompletion
 
+    # Note: sometimes Argo CD don't apply link configuration changes on deploy, recreate the pods manually if that happens.
     links:
     - name: Chat
       scope: chat
-      url: https://quri.slack.com
+      url: https://quri.slack.com/archives/C06KPA4MGU9
 
-    - name: Pod Logs
+    - name: Loki logs
       scope: pod-logs
       url: |-
-        http://grafana.k8s.quantifieduncertainty.org/explore?left=["${status.startedAt}","${status.finishedAt}","Loki",{"expr":"{namespace=\"${metadata.namespace}\", pod=\"${metadata.name}\"}}"]
+        https://grafana.k8s.quantifieduncertainty.org/explore?left=["${status.startedAtEpoch}","${status.finishedAtEpoch}","Loki",{"expr":"{namespace=\"${metadata.namespace}\", pod=\"${metadata.name}\"}"}]
 
 
   artifactRepository:
