@@ -17,4 +17,3 @@ spec:
     - apiURL:
         name: slack-alerts
         key: slack-alerts
-    - url: "{{ .Value.alertWebhook }}"
