@@ -1,8 +1,32 @@
-# Public name (TODO: replace with production name).
-host: guesstimate-server.k8s.quantifieduncertainty.org
+hosts:
+- guesstimate-server.k8s.quantifieduncertainty.org # TODO - deactivate
+- api.getguesstimate.com
 
-# Image tag, filled by Argo CD app that's dynamically created by CI workflow.
-tag: ""
+image:
+  pullSecret: quri-registry
+  name: registry.digitalocean.com/quri/guesstimate-server
+  # Image tag, filled by Argo CD app that's dynamically created by CI workflow.
+  # Required.
+  tag: ""
 
 # Secret, created by Terraform.
 envSecret: guesstimate-server
+
+port: 4000
+
+probe:
+  path: /spaces # TODO - dedicated endpoint
+  liveness:
+    initialDelaySeconds: 3
+    timeoutSeconds: 10
+    failureThreshold: 6
+  readiness:
+    initialDelaySeconds: 30
+    timeoutSeconds: 3
+    periodSeconds: 30
+
+resources:
+  requests:
+    memory: "100Mi"
+  limits:
+    memory: "1024Mi"

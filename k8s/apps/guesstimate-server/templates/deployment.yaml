@@ -1,88 +1,43 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Release.Name }}-guesstimate-server
-  labels:
-    app: {{ .Release.Name }}-guesstimate-server
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: 4000
-  selector:
-    app: {{ .Release.Name }}-guesstimate-server
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-guesstimate-server
+  name: {{ include "name" . }}
   labels:
-    app: {{ .Release.Name }}-guesstimate-server
+    app: {{ include "name" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-guesstimate-server
+      app: {{ include "name" . }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-guesstimate-server
+        app: {{ include "name" . }}
     spec:
       imagePullSecrets:
-      - name: quri-registry
+      - name: {{ .Values.image.pullSecret }}
       containers:
         - name: server
-          image: "registry.digitalocean.com/quri/guesstimate-server:{{ .Values.tag }}"
+          image: "{{ .Values.image.name }}:{{ required "tag is required" .Values.image.tag }}"
           imagePullPolicy: Always
           envFrom:
           - secretRef:
               name: {{ .Values.envSecret }}
           env:
           - name: RAILS_ENV
-            value: "production"
+            value: production
           - name: PORT
-            value: "4000"
+            value: "{{ .Values.port }}"
           ports:
-            - containerPort: 4000
+            - containerPort: {{ .Values.port }}
           livenessProbe:
             httpGet:
-              path: /spaces # TODO - dedicated endpoint
-              port: 4000
-            initialDelaySeconds: 3
-            timeoutSeconds: 10
-            failureThreshold: 6
+              path: {{ .Values.probe.path }}
+              port: {{ .Values.port }}
+            {{- toYaml .Values.probe.liveness | nindent 12 }}
           readinessProbe:
             httpGet:
-              path: /spaces # TODO - dedicated endpoint
-              port: 4000
-            initialDelaySeconds: 30
-            timeoutSeconds: 3
-            periodSeconds: 30
+              path: {{ .Values.probe.path }}
+              port: {{ .Values.port }}
+            {{- toYaml .Values.probe.readiness | nindent 12 }}
           resources:
-            requests:
-              memory: "100Mi"
-            limits:
-              memory: "1024Mi"
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: {{ .Release.Name }}-guesstimate-server
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-spec:
-  ingressClassName: nginx
-  rules:
-  - host: {{ .Values.host }}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ .Release.Name }}-guesstimate-server
-            port:
-              number: 80
-  tls:
-  - hosts:
-    - {{ .Values.host }}
-    secretName: {{ .Release.Name }}-guesstimate-server-tls
+            {{- toYaml .Values.resources | nindent 12 }}
