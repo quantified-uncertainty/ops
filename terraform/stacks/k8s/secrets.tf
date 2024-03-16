@@ -85,12 +85,12 @@ resource "kubernetes_secret" "argo_workflows_github_auth" {
 resource "kubernetes_secret" "argo_workflows_github_token_credentials" {
   metadata {
     name      = "quri-integrations-for-guesstimate-github-app"
-    namespace = "quri-ci"
+    namespace = var.ci_namespace
   }
 
   data = {
-    app-id                         = 856293   # TODO - could this be obtained from a data source?
-    getguesstimate-installation-id = 48456163 # TODO - and this?
+    app-id                         = var.github_app_guesstimate.app_id
+    getguesstimate-installation-id = var.github_app_guesstimate.installation_id
     private-key                    = data.onepassword_item.quri_integrations_github_app.note_value
   }
 }

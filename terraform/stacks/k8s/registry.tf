@@ -1,12 +1,9 @@
 locals {
   # Should include the list of all namespaces that need to use the registry.
   # Sorry; this might be inconvenient, we'll have to figure out a better solution in the future.
+  # Maybe we could copy the secret with Argo Workflows?
   registry_credentials_namespaces = toset([
     "guesstimate"
-  ])
-
-  registry_credentials_rw_namespaces = toset([
-    "quri-ci"
   ])
 }
 
@@ -47,7 +44,7 @@ resource "kubernetes_secret" "quri_registry_credentials" {
 # Credentials for workloads that need to _push_ images to the registry, i.e. CI workflows.
 # Will usually be mounted to `/kaniko/.docker`.
 resource "kubernetes_secret" "quri_registry_rw_credentials" {
-  for_each = toset(local.registry_credentials_rw_namespaces)
+  for_each = toset([var.ci_namespace])
 
   metadata {
     name      = "quri-registry-write"
