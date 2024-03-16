@@ -30,7 +30,7 @@ argo-workflows:
         secretName: argo-workflows-tls
 
   controller:
-    workflowDefaults: |
+    workflowDefaults: |-
       spec:
         podGC:
           strategy: OnPodCompletion
