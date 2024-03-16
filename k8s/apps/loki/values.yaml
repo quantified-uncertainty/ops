@@ -14,7 +14,8 @@ loki:
         accessKeyId: "${LOKI_S3_ACCESKEYID}"
         secretAccessKey: "${LOKI_S3_SECRETACCESSKEY}"
         s3ForcePathStyle: true
-  backend: &config-from-env
+  singleBinary:
+    replicas: 1
     extraArgs:
       - '-config.expand-env=true'
     extraEnv:
@@ -38,8 +39,6 @@ loki:
           secretKeyRef:
             name: loki-storage-secrets
             key: s3-secretAccessKey
-  write: *config-from-env
-  read: *config-from-env
 
 # TODO - configure retention
 
