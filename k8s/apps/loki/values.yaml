@@ -39,6 +39,10 @@ loki:
           secretKeyRef:
             name: loki-storage-secrets
             key: s3-secretAccessKey
+  selfMonitoring:
+    # This tries to install Grafana Agent, which installs CRDs which can overlap
+    # with our main Prometheus installation. Also, it doesn't seem that useful.
+    enabled: false
 
 # TODO - configure retention
 
