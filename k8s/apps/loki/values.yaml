@@ -38,6 +38,32 @@ loki:
           secretKeyRef:
             name: loki-storage-secrets
             key: s3-secretAccessKey
+  # duplicate - both backend and write depend on env in config
+  write:
+    extraArgs:
+      - '-config.expand-env=true'
+    extraEnv:
+      - name: LOKI_S3_BUCKETNAME
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets
+            key: s3-bucketName
+      - name: LOKI_S3_ENDPOINT
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets
+            key: s3-endpoint
+      - name: LOKI_S3_ACCESKEYID
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets
+            key: s3-accessKeyId
+      - name: LOKI_S3_SECRETACCESSKEY
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets
+            key: s3-secretAccessKey
+
 # TODO - configure retention
 
 # Promtail subchart configuration
