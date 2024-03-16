@@ -31,4 +31,8 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $app.namespace | default $app.name }}
+  {{- with $app.info }}
+  info:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{ end }}

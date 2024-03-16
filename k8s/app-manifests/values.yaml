@@ -30,6 +30,9 @@ apps:
 
 # Analytics and monitoring
 - name: metabase
+  info:
+  - name: URL
+    value: https://metabase.k8s.quantifieduncertainty.org
 
 - name: prometheus
   # Argo CD is having some trouble with Prometheus CRDs (they're too large).
@@ -45,6 +48,7 @@ apps:
   source:
     chart: loki
     repoURL: https://grafana.github.io/helm-charts
+    targetRevision: 5.44.1
     automated: null
     helm:
       valuesObject:
