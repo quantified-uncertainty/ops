@@ -36,6 +36,10 @@ argo-workflows:
           strategy: OnPodCompletion
 
     links:
+    - name: Chat
+      scope: chat
+      url: https://quri.slack.com
+
     - name: Pod Logs
       scope: pod-logs
       url: |-
