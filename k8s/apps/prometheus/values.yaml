@@ -56,9 +56,9 @@ kube-prometheus-stack:
     # Prometheus StorageSpec for persistent data
     # ref: https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/user-guides/storage.md
     prometheusSpec:
+      # via https://github.com/prometheus-community/helm-charts/issues/1911 (note that last comment has a few typos)
+      ruleSelectorNilUsesHelmValues: false
       serviceMonitorSelectorNilUsesHelmValues: false
-      serviceMonitorSelector: {}
-      serviceMonitorNamespaceSelector: {}
 
       storageSpec:
         volumeClaimTemplate:
