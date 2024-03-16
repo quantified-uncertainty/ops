@@ -45,8 +45,6 @@ apps:
   - ServerSideApply=true
 
 - name: loki
-  syncOptions:
-  - ServerSideApply=true
   automated: null
   source:
     chart: loki-stack
