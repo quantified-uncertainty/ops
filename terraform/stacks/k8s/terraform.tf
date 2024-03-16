@@ -51,8 +51,16 @@ data "onepassword_item" "do_token" {
   title = "DigitalOcean token"
 }
 
+data "onepassword_item" "do_spaces_api_key" {
+  vault = data.onepassword_vault.main.uuid
+  title = "DigitalOcean Spaces API Key"
+}
+
 provider "digitalocean" {
   token = data.onepassword_item.do_token.password
+
+  spaces_access_id  = data.onepassword_item.do_spaces_api_key.username
+  spaces_secret_key = data.onepassword_item.do_spaces_api_key.password
 }
 
 data "onepassword_item" "github_token" {

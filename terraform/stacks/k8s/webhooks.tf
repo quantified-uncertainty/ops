@@ -3,7 +3,7 @@
 resource "github_organization_webhook" "argo_cd" {
   configuration {
     url          = "${var.argo_cd_endpoint}/api/webhook"
-    content_type = "application/json"
+    content_type = "json"
   }
 
   events = ["push"]
