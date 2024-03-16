@@ -45,6 +45,8 @@ apps:
   - ServerSideApply=true
 
 - name: loki
+  syncOptions:
+  - ServerSideApply=true
   source:
     chart: loki
     repoURL: https://grafana.github.io/helm-charts
