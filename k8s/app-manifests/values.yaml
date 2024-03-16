@@ -47,15 +47,24 @@ apps:
 - name: loki
   syncOptions:
   - ServerSideApply=true
-  source:
-    chart: loki
+  automated: null
+  sources:
+  - chart: loki-stack
     repoURL: https://grafana.github.io/helm-charts
-    targetRevision: 5.44.1
-    automated: null
+    targetRevision: 2.10.2
     helm:
       valuesObject:
-        minio:
-          enabled: true # good enough for now
+        loki:
+          enabled: true
+          # TODO - persistence
+        promtail:
+          enabled: true
+        fluent-bit:
+          enabled: false
+        grafana:
+          enabled: false
+        prometheus:
+          enabled: false
 
 # CI and templates
 - name: guesstimate-server-ci
