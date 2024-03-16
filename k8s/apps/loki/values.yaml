@@ -1,6 +1,8 @@
 # Loki subchart configuration
 loki:
   loki:
+    commonConfig:
+      replication_factor: 1
     # https://github.com/grafana/loki/issues/9756#issuecomment-1918895042
     auth_enabled: false
     storage:
