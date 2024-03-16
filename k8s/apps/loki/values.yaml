@@ -9,25 +9,25 @@ loki:
         endpoint: "${LOKI_S3_ENDPOINT}"
         accessKeyId: "${LOKI_S3_ACCESKEYID}"
         secretAccessKey: "${LOKI_S3_SECRETACCESSKEY}"
-    backend:
-      extraArgs:
-        - '-config.expand-env=true'
-      extraEnv:
-        - name: LOKI_S3_ENDPOINT
-          valueFrom:
-            secretKeyRef:
-              name: loki-storage-secrets
-              key: s3-endpoint
-        - name: LOKI_S3_ACCESKEYID
-          valueFrom:
-            secretKeyRef:
-              name: loki-storage-secrets
-              key: s3-accessKeyId
-        - name: LOKI_S3_SECRETACCESSKEY
-          valueFrom:
-            secretKeyRef:
-              name: loki-storage-secrets
-              key: s3-secretAccessKey
+  backend:
+    extraArgs:
+      - '-config.expand-env=true'
+    extraEnv:
+      - name: LOKI_S3_ENDPOINT
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets
+            key: s3-endpoint
+      - name: LOKI_S3_ACCESKEYID
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets
+            key: s3-accessKeyId
+      - name: LOKI_S3_SECRETACCESSKEY
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets
+            key: s3-secretAccessKey
 # TODO - configure retention
 
 # Promtail subchart configuration
