@@ -6,7 +6,7 @@ loki:
     storage:
       # env from secrets, idea from https://community.grafana.com/t/storing-s3-accesskeyid-and-secretaccesskey-securely/92133/3
       bucketNames:
-        chunk: "${LOKI_S3_BUCKETNAME}"
+        chunks: "${LOKI_S3_BUCKETNAME}"
         ruler: "${LOKI_S3_BUCKETNAME}"
         admin: "${LOKI_S3_BUCKETNAME}"
       s3:
