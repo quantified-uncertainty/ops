@@ -52,7 +52,8 @@ apps:
     automated: null
     helm:
       valuesObject:
-        minio: true # good enough for now
+        minio:
+          enabled: true # good enough for now
 
 # CI and templates
 - name: guesstimate-server-ci
