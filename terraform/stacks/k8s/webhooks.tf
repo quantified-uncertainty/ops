@@ -8,3 +8,19 @@ resource "github_organization_webhook" "argo_cd" {
 
   events = ["push"]
 }
+
+data "onepassword_item" "slack_alerts_webhook" {
+  vault = module.providers.op_vault
+  title = "Slack alerts webhook"
+}
+
+resource "kubernetes_secret" "slack_alerts" {
+  metadata {
+    name = "slack-alerts"
+    namespace = "prometheus"
+  }
+
+  data = {
+    slack-alerts = data.onepassword_item.slack_alerts_webhook.password
+  }
+}
