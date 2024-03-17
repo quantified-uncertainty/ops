@@ -17,10 +17,21 @@ spec:
     steps:
     - - name: prepare-docker-config
         template: prepare-docker-config
+        arguments:
+          parameters:
+          - name: github-token
+            value: "{{`{{ inputs.parameters.github-token }}`}}"
     - - name: build-and-push
         template: build-and-push
+        arguments:
+          parameters:
+          - name: docker-config
+            value: "{{`{{ steps.prepare-docker-config.outputs.parameters.docker-config }}`}}"
 
   - name: prepare-docker-config
+    inputs:
+      parameters:
+      - name: github-token
     container:
       image: alpine:latest
       command: [sh, -c]
@@ -46,7 +57,7 @@ spec:
       - name: docker-config
         path: /kaniko/.docker/config.json
         raw:
-          data: "{{`{{ steps.prepare-docker-config.outputs.parameters.docker-config }}`}}"
+          data: "{{`{{ inputs.parameters.docker-config }}`}}"
     container:
       image: gcr.io/kaniko-project/executor:latest
       args: ["--destination=ghcr.io/quantified-uncertainty/github-credentials-obtainer",
