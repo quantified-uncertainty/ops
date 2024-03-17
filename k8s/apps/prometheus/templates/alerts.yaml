@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
-  name: slack-notifications
+  name: global-config
 spec:
   route:
     groupBy: ['job']

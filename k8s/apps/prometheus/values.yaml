@@ -23,6 +23,9 @@ kube-prometheus-stack:
 
   alertmanager:
     enabled: true
+    alertmanagerSpec:
+      alertmanagerConfiguration:
+        name: global-config
 
   grafana:
     enabled: true
