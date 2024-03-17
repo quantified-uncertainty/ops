@@ -14,43 +14,42 @@ spec:
     inputs:
       parameters:
       - name: github-token
-
     steps:
     - - name: prepare-docker-config
         template: prepare-docker-config
     - - name: build-and-push
         template: build-and-push
 
-    - name: prepare-docker-config
-      container:
-        image: alpine:latest
-        command: [sh, -c]
-        args:
-        - |
-          AUTH=$(echo -n "unused:{{`{{ inputs.parameters.github-token }}`}}" | base64)
-          echo '{ "auths": { "ghcr.io": { "auth": "'$AUTH'" } } }' >/tmp/docker-config.json
-        workingDir: /tmp
-      outputs:
-        parameters:
-        - name: docker-config
-          valueFrom:
-            path: /tmp/docker-config.json
+  - name: prepare-docker-config
+    container:
+      image: alpine:latest
+      command: [sh, -c]
+      args:
+      - |
+        AUTH=$(echo -n "unused:{{`{{ inputs.parameters.github-token }}`}}" | base64)
+        echo '{ "auths": { "ghcr.io": { "auth": "'$AUTH'" } } }' >/tmp/docker-config.json
+      workingDir: /tmp
+    outputs:
+      parameters:
+      - name: docker-config
+        valueFrom:
+          path: /tmp/docker-config.json
 
-    - name: build-and-push
-      inputs:
-        artifacts:
-        - name: source
-          path: /workspace
-          git:
-            repo: https://github.com/quantified-uncertainty/ops
-            revision: master
-        - name: docker-config
-          path: /kaniko/.docker/config.json
-          raw:
-            data: "{{`{{ steps.prepare-docker-config.outputs.parameters.docker-config }}`}}"
-      container:
-        image: gcr.io/kaniko-project/executor:latest
-        args: ["--destination=ghcr.io/quantified-uncertainty/github-credentials-obtainer",
-                "--context=dir:///workspace/tools/github-credentials-obtainer",
-                "--dockerfile=/workspace/tools/github-credentials-obtainer/Dockerfile",
-                "--skip-default-registry-fallback"]
+  - name: build-and-push
+    inputs:
+      artifacts:
+      - name: source
+        path: /workspace
+        git:
+          repo: https://github.com/quantified-uncertainty/ops
+          revision: master
+      - name: docker-config
+        path: /kaniko/.docker/config.json
+        raw:
+          data: "{{`{{ steps.prepare-docker-config.outputs.parameters.docker-config }}`}}"
+    container:
+      image: gcr.io/kaniko-project/executor:latest
+      args: ["--destination=ghcr.io/quantified-uncertainty/github-credentials-obtainer",
+              "--context=dir:///workspace/tools/github-credentials-obtainer",
+              "--dockerfile=/workspace/tools/github-credentials-obtainer/Dockerfile",
+              "--skip-default-registry-fallback"]
