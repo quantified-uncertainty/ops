@@ -15,3 +15,30 @@ spec:
     - apiURL:
         name: slack-alerts
         key: slack-alerts
+      sendResolved: true
+      username: AlertManager
+      title: |
+        [{{`{{ .Status | toUpper -}}`}}
+        {{`{{ if eq .Status "firing" }}`}}:{{`{{ .Alerts.Firing | len }}`}}{{`{{- end -}}`}}
+        ] {{`{{ .CommonLabels.namespace }}`}}/{{`{{ .CommonLabels.alertname }}`}}
+      text: |
+        {{`{{- if (index .Alerts 0).Annotations.summary }}`}}
+          {{`{{- "\n" -}}`}}
+          *Summary:* {{`{{ (index .Alerts 0).Annotations.summary }}`}}
+        {{`{{- end }}`}}
+ 
+        {{`{{ range .Alerts }}`}}
+          {{`{{- if .Annotations.description }}`}}
+            {{`{{- "\n" -}}`}}
+            {{`{{ .Annotations.description }}`}}
+            {{`{{- "\n" -}}`}}
+          {{`{{- end }}`}}
+          {{`{{- if .Annotations.message }}`}}
+            {{`{{- "\n" -}}`}}
+            {{`{{ .Annotations.message }}`}}
+            {{`{{- "\n" -}}`}}
+          {{`{{- end }}`}}
+        {{`{{- end }}`}}
+      fields:
+      - title: "Severity"
+        value: "{{`{{ .CommonLabels.severity }}`}}"
