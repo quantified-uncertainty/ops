@@ -8,8 +8,13 @@ spec:
     groupWait: 30s
     groupInterval: 5m
     repeatInterval: 1m
-    receiver: slack
+    routes:
+    - receiver: none
+      matchers:
+      - alertname="Watchdog"
+    - receiver: slack
   receivers:
+  - name: none
   - name: slack
     slackConfigs:
     - apiURL:
