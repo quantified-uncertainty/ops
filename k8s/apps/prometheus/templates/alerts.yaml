@@ -4,7 +4,7 @@ metadata:
   name: global-config
 spec:
   route:
-    groupBy: ['job']
+    groupBy: ['alertname', 'namespace']
     groupWait: 30s
     groupInterval: 5m
     repeatInterval: 1m
@@ -20,7 +20,7 @@ spec:
       title: |
         [{{`{{ .Status | toUpper -}}`}}
         {{`{{ if eq .Status "firing" }}`}}:{{`{{ .Alerts.Firing | len }}`}}{{`{{- end -}}`}}
-        ] {{`{{ .CommonLabels.namespace }}`}}/{{`{{ .CommonLabels.alertname }}`}}
+        ] {{`{{ .GroupLabels.namespace }}`}}/{{`{{ .GroupLabels.alertname }}`}}
       text: |
         {{`{{- if (index .Alerts 0).Annotations.summary }}`}}
           {{`{{- "\n" -}}`}}
