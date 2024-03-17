@@ -46,6 +46,11 @@ argo-workflows:
       url: |-
         https://grafana.k8s.quantifieduncertainty.org/explore?left=["${status.startedAtEpoch}","${status.finishedAtEpoch}","Loki",{"expr":"{namespace=\"${metadata.namespace}\", pod=\"${metadata.name}\"}"}]
 
+    metricsConfig:
+      enabled: true
+    serviceMonitor:
+      enabled: true
+
 
   artifactRepository:
     s3:
