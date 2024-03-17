@@ -7,7 +7,7 @@ spec:
     groupBy: ['alertname', 'namespace']
     groupWait: 30s
     groupInterval: 5m
-    repeatInterval: 1m
+    repeatInterval: 12h
     routes:
     - receiver: none
       matchers:
