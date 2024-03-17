@@ -58,6 +58,8 @@ spec:
         path: /kaniko/.docker/config.json
         raw:
           data: "{{`{{ inputs.parameters.docker-config }}`}}"
+      parameters:
+      - name: docker-config
     container:
       image: gcr.io/kaniko-project/executor:latest
       args: ["--destination=ghcr.io/quantified-uncertainty/github-credentials-obtainer",
