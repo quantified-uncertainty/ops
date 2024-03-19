@@ -32,4 +32,17 @@ resource "digitalocean_record" "mx" {
   priority = each.value
 }
 
-# TODO - point api.getguesstimate.com to Kubernetes load balancer.
+# Obtain the IP of the Kubernetes load balancer.
+data "kubernetes_service" "nginx_ingress_service" {
+  metadata {
+    namespace = "ingress-nginx"
+    name = "ingress-nginx-controller"
+  }
+}
+
+resource "digitalocean_record" "api" {
+  domain = digitalocean_domain.main.id
+  name   = "api"
+  type   = "A"
+  value  = data.kubernetes_service.nginx_ingress_service.status.0.load_balancer.0.ingress.0.ip
+}
