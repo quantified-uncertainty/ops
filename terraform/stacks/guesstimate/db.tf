@@ -1,15 +1,14 @@
-# # Not used yet - we're still using Heroku for Guesstimate prod
-# module "db" {
-#   source = "../../modules/database"
+resource "digitalocean_database_cluster" "main" {
+  name       = "guesstimate"
+  engine     = "pg"
+  version    = "16"
+  size       = "db-s-1vcpu-1gb"
+  region     = "nyc1"
+  node_count = 1
+  storage_size_mib = 1024 * 20
+  project_id = digitalocean_project.main.id
 
-#   providers = {
-#     postgresql = postgresql.quri
-#   }
-
-#   cluster   = digitalocean_database_cluster.quri
-#   name      = "guesstimate"
-#   database  = "guesstimate"
-#   role      = "guesstimate_role"
-#   pool_size = 5
-#   create    = true
-# }
+  lifecycle {
+    prevent_destroy = true
+  }
+}
