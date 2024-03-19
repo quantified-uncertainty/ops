@@ -3,9 +3,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "name" . }}-{{ $jobname }}
+  name: {{ include "name" $ }}-{{ $jobname }}
   labels:
-    app: {{ include "name" . }}
+    app: {{ include "name" $ }}
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ $job.schedule | required "schedule is required" }}
@@ -15,15 +15,17 @@ spec:
       template:
         spec:
           imagePullSecrets:
-          - name: {{ .Values.image.pullSecret }}
+          - name: {{ $.Values.image.pullSecret }}
           containers:
           - name: cronjob
-            image: "{{ .Values.image.name }}:{{ required "tag is required" .Values.image.tag }}"
+            image: "{{ $.Values.image.name }}:{{ required "tag is required" $.Values.image.tag }}"
             imagePullPolicy: Always
             envFrom:
             - secretRef:
-                name: {{ .Values.envSecret }}
+                name: {{ $.Values.envSecret }}
             env:
             - name: RAILS_ENV
               value: production
-            command: {{ $job.command | required "command is required" }}
+            command:
+              {{- $job.command | required "command is required" | toYaml | nindent 12 }}
+{{- end }}
