@@ -30,3 +30,14 @@ resources:
     memory: "100Mi"
   limits:
     memory: "1024Mi"
+
+jobs:
+  update-view-counts:
+    command: ['rake', 'update_view_counts']
+    schedule: '0 22 * * *'
+  update-tables:
+    command: ['rake', 'update_tables']
+    schedule: '30 21 * * *'
+  take-snapshots:
+    command: ['rake', 'take_snapshots']
+    schedule: '30 * * * *'
