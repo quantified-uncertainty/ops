@@ -1,3 +1,3 @@
-{{- define "name" -}}
+{{- define "server-name" -}}
 {{ .Release.Name }}-guesstimate-server
 {{- end }}

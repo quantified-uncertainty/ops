@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "name" . }}
+  name: {{ include "server-name" . }}
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
@@ -16,11 +16,11 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ include "name" $ }}
+            name: {{ include "server-name" $ }}
             port:
               number: 80
   {{- end }}
   tls:
   - hosts:
     {{- toYaml .Values.hosts | nindent 4 }}
-    secretName: {{ include "name" . }}-tls
+    secretName: {{ include "server-name" . }}-tls

@@ -3,9 +3,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "name" $ }}-{{ $jobname }}
-  labels:
-    app: {{ include "name" $ }}
+  name: {{ $.Release.Name }}-{{ $jobname }}
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ $job.schedule | required "schedule is required" }}
