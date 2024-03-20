@@ -14,17 +14,14 @@ terraform {
   required_providers {
     onepassword = {
       source  = "1Password/onepassword"
-      version = "1.4.1"
     }
 
     auth0 = {
       source  = "auth0/auth0"
-      version = "1.1.2"
     }
 
     digitalocean = {
       source  = "digitalocean/digitalocean"
-      version = "2.34.1"
     }
 
     vercel = {
@@ -33,23 +30,19 @@ terraform {
 
     heroku = {
       source  = "heroku/heroku"
-      version = "5.2.8"
     }
 
     github = {
       source  = "integrations/github"
-      version = "~> 5.0"
     }
 
     sentry = {
       # Not official, but blessed by Sentry; https://blog.sentry.io/introducing-terraform-for-sentry/
       source  = "jianyuan/sentry"
-      version = "0.12.2"
     }
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.27.0"
     }
   }
 }
