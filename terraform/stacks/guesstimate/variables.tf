@@ -13,8 +13,7 @@ variable "auth0_connection_name" {
 }
 
 variable "api_domain" {
-  # Temporary, we'll fix DNS soon and then point frontend to api.getguesstimate.com
-  default = "guesstimate-server.k8s.quantifieduncertainty.org"
+  default = "api.getguesstimate.com"
 }
 
 variable "k8s_namespace" {

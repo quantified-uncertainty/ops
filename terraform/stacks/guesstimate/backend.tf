@@ -2,7 +2,7 @@ resource "digitalocean_project" "main" {
   name        = "Guesstimate"
   description = "Guesstimate resources."
 
-  resources = [digitalocean_domain.main.urn]
+  resources = [digitalocean_domain.main.urn, digitalocean_database_cluster.main.urn]
 }
 
 resource "kubernetes_namespace" "main" {
@@ -28,7 +28,7 @@ resource "kubernetes_secret" "backend_env" {
     "AUTH0_API_TOKEN"   = data.onepassword_item.auth0_api_token.password
     "AUTH0_CONNECTION"  = var.auth0_connection_name
     "CHARGEBEE_API_KEY" = data.onepassword_item.chargebee_api_key.password
-    "DATABASE_URL"      = heroku_addon.db.config_var_values["DATABASE_URL"]
+    "DATABASE_URL"      = digitalocean_database_cluster.main.uri
     "SECRET_KEY_BASE"   = random_bytes.rails_secret.hex
     "SENDGRID_PASSWORD" = data.onepassword_item.sendgrid_key.password
     "SENDGRID_USERNAME" = "apikey"
