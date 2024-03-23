@@ -59,6 +59,11 @@ resource "vercel_project" "hub" {
     },
   ]
 
+  # Hub depends on VERCEL_URL; see also: https://vercel.com/docs/security/deployment-protection#migrating-to-standard-protection
+  vercel_authentication = {
+      deployment_type = "only_preview_deployments"
+  }
+
   # close to QURI database on DigitalOcean
   serverless_function_region = "iad1"
 }

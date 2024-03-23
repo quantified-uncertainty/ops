@@ -14,28 +14,23 @@ terraform {
   required_providers {
     onepassword = {
       source  = "1Password/onepassword"
-      version = "1.4.1"
     }
 
     digitalocean = {
       source  = "digitalocean/digitalocean"
-      version = "2.34.1"
     }
 
     vercel = {
       source  = "vercel/vercel"
-      version = "~> 0.4"
     }
 
     github = {
       source  = "integrations/github"
-      version = "~> 5.0"
     }
 
     # Configured in db.tf
     postgresql = {
       source  = "cyrilgdn/postgresql"
-      version = "~> 1.20"
     }
   }
 }

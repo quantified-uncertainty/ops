@@ -19,6 +19,11 @@ resource "vercel_project" "metaforecast" {
     repo              = "quantified-uncertainty/metaforecast"
     type              = "github"
   }
+
+  # Metaforecast depends on VERCEL_URL; see also: https://vercel.com/docs/security/deployment-protection#migrating-to-standard-protection
+  vercel_authentication = {
+      deployment_type = "only_preview_deployments"
+  }
 }
 
 module "metaforecast_domain" {

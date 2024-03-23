@@ -14,22 +14,18 @@ terraform {
   required_providers {
     onepassword = {
       source  = "1Password/onepassword"
-      version = "1.4.1"
     }
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.27.0"
     }
 
     digitalocean = {
       source  = "digitalocean/digitalocean"
-      version = "2.34.1"
     }
 
     github = {
       source  = "integrations/github"
-      version = "~> 5.0"
     }
   }
 }
