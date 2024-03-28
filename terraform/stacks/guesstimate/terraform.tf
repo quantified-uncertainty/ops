@@ -13,36 +13,32 @@ terraform {
 
   required_providers {
     onepassword = {
-      source  = "1Password/onepassword"
+      source = "1Password/onepassword"
     }
 
     auth0 = {
-      source  = "auth0/auth0"
+      source = "auth0/auth0"
     }
 
     digitalocean = {
-      source  = "digitalocean/digitalocean"
+      source = "digitalocean/digitalocean"
     }
 
     vercel = {
-      source  = "vercel/vercel"
-    }
-
-    heroku = {
-      source  = "heroku/heroku"
+      source = "vercel/vercel"
     }
 
     github = {
-      source  = "integrations/github"
+      source = "integrations/github"
     }
 
     sentry = {
       # Not official, but blessed by Sentry; https://blog.sentry.io/introducing-terraform-for-sentry/
-      source  = "jianyuan/sentry"
+      source = "jianyuan/sentry"
     }
 
     kubernetes = {
-      source  = "hashicorp/kubernetes"
+      source = "hashicorp/kubernetes"
     }
   }
 }
@@ -66,10 +62,6 @@ provider "vercel" {
 
 provider "sentry" {
   token = module.providers.sentry_token
-}
-
-provider "heroku" {
-  api_key = module.providers.heroku_api_key
 }
 
 provider "kubernetes" {
