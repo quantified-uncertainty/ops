@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "terraform"
+    directory: "/terraform/stacks/quri"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "terraform"
+    directory: "/terraform/stacks/guesstimate"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "terraform"
+    directory: "/terraform/stacks/k8s"
+    schedule:
+      interval: "monthly"
