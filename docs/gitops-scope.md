@@ -12,7 +12,7 @@ Written by @berekuk.
 
 ## Vercel
 
-**Under Terraform control, don't configure things through UI.**
+**Under Terraform control. Don't configure things through UI.**
 
 Use `vercel_project` resources and our custom `modules/vercel-domain` to create new projects.
 
@@ -20,7 +20,7 @@ There might be some legacy projects which are not described in Terraform yet; we
 
 ## DigitalOcean
 
-**Under Terraform control, don't configure things through UI.**
+**Under Terraform control. Don't configure things through UI.**
 
 ## Heroku
 
@@ -37,6 +37,8 @@ NameCheap does have a Terraform provider, but its API is locked down by default 
 ## AWS
 
 **Not under Terraform control. We don't use AWS.**
+
+Except for S3 bucket containing Terraform state, which is provisioned by `terraform/bootstrap`.
 
 ## GitHub
 
