@@ -47,6 +47,12 @@ apps:
 - name: loki
   automated: null
 
+- name: elastic-system
+  source:
+    chart: eck-operator
+    repoURL: https://helm.elastic.co
+    targetRevision: 2.11.1
+
 # CI and templates
 - name: guesstimate-server-ci
   namespace: quri-ci
