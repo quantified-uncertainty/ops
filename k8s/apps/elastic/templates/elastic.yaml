@@ -7,5 +7,14 @@ spec:
   nodeSets:
   - name: default
     count: 1
+    podTemplate:
+      spec:
+        containers:
+        - name: elasticsearch
+          resources:
+            requests:
+              memory: 0.5Gi
+            limits:
+              memory: 1Gi
     config:
       node.store.allow_mmap: false
