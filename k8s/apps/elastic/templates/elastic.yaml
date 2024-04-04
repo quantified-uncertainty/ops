@@ -18,3 +18,7 @@ spec:
               memory: 1Gi
     config:
       node.store.allow_mmap: false
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
