@@ -1,5 +1,7 @@
 apps:
-# Infra-level apps
+# Infra-level apps.
+# If `source` is set, it'll load a remote Helm chart.
+# Otherwise, it'll load the `k8s/apps/{name}` dir from this repo.
 - name: argocd
   automated: null
 
@@ -47,11 +49,16 @@ apps:
 - name: loki
   automated: null
 
+# ECK - operator for managing Elastic
 - name: elastic-system
   source:
     chart: eck-operator
     repoURL: https://helm.elastic.co
     targetRevision: 2.11.1
+
+# Elastic cluster itself; we use a single chart for all QURI data, for now.
+# (We can spin up separate Elastic instances for different QURI projects, but that would consume more memory and other resources.)
+- name: elastic
 
 # CI and templates
 - name: guesstimate-server-ci
