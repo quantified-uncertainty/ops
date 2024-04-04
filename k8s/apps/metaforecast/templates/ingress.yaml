@@ -1,23 +1,23 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: elastic-quri
+  name: {{ .Release.Name }}-search
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
   rules:
-  - host: {{ .Values.host }}
+  - host: {{ .Values.elastic.host | required "elastic host is required" }}
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: quri-es-http
+            name: {{ .Release.Name }}-search-es-http
             port:
               number: 9200
   tls:
   - hosts:
-    - {{ .Values.host }}
-    secretName: {{ .Release.Name }}-quri-tls
+    - {{ .Values.elastic.host | required "elastic host is required" }}
+    secretName: {{ .Release.Name }}-search-tls

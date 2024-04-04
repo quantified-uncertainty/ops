@@ -56,12 +56,11 @@ apps:
     repoURL: https://helm.elastic.co
     targetRevision: 2.11.1
 
-# Elastic cluster itself; we use a single chart for all QURI data, for now.
-# (We can spin up separate Elastic instances for different QURI projects, but that would consume more memory and other resources.)
-- name: elastic
-
 # CI and templates
 - name: guesstimate-server-ci
   namespace: quri-ci
 
 # Note: guesstimate-server app is deployed by Argo Workflows dynamically, so it's not listed here.
+
+# QURI apps
+- name: metaforecast
