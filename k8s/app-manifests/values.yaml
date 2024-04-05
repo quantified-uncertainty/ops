@@ -55,6 +55,12 @@ apps:
     chart: eck-operator
     repoURL: https://helm.elastic.co
     targetRevision: 2.11.1
+    helm:
+      valuesObject:
+        config:
+          metricsPort: 8080
+        podMonitor:
+          enabled: true
 
 # CI and templates
 - name: guesstimate-server-ci
