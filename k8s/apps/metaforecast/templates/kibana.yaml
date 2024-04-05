@@ -1,0 +1,11 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: {{ .Release.Name }}-search
+spec:
+  version: 8.13.1
+  nodeSets:
+  - name: default
+    count: 1
+    elasticsearchRef:
+      name: {{ .Release.Name }}-search
