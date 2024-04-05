@@ -13,9 +13,10 @@ spec:
         - name: elasticsearch
           resources:
             requests:
-              memory: 0.5Gi
+              memory: 0.7Gi
             limits:
-              memory: 1Gi
+              memory: 0.7Gi
+              cpu: 0.1
     config:
       node.store.allow_mmap: false
   http:
