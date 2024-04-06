@@ -29,6 +29,7 @@ kube-prometheus-stack:
   alertmanager:
     enabled: true
     alertmanagerSpec:
+      externalUrl: https://alerts.k8s.quantifieduncertainty.org
       alertmanagerConfiguration:
         name: global-config
 
