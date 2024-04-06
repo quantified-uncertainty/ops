@@ -3,4 +3,5 @@ name: metaforecast
 version: "0.1.0"
 dependencies:
 - name: metaforecast-search
+  version: "0.1.0"
   repository: file://../../charts/elastic
