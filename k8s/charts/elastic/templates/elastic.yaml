@@ -6,17 +6,16 @@ spec:
   version: 8.13.1
   nodeSets:
   - name: default
-    count: 1
+    count: 2
     podTemplate:
       spec:
         containers:
         - name: elasticsearch
           resources:
             requests:
-              memory: 1Gi
+              memory: 1.5Gi
             limits:
-              memory: 1Gi
-              cpu: 0.5
+              memory: 1.5Gi
     config:
       node.store.allow_mmap: false
   http:
