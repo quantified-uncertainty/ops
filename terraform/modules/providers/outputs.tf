@@ -8,7 +8,7 @@ data "onepassword_vault" "main" {
 }
 
 output "op_vault" {
-    value = data.onepassword_vault.main.uuid
+  value = data.onepassword_vault.main.uuid
 }
 
 # DigitalOcean token
@@ -19,7 +19,7 @@ data "onepassword_item" "do_token" {
 }
 
 output "do_token" {
-  value = data.onepassword_item.do_token.password
+  value     = data.onepassword_item.do_token.password
   sensitive = true
 }
 
@@ -31,12 +31,17 @@ data "onepassword_item" "vercel_api_token" {
 }
 
 output "vercel_api_token" {
-  value = data.onepassword_item.vercel_api_token.password
+  value     = data.onepassword_item.vercel_api_token.password
   sensitive = true
 }
 
 output "vercel_team" {
-    value = "quantified-uncertainty"
+  value = "quantified-uncertainty"
+}
+
+output "vercel_team_id" {
+  # From https://vercel.com/quantified-uncertainty/~/settings
+  value = "team_rtBRiFLJJzdbwXiEcgYyJ6ji"
 }
 
 # Sentry token
