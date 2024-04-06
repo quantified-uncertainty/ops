@@ -9,6 +9,13 @@ spec:
     count: 1
     podTemplate:
       spec:
+        initContainers:
+        - name: install-plugins
+          command:
+          - sh
+          - -c
+          - |
+            bin/elasticsearch-plugin install -b https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/7.17.7.0/prometheus-exporter-7.17.7.0.zip
         containers:
         - name: elasticsearch
           resources:
