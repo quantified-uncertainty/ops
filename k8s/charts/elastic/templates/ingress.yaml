@@ -14,7 +14,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: {{ .Release.Name }}-es-http
+            name: {{ .Values.name }}-es-http
             port:
               number: 9200
   tls:
