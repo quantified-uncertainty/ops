@@ -1,2 +1,2 @@
-metaforecast-search:
+elastic:
   host: metaforecast-elastic.k8s.quantifieduncertainty.org
