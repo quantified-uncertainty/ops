@@ -22,14 +22,14 @@ data "onepassword_item" "argocd_github_oauth" {
   title = "GitHub Argo CD Client Secret"
 }
 
-data "onepassword_item" "quri_integrations_for_guesstimate_github_app" {
-  vault = module.providers.op_vault
-  title = "QURI Integrations GitHub App Private Key"
-}
-
-data "onepassword_item" "quri_integrations_github_app" {
+data "onepassword_item" "quri_integrations_for_guesstimate_github_app_private_key" {
   vault = module.providers.op_vault
   title = "QURI Integrations for Guesstimate GitHub App Private Key"
+}
+
+data "onepassword_item" "quri_integrations_github_app_oauth" {
+  vault = module.providers.op_vault
+  title = "QURI Integrations GitHub App - OAuth credentials"
 }
 
 # This secret is used by Argo CD configuration to authenticate with GitHub.
@@ -91,8 +91,24 @@ resource "kubernetes_secret" "argo_workflows_github_token_credentials" {
   data = {
     app-id                         = var.github_app_guesstimate.app_id
     getguesstimate-installation-id = var.github_app_guesstimate.installation_id
-    private-key                    = data.onepassword_item.quri_integrations_github_app.note_value
+    private-key                    = data.onepassword_item.quri_integrations_for_guesstimate_github_app_private_key.note_value
   }
 }
 
-# TODO: same resource for quantified-uncertainty GitHub app
+resource "random_password" "oauth2_proxy_cookie_secret" {
+  length  = 32
+  special = false
+}
+
+resource "kubernetes_secret" "oauth2_proxy_secret" {
+  metadata {
+    name      = "quri-oauth2-proxy"
+    namespace = "prometheus"
+  }
+
+  data = {
+    clientID     = data.onepassword_item.quri_integrations_github_app_oauth.username
+    clientSecret = data.onepassword_item.quri_integrations_github_app_oauth.password
+    cookieSecret = random_password.oauth2_proxy_cookie_secret.result
+  }
+}

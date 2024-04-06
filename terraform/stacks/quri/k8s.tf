@@ -7,7 +7,7 @@ resource "digitalocean_kubernetes_cluster" "quri" {
     name       = "worker-pool"
     size       = "s-2vcpu-4gb"
     auto_scale = true
-    min_nodes  = 3
+    min_nodes  = 4
     max_nodes  = 5
   }
 

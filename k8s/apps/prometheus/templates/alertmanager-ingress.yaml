@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: alertmanager-oauth2-proxy
+  template:
+    metadata:
+      labels:
+        k8s-app: alertmanager-oauth2-proxy
+    spec:
+      containers:
+      - args:
+        - --provider=github
+        - --upstream=file:///dev/null
+        - --http-address=0.0.0.0:4180
+        env:
+        - name: OAUTH2_PROXY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: quri-oauth2-proxy # created by Terraform
+              key: clientID
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: quri-oauth2-proxy
+              key: clientSecret
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: quri-oauth2-proxy
+              key: cookieSecret
+        - name: OAUTH2_PROXY_GITHUB_USERS
+          value: "{{ .Values.alertmanager.auth_users }}"
+        image: quay.io/oauth2-proxy/oauth2-proxy:latest
+        imagePullPolicy: Always
+        name: oauth2-proxy
+        ports:
+        - containerPort: 4180
+          protocol: TCP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: authmanager-oauth2-proxy
+spec:
+  ports:
+  - port: 4180
+    targetPort: 4180
+  selector:
+    k8s-app: authmanager-oauth2-proxy
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alertmanager-oauth2-proxy
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.alertmanager.host }}
+    http:
+      paths:
+      - path: /oauth2
+        pathType: Prefix
+        backend:
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
+  tls:
+  - hosts:
+    - {{ .Values.alertmanager.host }}
+    secretName: alertmanager-oauth2-proxy-tls
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+  name: alertmanager
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.alertmanager.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: alertmanager-operated
+            port:
+              number: 9100
