@@ -1,3 +1,15 @@
+locals {
+  domain                = "metaforecast.org"
+  elastic_host          = "https://metaforecast-elastic.k8s.quantifieduncertainty.org"
+  elastic_k8s_namespace = "metaforecast"
+  elastic_k8s_secret    = "metaforecast-search-es-elastic-user"
+}
+
+resource "digitalocean_project" "main" {
+  name        = local.domain
+  description = "Metaforecast resources."
+}
+
 data "onepassword_item" "goodjudgmentopen_cookie" {
   vault = "Metaforecast"
   title = "Good Judgment Open cookie"
@@ -31,13 +43,13 @@ data "onepassword_item" "imgur_bearer" {
 # Elasticsearch must be configured in Kubernetes before applying this stack.
 data "kubernetes_secret" "elastic" {
   metadata {
-    namespace = "metaforecast"
-    name      = "metaforecast-search-es-elastic-user"
+    namespace = local.elastic_k8s_namespace
+    name      = local.elastic_k8s_secret
   }
 }
 
 module "metaforecast" {
-  source = "git::https://github.com/quantified-uncertainty/metaforecast.git//tf?depth=1&ref=elastic"
+  source = "git::https://github.com/quantified-uncertainty/metaforecast.git//tf?depth=1"
 
   metaforecast_env = {
     GOODJUDGMENTOPENCOOKIE  = data.onepassword_item.goodjudgmentopen_cookie.password
@@ -47,26 +59,26 @@ module "metaforecast" {
     SECRET_BETFAIR_ENDPOINT = data.onepassword_item.secret_betfair_endpoint.password
     IMGUR_BEARER            = data.onepassword_item.imgur_bearer.password
 
-    NEXT_PUBLIC_SITE_URL = "https://metaforecast.org"
+    NEXT_PUBLIC_SITE_URL = "https://${local.domain}"
 
-    ELASTIC_HOST     = "https://metaforecast-elastic.k8s.quantifieduncertainty.org"
+    ELASTIC_HOST     = local.elastic_host
     ELASTIC_INDEX    = "metaforecast"
     ELASTIC_USER     = "elastic"
     ELASTIC_PASSWORD = data.kubernetes_secret.elastic.data["elastic"]
   }
+
+  digitalocean_project_id = digitalocean_project.main.id
 }
 
-import {
-  to = module.metaforecast.vercel_project.main
-  id = "prj_PamguVNGEisOv9VJni6FKylJPUiA"
+module "domain" {
+  source = "../../modules/vercel-domain"
+
+  domain     = local.domain
+  project_id = module.metaforecast.vercel_project_id
+  www        = false
 }
 
-import {
-  to = module.metaforecast.digitalocean_database_cluster.main
-  id = "09b083f5-1ed3-4259-bbca-b4870a77ffe4"
-}
-
-import {
-  to = module.metaforecast.heroku_app.backend
-  id = "metaforecast-backend"
+resource "digitalocean_project_resources" "domain" {
+  project   = digitalocean_project.main.id
+  resources = module.domain.digitalocean_urns
 }
