@@ -60,6 +60,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: alertmanager-oauth2-proxy
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
   rules:
@@ -85,6 +87,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
     nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
   name: alertmanager
 spec:
   ingressClassName: nginx
@@ -99,3 +102,7 @@ spec:
             name: alertmanager-operated
             port:
               number: 9093
+  tls:
+  - hosts:
+    - {{ .Values.alertmanager.host }}
+    secretName: alertmanager-oauth2-proxy-tls
