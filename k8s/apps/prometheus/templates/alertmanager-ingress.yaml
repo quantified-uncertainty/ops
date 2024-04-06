@@ -70,7 +70,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: oauth2-proxy
+            name: alertmanager-oauth2-proxy
             port:
               number: 4180
   tls:
@@ -98,4 +98,4 @@ spec:
           service:
             name: alertmanager-operated
             port:
-              number: 9100
+              number: 9093
