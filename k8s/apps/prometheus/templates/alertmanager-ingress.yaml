@@ -47,13 +47,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: authmanager-oauth2-proxy
+  name: alertmanager-oauth2-proxy
 spec:
   ports:
   - port: 4180
     targetPort: 4180
   selector:
-    k8s-app: authmanager-oauth2-proxy
+    k8s-app: alertmanager-oauth2-proxy
 ---
 
 apiVersion: networking.k8s.io/v1
