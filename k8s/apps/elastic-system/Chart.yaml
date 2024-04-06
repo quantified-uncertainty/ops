@@ -1,0 +1,7 @@
+apiVersion: v2
+name: elastic-system
+version: "0.1.0"
+dependencies:
+- name: eck-operator
+  repository: https://helm.elastic.co
+  version: 2.11.1

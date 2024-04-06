@@ -1,0 +1,5 @@
+eck-operator:
+  config:
+    metricsPort: 8080
+  podMonitor:
+    enabled: true

@@ -1,23 +1,23 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-search
+  name: {{ .Release.Name }}
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
   rules:
-  - host: {{ .Values.elastic.host | required "elastic host is required" }}
+  - host: {{ .Values.host | required "elastic host is required" }}
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: {{ .Release.Name }}-search-es-http
+            name: {{ .Release.Name }}-es-http
             port:
               number: 9200
   tls:
   - hosts:
-    - {{ .Values.elastic.host | required "elastic host is required" }}
-    secretName: {{ .Release.Name }}-search-tls
+    - {{ .Values.host | required "elastic host is required" }}
+    secretName: {{ .Release.Name }}-tls

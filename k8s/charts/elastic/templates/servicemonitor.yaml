@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  endpoints:
+  - interval: 60s
+    path: "/_prometheus/metrics"
+    basicAuth:
+      username:
+        # constant "elastic"
+        name: {{ .Release.Name }}-servicemonitor-user
+        key: name
+      password:
+        name: {{ .Release.Name }}-es-elastic-user
+        key: elastic
+selector:
+  matchLabels:
+    common.k8s.elastic.co/type: elasticsearch
+    elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-servicemonitor-user
+type: Opaque
+data:
+  name: {{ "elastic" | b64enc }}
