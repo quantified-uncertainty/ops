@@ -17,6 +17,9 @@ spec:
         - --provider=github
         - --upstream=file:///dev/null
         - --http-address=0.0.0.0:4180
+        - --email-domain=*
+        - --github-org={{ .Values.alertmanager.auth.github_org }}
+        - --github-team={{ .Values.alertmanager.auth.github_team | quote }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
@@ -33,8 +36,6 @@ spec:
             secretKeyRef:
               name: quri-oauth2-proxy
               key: cookieSecret
-        - name: OAUTH2_PROXY_GITHUB_USERS
-          value: "{{ .Values.alertmanager.auth_users }}"
         image: quay.io/oauth2-proxy/oauth2-proxy:latest
         imagePullPolicy: Always
         name: oauth2-proxy
