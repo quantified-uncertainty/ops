@@ -14,10 +14,10 @@ spec:
       password:
         name: {{ .Values.name }}-es-elastic-user
         key: elastic
-selector:
-  matchLabels:
-    common.k8s.elastic.co/type: elasticsearch
-    elasticsearch.k8s.elastic.co/cluster-name: {{ .Values.name }}
+  selector:
+    matchLabels:
+      common.k8s.elastic.co/type: elasticsearch
+      elasticsearch.k8s.elastic.co/cluster-name: {{ .Values.name }}
 ---
 apiVersion: v1
 kind: Secret
