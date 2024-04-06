@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Values.name | required "name is required" }}
 spec:
   endpoints:
   - interval: 60s
@@ -9,20 +9,20 @@ spec:
     basicAuth:
       username:
         # constant "elastic"
-        name: {{ .Release.Name }}-servicemonitor-user
+        name: {{ .Values.name }}-servicemonitor-user
         key: name
       password:
-        name: {{ .Release.Name }}-es-elastic-user
+        name: {{ .Values.name }}-es-elastic-user
         key: elastic
 selector:
   matchLabels:
     common.k8s.elastic.co/type: elasticsearch
-    elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+    elasticsearch.k8s.elastic.co/cluster-name: {{ .Values.name }}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Name }}-servicemonitor-user
+  name: {{ .Values.name }}-servicemonitor-user
 type: Opaque
 data:
   name: {{ "elastic" | b64enc }}

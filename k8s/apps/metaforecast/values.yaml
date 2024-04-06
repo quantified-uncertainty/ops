@@ -1,2 +1,3 @@
 elastic:
+  name: metaforecast-search
   host: metaforecast-elastic.k8s.quantifieduncertainty.org

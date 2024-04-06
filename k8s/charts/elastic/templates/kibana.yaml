@@ -1,9 +1,9 @@
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Values.name | required "name is required" }}
 spec:
   version: 8.13.1
   count: 1
   elasticsearchRef:
-    name: {{ .Release.Name }}
+    name: {{ .Values.name | required "name is required" }}
