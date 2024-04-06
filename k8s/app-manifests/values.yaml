@@ -2,6 +2,9 @@ apps:
 # Infra-level apps.
 # If `source` is set, it'll load a remote Helm chart.
 # Otherwise, it'll load the `k8s/apps/{name}` dir from this repo.
+#
+# For infra-level apps, `automated: null` is set intentionally to avoid accidents.
+# Please sync them through Argo CD Web UI or CLI, and check the diffs carefully before sync.
 - name: argocd
   automated: null
 
@@ -20,6 +23,7 @@ apps:
     targetRevision: 0.20.1
 
 - name: ingress-nginx
+  automated: null
   source:
     chart: ingress-nginx
     repoURL: https://kubernetes.github.io/ingress-nginx
@@ -30,13 +34,8 @@ apps:
           extraArgs:
             "enable-ssl-passthrough": "" # necessary for proxying to ArgoCD
 
-# Analytics and monitoring
-- name: metabase
-  info:
-  - name: URL
-    value: https://metabase.k8s.quantifieduncertainty.org
-
 - name: prometheus
+  automated: null
   # Argo CD is having some trouble with Prometheus CRDs (they're too large).
   # It might be useful to deploy
   # https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-operator-crds
@@ -49,9 +48,15 @@ apps:
 - name: loki
   automated: null
 
-# ECK - operator for managing Elastic
+# ECK - operator for managing Elastic (this app won't deploy any Elasticsearch clusters by itself)
 - name: elastic-system
   automated: null
+
+# Analytics and monitoring
+- name: metabase
+  info:
+  - name: URL
+    value: https://metabase.k8s.quantifieduncertainty.org
 
 # CI and templates
 - name: guesstimate-server-ci
