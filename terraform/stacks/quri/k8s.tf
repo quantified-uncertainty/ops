@@ -6,7 +6,9 @@ resource "digitalocean_kubernetes_cluster" "quri" {
   node_pool {
     name       = "worker-pool"
     size       = "s-2vcpu-4gb"
-    node_count = 3
+    auto_scale = true
+    min_nodes  = 3
+    max_nodes  = 5
   }
 
   lifecycle {
