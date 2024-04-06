@@ -19,7 +19,7 @@ spec:
         - --http-address=0.0.0.0:4180
         - --email-domain=*
         - --github-org={{ .Values.alertmanager.auth.github_org }}
-        - --github-team={{ .Values.alertmanager.auth.github_team | quote }}
+        - --github-team={{ .Values.alertmanager.auth.github_team }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
           valueFrom:
