@@ -9,3 +9,4 @@ patches:
 - path: patches/inject-workflows-sso-secret.yaml
 - path: patches/config.yaml
 - path: patches/rbac.yaml
+- path: patches/enable-exec.yaml
