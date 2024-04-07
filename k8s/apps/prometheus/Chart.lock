@@ -1,9 +1,0 @@
-dependencies:
-- name: kube-prometheus-stack
-  repository: https://prometheus-community.github.io/helm-charts
-  version: 56.21.4
-- name: github-auth-ingress
-  repository: file://../../charts/github-auth-ingress
-  version: 0.1.0
-digest: sha256:1e85ad947089ea0289e6def7011ea0c261663571df18573d4db488e6a98612d0
-generated: "2024-04-06T22:31:07.113991-03:00"
