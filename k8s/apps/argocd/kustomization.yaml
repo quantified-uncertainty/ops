@@ -22,5 +22,5 @@ patches:
   target:
     group: rbac.authorization.k8s.io
     version: v1
-    kind: Role
+    kind: ClusterRole
     name: argocd-server
