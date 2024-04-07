@@ -11,16 +11,9 @@ apps:
 - name: argo-workflows
   automated: null
 
+# Core services for ingress
 - name: cert-manager
   automated: null
-
-- name: cnpg
-  automated: null
-  namespace: cnpg-system # default namespace used in cnpg docs
-  source:
-    repoURL: https://cloudnative-pg.github.io/charts
-    chart: cloudnative-pg
-    targetRevision: 0.20.1
 
 - name: ingress-nginx
   automated: null
@@ -33,6 +26,26 @@ apps:
         controller:
           extraArgs:
             "enable-ssl-passthrough": "" # necessary for proxying to ArgoCD
+
+# Metrics and observability
+- name: metrics-server
+  namespace: kube-system # why not, it's usually there
+  automated: null
+  source:
+    chart: metrics-server
+    targetRevision: "3.12.1"
+    repoURL: https://kubernetes-sigs.github.io/metrics-server
+
+- name: kubernetes-dashboard
+  automated: null
+  source:
+    chart: kubernetes-dashboard
+    targetRevision: "7.2.0"
+    repoURL: https://kubernetes.github.io/dashboard
+    helm:
+      valuesObject:
+        ingress:
+          enabled: true
 
 - name: prometheus
   automated: null
@@ -48,11 +61,20 @@ apps:
 - name: loki
   automated: null
 
+# PostgresQL operator
+- name: cnpg
+  automated: null
+  namespace: cnpg-system # default namespace used in cnpg docs
+  source:
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cloudnative-pg
+    targetRevision: 0.20.1
+
 # ECK - operator for managing Elastic (this app won't deploy any Elasticsearch clusters by itself)
 - name: elastic-system
   automated: null
 
-# Analytics and monitoring
+# Analytics
 - name: metabase
   info:
   - name: URL

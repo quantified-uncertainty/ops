@@ -15,11 +15,3 @@ dependencies:
   version: "0.1.0"
   repository: file://../../charts/github-auth-ingress
   alias: alertmanager-ingress
-
-- name: metrics-server
-  version: "3.12.1"
-  repository: https://kubernetes-sigs.github.io/metrics-server
-
-- name: kubernetes-dashboard
-  version: "7.2.0"
-  repository: https://kubernetes.github.io/dashboard

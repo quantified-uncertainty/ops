@@ -8,10 +8,6 @@ alertmanager-ingress:
     name: alertmanager-operated
     port: 9093
 
-kubernetes-dashboard:
-  ingress:
-    enabled: true
-
 kube-prometheus-stack:
   # Based on https://github.com/digitalocean/Kubernetes-Starter-Kit-Developers/blob/main/04-setup-observability/assets/manifests/prom-stack-values-v35.5.1.yaml
 
