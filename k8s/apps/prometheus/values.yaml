@@ -1,11 +1,10 @@
 grafana_host: grafana.k8s.quantifieduncertainty.org
 prometheus_host: prometheus.k8s.quantifieduncertainty.org
 
-alertmanager:
-  host: alerts.k8s.quantifieduncertainty.org
-  auth:
-    github_org: quantified-uncertainty
-    github_team: kubernetes-admins
+alertmanager-ingress:
+  name: alertmanager
+  service: alertmanager-operated
+  port: 9093
 
 kube-prometheus-stack:
   # Based on https://github.com/digitalocean/Kubernetes-Starter-Kit-Developers/blob/main/04-setup-observability/assets/manifests/prom-stack-values-v35.5.1.yaml

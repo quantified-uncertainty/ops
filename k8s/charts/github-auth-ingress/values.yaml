@@ -1,0 +1,11 @@
+name: "" # e.g. "alertmanager"
+host: "" # e.g. "alerts.k8s.quantifieduncertainty.org"
+auth:
+  github_org: quantified-uncertainty
+  github_team: kubernetes-admins
+
+oauth_secret: quri-oauth2-proxy # created by Terraform in prometheus namespace
+
+service:
+  name: "" # e.g. "alertmanager-operated"
+  port: 0 # e.g. 9093

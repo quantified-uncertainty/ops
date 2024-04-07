@@ -2,11 +2,16 @@ apiVersion: v2
 name: prometheus
 version: "0.1.0"
 dependencies:
-  - name: kube-prometheus-stack
-    repository: https://prometheus-community.github.io/helm-charts
-    # Note: prometheus-stack has tons of huge CRDs, which are hard to ArgoCD to process, and also won't be updated by Helm.
-    # So when you update this, check out
-    # https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#upgrading-chart,
-    # which will give you a few kubectl commands to run by hand.
-    # See also: this issue: https://github.com/argoproj/argo-cd/issues/820
-    version: "56.21.4"
+- name: kube-prometheus-stack
+  repository: https://prometheus-community.github.io/helm-charts
+  # Note: prometheus-stack has tons of huge CRDs, which are hard to ArgoCD to process, and also won't be updated by Helm.
+  # So when you update this, check out
+  # https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#upgrading-chart,
+  # which will give you a few kubectl commands to run by hand.
+  # See also: this issue: https://github.com/argoproj/argo-cd/issues/820
+  version: "56.21.4"
+
+- name: github-auth-ingress
+  version: "0.1.0"
+  repository: file://../../charts/github-auth-ingress
+  alias: alertmanager-ingress
