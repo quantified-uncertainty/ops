@@ -93,7 +93,7 @@ spec:
         path: /workspace
         git:
           repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ .inputs.parameters.repo }}`}}
-          revision: {{`{{ inputs.parameters.branch }}`}}
+          revision: "{{`{{ inputs.parameters.branch }}`}}"
     container:
       image: gcr.io/kaniko-project/executor:latest
       volumeMounts:
