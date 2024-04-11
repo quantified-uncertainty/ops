@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: guesstimate-server-ci
+spec:
+  serviceAccountName: quri-ci
+  entrypoint: main
+
+  steps:
+  - - name: main
+      templateRef:
+        name: common-ci
+        template: all
+      arguments:
+        parameters:
+        - name: github-org
+          value: guesstimate
+        - name: repo
+          value: guesstimate-server
+        - name: branch
+          value: main
+        - name: argo-app
+          value: guesstimate-server
+        - name: argo-namespace
+          value: guesstimate

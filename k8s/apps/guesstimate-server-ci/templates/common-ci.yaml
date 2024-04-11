@@ -1,10 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: guesstimate-server-ci
+  name: common-ci
 spec:
   serviceAccountName: quri-ci
-  entrypoint: all
+  entrypoint: run
+
+  arguments:
+    parameters:
+      - name: github-org
+        value: quantified-uncertainty
+      - name: repo
+      - name: branch
+        value: main
+      - name: argo-app
+      - name: argo-namespace
 
   volumes:
   - name: quri-registry-secret
@@ -12,7 +22,7 @@ spec:
       secretName: quri-registry-write
 
   templates:
-  - name: all
+  - name: run
     steps:
     - - name: obtain-github-token
         template: obtain-github-token
@@ -28,18 +38,18 @@ spec:
       - name: PRIVATE_KEY
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-for-guesstimate-github-app
+            name: quri-integrations-for-{{ inputs.parameters.github-org }}-github-app
             key: private-key
       - name: APP_ID
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-for-guesstimate-github-app
+            name: quri-integrations-for-{{ inputs.parameters.github-org }}-github-app
             key: app-id
       - name: INSTALLATION_ID
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-for-guesstimate-github-app
-            key: getguesstimate-installation-id
+            name: quri-integrations-for-{{ inputs.parameters.github-org }}-github-app
+            key: installation-id
     outputs:
       parameters:
       - name: github-token
@@ -55,15 +65,15 @@ spec:
       - name: source
         path: /workspace
         git:
-          repo: {{ .Values.git.repo }}
-          revision: {{ .Values.git.revision }}
+          repo: https://github.com/{{ inputs.parameters.github-org }}/{{ .inputs.parameters.repo }}
+          revision: {{ inputs.parameters.branch }}
     container:
       image: gcr.io/kaniko-project/executor:latest
       volumeMounts:
       - name: quri-registry-secret
         mountPath: /kaniko/.docker
       # TODO - mount cache volume
-      args: ["--destination=registry.digitalocean.com/quri/guesstimate-server",
+      args: ["--destination=registry.digitalocean.com/quri/{{ inputs.parameters.repo }}",
              "--skip-default-registry-fallback",
              "--cache=true"]
 
@@ -71,14 +81,14 @@ spec:
     resource:
       action: apply
       # TODO:
-      # - app name based on git branch
+      # - app name based on git branch, for preview deployments
       # - remove app if branch is deleted
       # - correct image tag
       manifest: |-
         apiVersion: argoproj.io/v1alpha1
         kind: Application
         metadata:
-          name: guesstimate-server
+          name: {{ inputs.parameters.argo-app }}
           namespace: argocd
         spec:
           project: default
@@ -89,7 +99,7 @@ spec:
               prune: true
           source:
             repoURL: https://github.com/quantified-uncertainty/ops
-            path: k8s/apps/guesstimate-server
+            path: k8s/apps/{{ inputs.parameters.argo-app }}
             targetRevision: HEAD
             helm:
               valuesObject:
@@ -97,4 +107,4 @@ spec:
                   tag: latest # TODO - get this from git revision
           destination:
             server: https://kubernetes.default.svc
-            namespace: guesstimate
+            namespace: {{ inputs.parameters.argo-namespace }}
