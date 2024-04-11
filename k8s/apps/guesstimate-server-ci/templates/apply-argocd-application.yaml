@@ -44,4 +44,4 @@ spec:
                   tag: {{`{{ inputs.parameters.image-tag }}`}}
           destination:
             server: https://kubernetes.default.svc
-            namespace: {{`{{ inputs.parameters.namespace ?? inputs.parameters.name }}`}}
+            namespace: {{`{{= inputs.parameters.namespace ?? inputs.parameters.name }}`}}
