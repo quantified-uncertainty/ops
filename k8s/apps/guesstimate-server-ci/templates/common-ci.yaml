@@ -18,11 +18,6 @@ spec:
       - name: argo-app
       - name: argo-namespace
 
-  volumes:
-  - name: quri-registry-secret
-    secret:
-      secretName: quri-registry-write
-
   templates:
   - name: run
     inputs:
@@ -101,6 +96,10 @@ spec:
         git:
           repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ .inputs.parameters.repo }}`}}
           revision: "{{`{{ inputs.parameters.branch }}`}}"
+    volumes:
+    - name: quri-registry-secret
+      secret:
+        secretName: quri-registry-write
     container:
       image: gcr.io/kaniko-project/executor:latest
       volumeMounts:
