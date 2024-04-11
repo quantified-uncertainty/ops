@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: docker-build
+spec:
+  serviceAccountName: quri-ci
+  entrypoint: main
+
+  templates:
+  - name: main
+    inputs:
+      parameters:
+      - name: github-org
+        value: quantified-uncertainty # default
+      - name: repo
+      - name: branch
+        value: main # default
+      - name: directory
+        value: ""
+      - name: image-name
+      artifacts:
+      - name: source
+        path: /workspace
+        git:
+          repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ inputs.parameters.repo }}`}}
+          revision: "{{`{{ inputs.parameters.branch }}`}}"
+    volumes:
+    - name: quri-registry-secret
+      secret:
+        secretName: quri-registry-write
+    container:
+      image: gcr.io/kaniko-project/executor:latest
+      volumeMounts:
+      - name: quri-registry-secret
+        mountPath: /kaniko/.docker
+      args: ["--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}",
+              "--context=dir:///workspace/{{`{{ inputs.parameters.directory }}`}}",
+              "--dockerfile=/workspace/{{`{{ inputs.parameters.directory }}`}}/Dockerfile",
+              "--skip-default-registry-fallback"]

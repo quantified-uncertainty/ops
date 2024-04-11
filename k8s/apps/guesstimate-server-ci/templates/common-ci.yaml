@@ -6,8 +6,10 @@ spec:
   serviceAccountName: quri-ci
   entrypoint: run
 
-  arguments:
-    parameters:
+  templates:
+  - name: run
+    inputs:
+      parameters:
       # either `quantified-uncertainty` or `getguesstimate`
       - name: github-org
         value: quantified-uncertainty
@@ -15,16 +17,6 @@ spec:
       - name: repo
       - name: branch
         value: main
-      - name: argo-app
-      - name: argo-namespace
-
-  templates:
-  - name: run
-    inputs:
-      parameters:
-      - name: github-org
-      - name: repo
-      - name: branch
       - name: argo-app
       - name: argo-namespace
     steps:
@@ -58,7 +50,9 @@ spec:
       parameters:
       - name: github-org
     container:
-      image: ghcr.io/quantified-uncertainty/github-credentials-obtainer:latest
+      image: registry.digitalocean.com/quri/github-credentials-obtainer
+      imagePullSecrets:
+      - name: quri-registry
       env:
       - name: PRIVATE_KEY
         valueFrom:

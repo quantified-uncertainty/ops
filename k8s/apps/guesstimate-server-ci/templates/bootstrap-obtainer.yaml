@@ -7,24 +7,20 @@ spec:
   entrypoint: main
 
   templates:
+  templates:
   - name: main
-    inputs:
-      artifacts:
-      - name: source
-        path: /workspace
-        git:
-          repo: https://github.com/quantified-uncertainty/ops
-          revision: master
-    volumes:
-    - name: quri-registry-secret
-      secret:
-        secretName: quri-registry-write
-    container:
-      image: gcr.io/kaniko-project/executor:latest
-      volumeMounts:
-      - name: quri-registry-secret
-        mountPath: /kaniko/.docker
-      args: ["--destination=registry.digitalocean.com/quri/github-credentials-obtainer",
-              "--context=dir:///workspace/tools/github-credentials-obtainer",
-              "--dockerfile=/workspace/tools/github-credentials-obtainer/Dockerfile",
-              "--skip-default-registry-fallback"]
+    steps:
+    - - name: docker-build
+        templateRef:
+          name: docker-build
+          template: main
+        arguments:
+          parameters:
+          - name: repo
+            value: ops
+          - name: branch
+            value: master
+          - name: image-name
+            value: github-credentials-obtainer
+          - name: directory
+            value: tools/github-credentials-obtainer
