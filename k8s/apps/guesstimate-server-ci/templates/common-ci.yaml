@@ -25,6 +25,13 @@ spec:
 
   templates:
   - name: run
+    inputs:
+      parameters:
+      - name: github-org
+      - name: repo
+      - name: branch
+      - name: argo-app
+      - name: argo-namespace
     steps:
     - - name: obtain-github-token
         template: obtain-github-token
