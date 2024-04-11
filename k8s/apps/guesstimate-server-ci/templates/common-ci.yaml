@@ -8,8 +8,10 @@ spec:
 
   arguments:
     parameters:
+      # either `quantified-uncertainty` or `guesstimate`
       - name: github-org
         value: quantified-uncertainty
+      # repo, e.g. `squiggle`
       - name: repo
       - name: branch
         value: main
@@ -26,29 +28,50 @@ spec:
     steps:
     - - name: obtain-github-token
         template: obtain-github-token
+        arguments:
+          parameters:
+          - name: github-org
+            value: "{{`{{ inputs.parameters.github-org }}`}}"
     - - name: build-and-push
         template: build-and-push
+        arguments:
+          parameters:
+          - name: github-org
+            value: "{{`{{ inputs.parameters.github-org }}`}}"
+          - name: repo
+            value: "{{`{{ inputs.parameters.repo }}`}}"
+          - name: branch
+            value: "{{`{{ inputs.parameters.branch }}`}}"
     - - name: apply-argocd-application
         template: apply-argocd-application
+        arguments:
+          parameters:
+          - name: argo-app
+            value: "{{`{{ inputs.parameters.argo-app }}`}}"
+          - name: argo-namespace
+            value: "{{`{{ inputs.parameters.argo-namespace }}`}}"
 
   - name: obtain-github-token
+    inputs:
+      parameters:
+      - name: github-org
     container:
       image: ghcr.io/quantified-uncertainty/github-credentials-obtainer:latest
       env:
       - name: PRIVATE_KEY
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-for-{{ inputs.parameters.github-org }}-github-app
+            name: quri-integrations-for-{{`{{ inputs.parameters.github-org }}`}}-github-app
             key: private-key
       - name: APP_ID
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-for-{{ inputs.parameters.github-org }}-github-app
+            name: quri-integrations-for-{{`{{ inputs.parameters.github-org }}`}}-github-app
             key: app-id
       - name: INSTALLATION_ID
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-for-{{ inputs.parameters.github-org }}-github-app
+            name: quri-integrations-for-{{`{{ inputs.parameters.github-org }}`}}-github-app
             key: installation-id
     outputs:
       parameters:
@@ -61,23 +84,32 @@ spec:
 
   - name: build-and-push
     inputs:
+      parameters:
+      - name: github-org
+      - name: repo
+      - name: branch
       artifacts:
       - name: source
         path: /workspace
         git:
-          repo: https://github.com/{{ inputs.parameters.github-org }}/{{ .inputs.parameters.repo }}
-          revision: {{ inputs.parameters.branch }}
+          repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ .inputs.parameters.repo }}`}}
+          revision: {{`{{ inputs.parameters.branch }}`}}
     container:
       image: gcr.io/kaniko-project/executor:latest
       volumeMounts:
       - name: quri-registry-secret
         mountPath: /kaniko/.docker
       # TODO - mount cache volume
-      args: ["--destination=registry.digitalocean.com/quri/{{ inputs.parameters.repo }}",
+      args: ["--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.repo }}`}}",
              "--skip-default-registry-fallback",
              "--cache=true"]
 
   - name: apply-argocd-application
+    inputs:
+      parameters:
+      - name: argo-app
+      - name: argo-namespace
+      - name: branch
     resource:
       action: apply
       # TODO:
@@ -88,7 +120,7 @@ spec:
         apiVersion: argoproj.io/v1alpha1
         kind: Application
         metadata:
-          name: {{ inputs.parameters.argo-app }}
+          name: {{`{{ inputs.parameters.argo-app }}`}}
           namespace: argocd
         spec:
           project: default
@@ -99,7 +131,7 @@ spec:
               prune: true
           source:
             repoURL: https://github.com/quantified-uncertainty/ops
-            path: k8s/apps/{{ inputs.parameters.argo-app }}
+            path: k8s/apps/{{`{{ inputs.parameters.argo-app }}`}}
             targetRevision: HEAD
             helm:
               valuesObject:
@@ -107,4 +139,4 @@ spec:
                   tag: latest # TODO - get this from git revision
           destination:
             server: https://kubernetes.default.svc
-            namespace: {{ inputs.parameters.argo-namespace }}
+            namespace: {{`{{ inputs.parameters.argo-namespace }}`}}
