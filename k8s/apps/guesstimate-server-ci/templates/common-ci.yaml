@@ -4,30 +4,35 @@ metadata:
   name: common-ci
 spec:
   serviceAccountName: quri-ci
-  entrypoint: run
+  entrypoint: main
 
   templates:
-  - name: run
+  - name: main
     inputs:
       parameters:
-      # either `quantified-uncertainty` or `getguesstimate`
       - name: github-org
-        value: quantified-uncertainty
-      # repo, e.g. `squiggle`
+        value: quantified-uncertainty # either `quantified-uncertainty` or `getguesstimate`
+
       - name: repo
+        # required
+
       - name: branch
         value: main
+
+      - name: image-name
+        # required
+
       - name: argo-app
+        # required
+
       - name: argo-namespace
+        value: null # defaults to parameters.argo-app
+
     steps:
-    - - name: obtain-github-token
-        template: obtain-github-token
-        arguments:
-          parameters:
-          - name: github-org
-            value: "{{`{{ inputs.parameters.github-org }}`}}"
-    - - name: build-and-push
-        template: build-and-push
+    - - name: build
+        templateRef:
+          name: docker-build
+          template: main
         arguments:
           parameters:
           - name: github-org
@@ -36,106 +41,23 @@ spec:
             value: "{{`{{ inputs.parameters.repo }}`}}"
           - name: branch
             value: "{{`{{ inputs.parameters.branch }}`}}"
-    - - name: apply-argocd-application
-        template: apply-argocd-application
+          - name: image-name
+            value: "{{`{{ inputs.parameters.image-name }}`}}"
+
+    # TODO - send GitHub check
+
+    - - name: deploy
+        templateRef:
+          name: apply-argocd-application
+          template: main
         arguments:
           parameters:
-          - name: argo-app
+          - name: name
             value: "{{`{{ inputs.parameters.argo-app }}`}}"
-          - name: argo-namespace
+          - name: namespace
             value: "{{`{{ inputs.parameters.argo-namespace }}`}}"
+          - name: image-tag
+            # TODO - use exact git revision instead
+            value: "{{`{{ inputs.parameters.branch }}`}}"
 
-  - name: obtain-github-token
-    inputs:
-      parameters:
-      - name: github-org
-    container:
-      image: registry.digitalocean.com/quri/github-credentials-obtainer
-      imagePullSecrets:
-      - name: quri-registry
-      env:
-      - name: PRIVATE_KEY
-        valueFrom:
-          secretKeyRef:
-            name: quri-integrations-for-{{`{{ inputs.parameters.github-org }}`}}-github-app
-            key: private-key
-      - name: APP_ID
-        valueFrom:
-          secretKeyRef:
-            name: quri-integrations-for-{{`{{ inputs.parameters.github-org }}`}}-github-app
-            key: app-id
-      - name: INSTALLATION_ID
-        valueFrom:
-          secretKeyRef:
-            name: quri-integrations-for-{{`{{ inputs.parameters.github-org }}`}}-github-app
-            key: installation-id
-    outputs:
-      parameters:
-      - name: github-token
-        valueFrom:
-          path: /tmp/github-token
-      - name: docker-config
-        valueFrom:
-          path: /tmp/docker-config.json
-
-  - name: build-and-push
-    inputs:
-      parameters:
-      - name: github-org
-      - name: repo
-      - name: branch
-      artifacts:
-      - name: source
-        path: /workspace
-        git:
-          repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ inputs.parameters.repo }}`}}
-          revision: "{{`{{ inputs.parameters.branch }}`}}"
-    volumes:
-    - name: quri-registry-secret
-      secret:
-        secretName: quri-registry-write
-    container:
-      image: gcr.io/kaniko-project/executor:latest
-      volumeMounts:
-      - name: quri-registry-secret
-        mountPath: /kaniko/.docker
-      # TODO - mount cache volume
-      args: ["--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.repo }}`}}",
-             "--skip-default-registry-fallback",
-             "--cache=true"]
-
-  - name: apply-argocd-application
-    inputs:
-      parameters:
-      - name: argo-app
-      - name: argo-namespace
-    resource:
-      action: apply
-      # TODO:
-      # - app name based on git branch, for preview deployments
-      # - remove app if branch is deleted
-      # - correct image tag
-      manifest: |-
-        apiVersion: argoproj.io/v1alpha1
-        kind: Application
-        metadata:
-          name: {{`{{ inputs.parameters.argo-app }}`}}
-          namespace: argocd
-        spec:
-          project: default
-          syncPolicy:
-            syncOptions:
-            - CreateNamespace=true
-            automated:
-              prune: true
-          source:
-            repoURL: https://github.com/quantified-uncertainty/ops
-            path: k8s/apps/{{`{{ inputs.parameters.argo-app }}`}}
-            targetRevision: HEAD
-            helm:
-              valuesObject:
-                image:
-                  tag: latest # TODO - get this from git revision
-          destination:
-            server: https://kubernetes.default.svc
-            namespace: {{`{{ inputs.parameters.argo-namespace }}`}}
+    # TODO - send Slack notification

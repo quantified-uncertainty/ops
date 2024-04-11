@@ -1,3 +1,4 @@
+# This template is rarely useful, we just ran it once to build github-credentials-obtainer, and it shouldn't change too often.
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
@@ -6,7 +7,6 @@ spec:
   serviceAccountName: quri-ci
   entrypoint: main
 
-  templates:
   templates:
   - name: main
     steps:

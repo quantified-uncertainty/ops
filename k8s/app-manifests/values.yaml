@@ -84,7 +84,7 @@ apps:
 - name: guesstimate-server-ci
   namespace: quri-ci
 
-# Note: guesstimate-server app is deployed by Argo Workflows dynamically, so it's not listed here.
+# Note: guesstimate app is deployed by Argo Workflows dynamically, so it's not listed here.
 
 # QURI apps
 - name: metaforecast

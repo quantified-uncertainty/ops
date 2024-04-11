@@ -33,7 +33,8 @@ spec:
       volumeMounts:
       - name: quri-registry-secret
         mountPath: /kaniko/.docker
-      args: ["--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}",
-              "--context=dir:///workspace/{{`{{ inputs.parameters.directory }}`}}",
-              "--dockerfile=/workspace/{{`{{ inputs.parameters.directory }}`}}/Dockerfile",
-              "--skip-default-registry-fallback"]
+      args: ["--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.branch }}`}}",
+             "--context=dir:///workspace/{{`{{ inputs.parameters.directory }}`}}",
+             "--dockerfile=/workspace/{{`{{ inputs.parameters.directory }}`}}/Dockerfile",
+             "--cache=true",
+             "--skip-default-registry-fallback"]

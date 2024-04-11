@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: apply-argocd-application
+spec:
+  serviceAccountName: quri-ci
+  entrypoint: main
+
+  templates:
+  - name: main
+    inputs:
+      parameters:
+      - name: name
+        # required
+
+      - name: namespace
+        value: null # defaults to argo-app
+
+      - name: image-tag
+        # required, will be used for image.tag Helm var
+
+    resource:
+      action: apply
+      manifest: |-
+        apiVersion: argoproj.io/v1alpha1
+        kind: Application
+        metadata:
+          name: {{`{{ inputs.parameters.name }}`}}
+          namespace: argocd
+        spec:
+          project: default
+          syncPolicy:
+            syncOptions:
+            - CreateNamespace=true
+            automated:
+              prune: true
+          source:
+            repoURL: https://github.com/quantified-uncertainty/ops
+            path: k8s/apps/{{`{{ inputs.parameters.name }}`}}
+            targetRevision: HEAD
+            helm:
+              valuesObject:
+                image:
+                  tag: {{`{{ inputs.parameters.image-tag }}`}}
+          destination:
+            server: https://kubernetes.default.svc
+            namespace: "{{`{{ inputs.parameters.namespace ?? inputs.parameters.name }}`}}"
