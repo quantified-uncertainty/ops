@@ -16,7 +16,7 @@ spec:
         arguments:
           parameters:
           - name: github-org
-            value: guesstimate
+            value: getguesstimate
           - name: repo
             value: guesstimate-server
           - name: branch

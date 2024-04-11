@@ -8,7 +8,7 @@ spec:
 
   arguments:
     parameters:
-      # either `quantified-uncertainty` or `guesstimate`
+      # either `quantified-uncertainty` or `getguesstimate`
       - name: github-org
         value: quantified-uncertainty
       # repo, e.g. `squiggle`
