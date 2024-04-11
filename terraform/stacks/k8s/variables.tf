@@ -9,7 +9,14 @@ variable "github_app_guesstimate" {
   }
 }
 
+variable "github_app_quri" {
+  default = {
+    app_id          = 856482
+    installation_id = 48463969
+  }
+}
+
 variable "ci_namespace" {
-  default = "quri-ci"
+  default     = "quri-ci"
   description = "Kubernetes namespace that's used for CI workflows. Will be used to store secrets."
 }

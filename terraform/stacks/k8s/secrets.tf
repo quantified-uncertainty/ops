@@ -27,6 +27,11 @@ data "onepassword_item" "quri_integrations_for_guesstimate_github_app_private_ke
   title = "QURI Integrations for Guesstimate GitHub App Private Key"
 }
 
+data "onepassword_item" "quri_integrations_for_quri_github_app_private_key" {
+  vault = module.providers.op_vault
+  title = "QURI Integrations GitHub App Private Key"
+}
+
 data "onepassword_item" "quri_integrations_github_app_oauth" {
   vault = module.providers.op_vault
   title = "QURI Integrations GitHub App - OAuth credentials"
@@ -90,8 +95,23 @@ resource "kubernetes_secret" "argo_workflows_github_token_credentials" {
 
   data = {
     app-id                         = var.github_app_guesstimate.app_id
-    getguesstimate-installation-id = var.github_app_guesstimate.installation_id
+    installation-id                = var.github_app_guesstimate.installation_id
+    getguesstimate-installation-id = var.github_app_guesstimate.installation_id # legacy, soon to be unused
     private-key                    = data.onepassword_item.quri_integrations_for_guesstimate_github_app_private_key.note_value
+  }
+}
+
+resource "kubernetes_secret" "argo_workflows_github_quri_token_credentials" {
+  metadata {
+    # name is intentionally long, so that we could interpolate org name (guesstimate or quantified-uncertainty) in Argo Workflows
+    name      = "quri-integrations-for-quantified-uncertainty-github-app"
+    namespace = var.ci_namespace
+  }
+
+  data = {
+    app-id          = var.github_app_quri.app_id
+    installation-id = var.github_app_quri.installation_id
+    private-key     = data.onepassword_item.quri_integrations_for_quri_github_app_private_key.note_value
   }
 }
 
