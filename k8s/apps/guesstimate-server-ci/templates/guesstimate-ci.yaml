@@ -21,6 +21,8 @@ spec:
             value: guesstimate-server
           - name: branch
             value: main
+          - name: image-name
+            value: guesstimate-server
           - name: argo-app
             value: guesstimate-server
           - name: argo-namespace
