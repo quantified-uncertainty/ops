@@ -12,7 +12,7 @@ spec:
     - - name: call-common-ci
         templateRef:
           name: common-ci
-          template: all
+          template: run
         arguments:
           parameters:
           - name: github-org
