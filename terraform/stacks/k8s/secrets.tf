@@ -89,7 +89,7 @@ resource "kubernetes_secret" "argo_workflows_github_auth" {
 # I've spent ~4 hours trying to figure that out, and ended up switching to DigitalOcean Container Registry.
 resource "kubernetes_secret" "argo_workflows_github_token_credentials" {
   metadata {
-    name      = "quri-integrations-for-guesstimate-github-app"
+    name      = "quri-integrations-for-getguesstimate-github-app"
     namespace = var.ci_namespace
   }
 
