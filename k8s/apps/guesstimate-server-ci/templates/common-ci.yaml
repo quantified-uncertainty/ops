@@ -94,7 +94,7 @@ spec:
       - name: source
         path: /workspace
         git:
-          repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ .inputs.parameters.repo }}`}}
+          repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ inputs.parameters.repo }}`}}
           revision: "{{`{{ inputs.parameters.branch }}`}}"
     volumes:
     - name: quri-registry-secret
