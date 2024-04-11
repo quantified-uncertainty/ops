@@ -15,8 +15,6 @@ spec:
         git:
           repo: https://github.com/quantified-uncertainty/ops
           revision: master
-      parameters:
-      - name: docker-config
     volumes:
     - name: quri-registry-secret
       secret:
