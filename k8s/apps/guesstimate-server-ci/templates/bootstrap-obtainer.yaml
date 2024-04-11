@@ -4,49 +4,10 @@ metadata:
   name: build-github-credentials-obtainer
 spec:
   serviceAccountName: quri-ci
-  entrypoint: all
-  arguments:
-    parameters:
-    - name: github-token
+  entrypoint: main
 
   templates:
-  - name: all
-    inputs:
-      parameters:
-      - name: github-token
-    steps:
-    - - name: prepare-docker-config
-        template: prepare-docker-config
-        arguments:
-          parameters:
-          - name: github-token
-            value: "{{`{{ inputs.parameters.github-token }}`}}"
-    - - name: build-and-push
-        template: build-and-push
-        arguments:
-          parameters:
-          - name: docker-config
-            value: "{{`{{ steps.prepare-docker-config.outputs.parameters.docker-config }}`}}"
-
-  - name: prepare-docker-config
-    inputs:
-      parameters:
-      - name: github-token
-    container:
-      image: alpine:latest
-      command: [sh, -c]
-      args:
-      - |
-        AUTH=$(echo -n "unused:{{`{{ inputs.parameters.github-token }}`}}" | base64)
-        echo '{ "auths": { "ghcr.io": { "auth": "'$AUTH'" } } }' >/tmp/docker-config.json
-      workingDir: /tmp
-    outputs:
-      parameters:
-      - name: docker-config
-        valueFrom:
-          path: /tmp/docker-config.json
-
-  - name: build-and-push
+  - name: main
     inputs:
       artifacts:
       - name: source
@@ -54,15 +15,18 @@ spec:
         git:
           repo: https://github.com/quantified-uncertainty/ops
           revision: master
-      - name: docker-config
-        path: /kaniko/.docker/config.json
-        raw:
-          data: "{{`{{ inputs.parameters.docker-config }}`}}"
       parameters:
       - name: docker-config
+    volumes:
+    - name: quri-registry-secret
+      secret:
+        secretName: quri-registry-write
     container:
       image: gcr.io/kaniko-project/executor:latest
-      args: ["--destination=ghcr.io/quantified-uncertainty/github-credentials-obtainer",
+      volumeMounts:
+      - name: quri-registry-secret
+        mountPath: /kaniko/.docker
+      args: ["--destination=registry.digitalocean.com/quri/github-credentials-obtainer",
               "--context=dir:///workspace/tools/github-credentials-obtainer",
               "--dockerfile=/workspace/tools/github-credentials-obtainer/Dockerfile",
               "--skip-default-registry-fallback"]

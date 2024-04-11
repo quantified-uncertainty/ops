@@ -1,6 +1,6 @@
-This small docker image is used for obtaining `GITHUB_TOKEN` and `.docker/config.json` in Argo Workflows CI jobs.
+This small docker image is used for obtaining `GITHUB_TOKEN` in Argo Workflows CI jobs.
 
-I've built and uploaded it to QURI GitHub Container Registry by hand; it shouldn't change too often, so it shouldn't be a problem.
+If you ever need to rebuild this image, look for `build-github-credentials-obtainer` Argo Workflow.
 
 Link to the published package: https://github.com/quantified-uncertainty/ops/pkgs/container/github-credentials-obtainer
 
@@ -10,7 +10,4 @@ This image requires three env vars:
 - `APP_ID` of that app
 - `INSTALLATION_ID` for app-org installation pair
 
-It will create two files:
-
-- `/tmp/github-token` with a plain string containing the token (note that the token is short-lived, it will expire in 1 hour)
-- `/tmp/.docker/config.json` with docker config based on that token, useful for mounting it in kaniko
+It will create a `/tmp/github-token` file with a plain string containing the token (note that the token is short-lived, it will expire in 1 hour).
