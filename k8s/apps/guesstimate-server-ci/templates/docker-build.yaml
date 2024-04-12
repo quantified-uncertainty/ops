@@ -51,7 +51,7 @@ spec:
         value: "{{`{{ steps.get-revision.outputs.result }}`}}"
 
   - name: get-revision
-    arguments:
+    inputs:
       parameters:
       - name: github-org
       - name: repo
