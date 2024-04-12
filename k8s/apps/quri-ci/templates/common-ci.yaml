@@ -1,3 +1,5 @@
+# Build a docker container from Github repo and deploy it as Argo CD app.
+# For Squiggle monorepo, you'll need monorepo-ci workflow, not this one.
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
@@ -11,7 +13,10 @@ spec:
     inputs:
       parameters:
       - name: github-org
-        default: quantified-uncertainty # either `quantified-uncertainty` or `getguesstimate`
+        default: quantified-uncertainty
+        enum:
+        - quantified-uncertainty
+        - getguesstimate
 
       - name: repo
         # required
@@ -23,10 +28,13 @@ spec:
         # required
 
       - name: argo-app
-        # required
+        description: |
+          Argo CD Application name; application will be sourced from k8s/apps/<name> dir in ops repo, similarly to static apps from `app-manifests/values.yaml`.
 
       - name: argo-namespace
-        default: null # defaults to parameters.argo-app
+        default: ""
+        description: |
+          Kubernetes namespace that will be used for deployment. Defaults to the value from `argo-app`.
 
     steps:
     - - name: build
@@ -55,7 +63,7 @@ spec:
           - name: name
             value: "{{`{{ inputs.parameters.argo-app }}`}}"
           - name: namespace
-            value: "{{`{{ inputs.parameters.argo-namespace }}`}}"
+            value: "{{`{{= inputs.parameters.argo-namespace == "" ? inputs.parameters.argo-app : inputs.parameters.argo-namespace }}`}}"
           - name: image-tag
             # use exact git revision, not just branch name that could change - this will help with rollbacks and debugging
             value: "{{`{{ steps.build.outputs.parameters.git-revision }}`}}"
