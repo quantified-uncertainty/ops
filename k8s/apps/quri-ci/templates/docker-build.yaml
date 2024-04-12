@@ -107,6 +107,6 @@ spec:
       # use correct directory
       # TODO - support "run build from root but with specific subdirectory in monorepo" pattern
       - "--context=dir:///workspace/{{`{{ inputs.parameters.directory }}`}}"
-      - "--dockerfile=/workspace/{{`{{= inputs.parameters.dockerfile ?? ((input.parameters.directory ?? "") + "/Dockerfile") }}`}}"
+      - "--dockerfile=/workspace/{{`{{= inputs.parameters.dockerfile ?? ((input.parameters.directory ?? '') + '/Dockerfile') }}`}}"
       - "--cache=true"
       - "--skip-default-registry-fallback"
