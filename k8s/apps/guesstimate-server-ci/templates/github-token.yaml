@@ -12,7 +12,7 @@ spec:
     inputs:
       parameters:
       - name: github-org # either `quantified-uncertainty` or `getguesstimate`
-        value: quantified-uncertainty
+        default: quantified-uncertainty
     container:
       image: registry.digitalocean.com/quri/github-credentials-obtainer
       imagePullSecrets:

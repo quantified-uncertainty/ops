@@ -11,13 +11,13 @@ spec:
     inputs:
       parameters:
       - name: github-org
-        value: quantified-uncertainty # either `quantified-uncertainty` or `getguesstimate`
+        default: quantified-uncertainty # either `quantified-uncertainty` or `getguesstimate`
 
       - name: repo
         # required
 
       - name: branch
-        value: main
+        default: main
 
       - name: image-name
         # required
@@ -26,7 +26,7 @@ spec:
         # required
 
       - name: argo-namespace
-        value: null # defaults to parameters.argo-app
+        default: null # defaults to parameters.argo-app
 
     steps:
     - - name: build

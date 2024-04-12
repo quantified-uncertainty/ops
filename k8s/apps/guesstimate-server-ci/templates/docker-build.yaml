@@ -11,12 +11,12 @@ spec:
     inputs:
       parameters:
       - name: github-org
-        value: quantified-uncertainty # default
+        default: quantified-uncertainty
       - name: repo
       - name: branch
-        value: main # default
+        default: main
       - name: directory
-        value: ""
+        default: ""
       - name: image-name
     steps:
     - - name: get-revision
@@ -48,7 +48,8 @@ spec:
     outputs:
       parameters:
       - name: git-revision
-        value: "{{`{{ steps.get-revision.outputs.result }}`}}"
+        valueFrom:
+          parameter: "{{`{{ steps.get-revision.outputs.result }}`}}"
 
   - name: get-revision
     inputs:
