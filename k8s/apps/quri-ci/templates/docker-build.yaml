@@ -45,6 +45,8 @@ spec:
             value: "{{`{{ inputs.parameters.branch }}`}}"
           - name: directory
             value: "{{`{{ inputs.parameters.directory }}`}}"
+          - name: dockerfile
+            value: "{{`{{ inputs.parameters.dockerfile }}`}}"
           - name: image-name
             value: "{{`{{ inputs.parameters.image-name }}`}}"
           - name: git-revision
@@ -80,6 +82,7 @@ spec:
       - name: repo
       - name: branch
       - name: directory
+      - name: dockerfile
       - name: image-name
       - name: git-revision
 
