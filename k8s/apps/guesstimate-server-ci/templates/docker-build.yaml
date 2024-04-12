@@ -64,6 +64,7 @@ spec:
           revision: "{{`{{ inputs.parameters.branch }}`}}"
     script:
       image: alpine/git
+      workingDir: /workspace
       command: [git, rev-parse, HEAD]
 
   - name: build
