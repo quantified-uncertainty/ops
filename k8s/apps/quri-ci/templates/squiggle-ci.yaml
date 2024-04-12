@@ -20,7 +20,7 @@ spec:
           - name: packages
             value: |
               [
-                { "image": "squiggle-build-runner", "dockerfile": "packages/hub/Dockerfile" }
+                { "image": "squiggle-build-runner", "dockerfile": "packages/hub/dockerfile" }
               ]
           - name: argo-app
             value: squiggle
