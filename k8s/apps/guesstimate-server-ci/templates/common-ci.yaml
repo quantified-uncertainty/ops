@@ -57,7 +57,7 @@ spec:
           - name: namespace
             value: "{{`{{ inputs.parameters.argo-namespace }}`}}"
           - name: image-tag
-            # TODO - use exact git revision instead
-            value: "{{`{{ inputs.parameters.branch }}`}}"
+            # use exact git revision, not just branch name that could change - this will help with rollbacks and debugging
+            value: "{{`{{ steps.build.outputs.git-revision }}`}}"
 
     # TODO - send Slack notification
