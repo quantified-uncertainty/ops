@@ -97,7 +97,7 @@ spec:
       # tag with branch
       - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.branch }}`}}"
       # also tag with exact git revision
-      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ steps.get-revision.outputs.result }}`}}"
+      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.git-revision }}`}}"
       # use correct directory
       # TODO - support "run build from root but with specific subdirectory in monorepo" pattern
       - "--context=dir:///workspace/{{`{{ inputs.parameters.directory }}`}}"
