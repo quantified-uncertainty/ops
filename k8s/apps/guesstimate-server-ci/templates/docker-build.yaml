@@ -50,13 +50,14 @@ spec:
             value: "{{`{{ inputs.parameters.image-name }}`}}"
           - name: git-revision
             value: "{{`{{ steps.get-revision.outputs.result }}`}}"
+
+          artifacts:
+          - name: source
+            path: /workspace
+            git:
+              repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ inputs.parameters.repo }}`}}
+              revision: "{{`{{ inputs.parameters.branch }}`}}"
         inline:
-            artifacts:
-            - name: source
-              path: /workspace
-              git:
-                repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ inputs.parameters.repo }}`}}
-                revision: "{{`{{ inputs.parameters.branch }}`}}"
           volumes:
           - name: quri-registry-secret
             secret:
@@ -81,4 +82,4 @@ spec:
     outputs:
       parameters:
       - name: git-revision
-        value: {{`{{ steps.get-revision.outputs.result }}`}}
+        value: "{{`{{ steps.get-revision.outputs.result }}`}}"
