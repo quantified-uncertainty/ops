@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-build-runner
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-build-runner
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-build-runner
+    spec:
+      imagePullSecrets:
+      - name: {{ .Values.image.pullSecret }}
+      containers:
+        - name: server
+          image: "registry.digitalocean.com/quri/squiggle-build-runner:{{ required "tag is required" .Values.image.tag }}"
+          imagePullPolicy: Always
+          # envFrom:
+          # - secretRef:
+          #   name: TODO

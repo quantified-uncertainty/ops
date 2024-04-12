@@ -1,0 +1,5 @@
+image:
+  pullSecret: quri-registry
+  # Image tag, filled by Argo CD app that's dynamically created by CI workflow.
+  # Required.
+  tag: ""

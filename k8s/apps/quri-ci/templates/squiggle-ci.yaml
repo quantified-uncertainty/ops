@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: squiggle-ci
+spec:
+  serviceAccountName: quri-ci
+  entrypoint: main
+
+  templates:
+  - name: main
+    steps:
+    - - name: call-ci
+        templateRef:
+          name: monorepo-ci
+          template: main
+        arguments:
+          parameters:
+          - name: repo
+            value: squiggle
+          - name: packages
+            value: |
+              [
+                { "image": "squiggle-build-runner", "dockerfile": "packages/hub/Dockerfile" }
+              ]
+          - name: argo-app
+            value: squiggle

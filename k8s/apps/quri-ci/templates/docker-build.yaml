@@ -17,6 +17,10 @@ spec:
         default: main
       - name: directory
         default: ""
+        # If set, will build from this subdirectory of the repo.
+        # Note that you can't reference parent directories in the Dockerfile, so if you need that, you might need to set `dockerfile` param instead.
+      - name: dockerfile
+        default: null # defaults to /Dockerfile or /<directory>/Dockerfile
       - name: image-name
     steps:
     - - name: get-revision
@@ -103,6 +107,6 @@ spec:
       # use correct directory
       # TODO - support "run build from root but with specific subdirectory in monorepo" pattern
       - "--context=dir:///workspace/{{`{{ inputs.parameters.directory }}`}}"
-      - "--dockerfile=/workspace/{{`{{ inputs.parameters.directory }}`}}/Dockerfile"
+      - "--dockerfile=/workspace/{{`{{= inputs.parameters.dockerfile ?? ((input.parameters.directory ?? "") + "/Dockerfile") }}`}}"
       - "--cache=true"
       - "--skip-default-registry-fallback"
