@@ -80,11 +80,11 @@ apps:
   - name: URL
     value: https://metabase.k8s.quantifieduncertainty.org
 
-# CI and templates
-- name: guesstimate-server-ci
-  namespace: quri-ci
-
-# Note: guesstimate app is deployed by Argo Workflows dynamically, so it's not listed here.
+# CI for all apps and common CI workflows for Argo Workflows
+- name: quri-ci
 
 # QURI apps
 - name: metaforecast
+
+# Note: some user-facing apps such as Guesstimate are deployed by Argo Workflows dynamically, so they are not listed here.
+# Check out apply-argocd-application WorkflowTemplate in argo-ci app to see how they're configured.
