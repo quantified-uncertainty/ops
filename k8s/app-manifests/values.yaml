@@ -36,17 +36,6 @@ apps:
     targetRevision: "3.12.1"
     repoURL: https://kubernetes-sigs.github.io/metrics-server
 
-- name: kubernetes-dashboard
-  automated: null
-  source:
-    chart: kubernetes-dashboard
-    targetRevision: "7.2.0"
-    repoURL: https://kubernetes.github.io/dashboard
-    helm:
-      valuesObject:
-        ingress:
-          enabled: true
-
 - name: prometheus
   automated: null
   # Argo CD is having some trouble with Prometheus CRDs (they're too large).
