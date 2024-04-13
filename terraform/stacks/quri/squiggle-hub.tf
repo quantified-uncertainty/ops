@@ -1,5 +1,9 @@
+# TODO - move to squiggle stack.
 locals {
   squiggle_hub_domain = "squigglehub.org"
+  // https://www.prisma.io/docs/guides/performance-and-optimization/connection-management/configure-pg-bouncer#add-pgbouncer-to-the-connection-url
+  prod_db_prisma_url = "${module.prod_db.bouncer_url}&pgbouncer=true"
+  dev_db_prisma_url  = "${module.dev_db.bouncer_url}&pgbouncer=true"
 }
 
 resource "random_password" "hub_nextauth_secret" {
@@ -17,14 +21,13 @@ resource "vercel_project" "hub" {
 
   environment = [
     {
-      key = "DATABASE_URL"
-      // https://www.prisma.io/docs/guides/performance-and-optimization/connection-management/configure-pg-bouncer#add-pgbouncer-to-the-connection-url
-      value  = "${module.prod_db.bouncer_url}&pgbouncer=true"
+      key    = "DATABASE_URL"
+      value  = local.prod_db_prisma_url
       target = ["production"]
     },
     {
       key    = "DATABASE_URL"
-      value  = "${module.dev_db.bouncer_url}&pgbouncer=true"
+      value  = local.dev_db_prisma_url
       target = ["preview"]
     },
     {

@@ -1,3 +1,4 @@
+# TODO - move to squiggle stack.
 locals {
   squiggle_website_domain = "squiggle-language.com"
 }

@@ -6,7 +6,7 @@ terraform {
   backend "s3" {
     region         = "us-east-1"
     bucket         = "quri-tf-state-us-east-1"
-    key            = "stacks/secrets-for-k8s.tfstate"
+    key            = "stacks/squiggle.tfstate"
     dynamodb_table = "terraform-state-lock"
     encrypt        = "true"
   }
@@ -15,7 +15,6 @@ terraform {
     onepassword  = { source = "1Password/onepassword" }
     kubernetes   = { source = "hashicorp/kubernetes" }
     digitalocean = { source = "digitalocean/digitalocean" }
-    github       = { source = "integrations/github" }
   }
 }
 
@@ -31,24 +30,6 @@ provider "kubernetes" {
   config_path = "~/.kube/config"
 }
 
-data "onepassword_item" "do_spaces_api_key" {
-  vault = module.providers.op_vault
-  title = "DigitalOcean Spaces API Key"
-}
-
 provider "digitalocean" {
   token = module.providers.do_token
-
-  spaces_access_id  = data.onepassword_item.do_spaces_api_key.username
-  spaces_secret_key = data.onepassword_item.do_spaces_api_key.password
-}
-
-data "onepassword_item" "github_token" {
-  vault = module.providers.op_vault
-  title = "GitHub token"
-}
-
-provider "github" {
-  token = data.onepassword_item.github_token.password
-  owner = "quantified-uncertainty"
 }
