@@ -120,4 +120,6 @@ spec:
       - "--context=dir:///workspace/{{`{{ inputs.parameters.directory }}`}}"
       - "--dockerfile={{`{{ inputs.parameters.dockerfile }}`}}"
       - "--cache=true"
+      # helps with memory consumption, https://github.com/GoogleContainerTools/kaniko?tab=readme-ov-file#flag---compressed-caching
+      - "--compressed-caching=false"
       - "--skip-default-registry-fallback"
