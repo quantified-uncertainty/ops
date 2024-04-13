@@ -17,6 +17,6 @@ spec:
         - name: server
           image: "registry.digitalocean.com/quri/squiggle-build-runner:{{ required "tag is required" .Values.image.tag }}"
           imagePullPolicy: Always
-          # envFrom:
-          # - secretRef:
-          #   name: TODO
+          envFrom:
+          - secretRef:
+            name: squiggle-hub-env
