@@ -11,34 +11,15 @@ locals {
 # So the registry is configured here and not through Argo CD.
 
 resource "digitalocean_container_registry" "main" {
+  # This name is also used by DO for k8s secret, which is awkward, but it's too late to rename.
   name                   = "quri"
   subscription_tier_slug = "basic"
-}
-
-resource "digitalocean_container_registry_docker_credentials" "main" {
-  registry_name = digitalocean_container_registry.main.name
 }
 
 # Separate credentials for jobs that need to push images
 resource "digitalocean_container_registry_docker_credentials" "write" {
   registry_name = digitalocean_container_registry.main.name
   write         = true
-}
-
-# Credentials for workloads that need to _pull_ images from the registry.
-resource "kubernetes_secret" "quri_registry_credentials" {
-  for_each = toset(local.registry_credentials_namespaces)
-
-  metadata {
-    name      = "quri-registry"
-    namespace = each.key
-  }
-
-  data = {
-    ".dockerconfigjson" = digitalocean_container_registry_docker_credentials.main.docker_credentials
-  }
-
-  type = "kubernetes.io/dockerconfigjson"
 }
 
 # Credentials for workloads that need to _push_ images to the registry, i.e. CI workflows.

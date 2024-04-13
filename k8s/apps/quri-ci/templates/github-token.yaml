@@ -16,7 +16,7 @@ spec:
     container:
       image: registry.digitalocean.com/quri/github-credentials-obtainer
       imagePullSecrets:
-      - name: quri-registry
+      - name: quri
       env:
       - name: PRIVATE_KEY
         valueFrom:
