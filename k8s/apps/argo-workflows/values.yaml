@@ -43,7 +43,6 @@ argo-workflows:
       spec:
         podGC:
           strategy: OnPodCompletion
-          deleteDelayDuration: 60s # give enough time to Loki to collect logs
 
     # Note: sometimes Argo CD don't apply link configuration changes on deploy, recreate the pods manually if that happens.
     links:

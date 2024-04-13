@@ -20,7 +20,7 @@ spec:
             value: ops
           - name: branch
             value: master
-          - name: image_name
+          - name: image-name
             value: github-credentials-obtainer
           - name: directory
             value: tools/github-credentials-obtainer

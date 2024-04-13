@@ -7,10 +7,10 @@ spec:
   entrypoint: main
 
   templates:
-  - name: main # get_revision -> build
+  - name: main
     inputs:
       parameters:
-      - name: github_org
+      - name: github-org
         default: quantified-uncertainty
       - name: repo
       - name: branch
@@ -21,14 +21,14 @@ spec:
         # Note that you can't reference parent directories in the Dockerfile, so if you need that, you might need to set `dockerfile` param instead.
       - name: dockerfile
         default: Dockerfile
-      - name: image_name
+      - name: image-name
     steps:
-    - - name: get_revision
-        template: get_revision
+    - - name: get-revision
+        template: get-revision
         arguments:
           parameters:
-          - name: github_org
-            value: "{{`{{ inputs.parameters.github_org }}`}}"
+          - name: github-org
+            value: "{{`{{ inputs.parameters.github-org }}`}}"
           - name: repo
             value: "{{`{{ inputs.parameters.repo }}`}}"
           - name: branch
@@ -37,8 +37,8 @@ spec:
         template: build
         arguments:
           parameters:
-          - name: github_org
-            value: "{{`{{ inputs.parameters.github_org }}`}}"
+          - name: github-org
+            value: "{{`{{ inputs.parameters.github-org }}`}}"
           - name: repo
             value: "{{`{{ inputs.parameters.repo }}`}}"
           - name: branch
@@ -47,27 +47,27 @@ spec:
             value: "{{`{{ inputs.parameters.directory }}`}}"
           - name: dockerfile
             value: "{{`{{ inputs.parameters.dockerfile }}`}}"
-          - name: image_name
-            value: "{{`{{ inputs.parameters.image_name }}`}}"
-          - name: git_revision
-            value: "{{`{{ steps.get_revision.outputs.result }}`}}"
+          - name: image-name
+            value: "{{`{{ inputs.parameters.image-name }}`}}"
+          - name: git-revision
+            value: "{{`{{ steps.get-revision.outputs.result }}`}}"
     outputs:
       parameters:
-      - name: git_revision
+      - name: git-revision
         valueFrom:
-          parameter: "{{`{{ steps.get_revision.outputs.result }}`}}"
+          parameter: "{{`{{ steps.get-revision.outputs.result }}`}}"
 
-  - name: get_revision
+  - name: get-revision
     inputs:
       parameters:
-      - name: github_org
+      - name: github-org
       - name: repo
       - name: branch
       artifacts:
       - name: source
         path: /workspace
         git:
-          repo: https://github.com/{{`{{ inputs.parameters.github_org }}`}}/{{`{{ inputs.parameters.repo }}`}}
+          repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ inputs.parameters.repo }}`}}
           revision: "{{`{{ inputs.parameters.branch }}`}}"
           depth: 1
     container:
@@ -79,21 +79,21 @@ spec:
     templates:
     inputs:
       parameters:
-      - name: github_org
+      - name: github-org
       - name: repo
       - name: branch
       - name: directory
       - name: dockerfile
-      - name: image_name
-      - name: git_revision
+      - name: image-name
+      - name: git-revision
 
       artifacts:
       - name: source
         path: /workspace
         git:
-          repo: https://github.com/{{`{{ inputs.parameters.github_org }}`}}/{{`{{ inputs.parameters.repo }}`}}
-          # note that we check out the exact revision obtained by get_revision step, not the branch, for consistency
-          revision: "{{`{{ inputs.parameters.git_revision }}`}}"
+          repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ inputs.parameters.repo }}`}}
+          # note that we check out the exact revision obtained by get-revision step, not the branch, for consistency
+          revision: "{{`{{ inputs.parameters.git-revision }}`}}"
           depth: 1
 
     volumes:
@@ -114,9 +114,9 @@ spec:
         mountPath: /kaniko/.docker
       args:
       # tag with branch
-      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image_name }}`}}:{{`{{ inputs.parameters.branch }}`}}"
+      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.branch }}`}}"
       # also tag with exact git revision
-      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image_name }}`}}:{{`{{ inputs.parameters.git_revision }}`}}"
+      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.git-revision }}`}}"
       # use correct directory
       # TODO - support "run build from root but with specific subdirectory in monorepo" pattern
       - "--context=dir:///workspace/{{`{{ inputs.parameters.directory }}`}}"
