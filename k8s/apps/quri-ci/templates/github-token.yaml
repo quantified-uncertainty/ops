@@ -11,7 +11,7 @@ spec:
   - name: main
     inputs:
       parameters:
-      - name: github-org # either `quantified-uncertainty` or `getguesstimate`
+      - name: github_org # either `quantified-uncertainty` or `getguesstimate`
         default: quantified-uncertainty
     container:
       image: registry.digitalocean.com/quri/github-credentials-obtainer
@@ -21,17 +21,17 @@ spec:
       - name: PRIVATE_KEY
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-for-{{`{{ inputs.parameters.github-org }}`}}-github-app
+            name: quri-integrations-for-{{`{{ inputs.parameters.github_org }}`}}-github-app
             key: private-key
       - name: APP_ID
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-for-{{`{{ inputs.parameters.github-org }}`}}-github-app
+            name: quri-integrations-for-{{`{{ inputs.parameters.github_org }}`}}-github-app
             key: app-id
       - name: INSTALLATION_ID
         valueFrom:
           secretKeyRef:
-            name: quri-integrations-for-{{`{{ inputs.parameters.github-org }}`}}-github-app
+            name: quri-integrations-for-{{`{{ inputs.parameters.github_org }}`}}-github-app
             key: installation-id
     outputs:
       parameters:

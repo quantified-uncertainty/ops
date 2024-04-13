@@ -12,7 +12,7 @@ spec:
   - name: main
     inputs:
       parameters:
-      - name: github-org
+      - name: github_org
         default: quantified-uncertainty
         enum:
         - quantified-uncertainty
@@ -24,17 +24,17 @@ spec:
       - name: branch
         default: main
 
-      - name: image-name
+      - name: image_name
         # required
 
-      - name: argo-app
+      - name: argo_app
         description: |
           Argo CD Application name; application will be sourced from k8s/apps/<name> dir in ops repo, similarly to static apps from `app-manifests/values.yaml`.
 
-      - name: argo-namespace
+      - name: argo_namespace
         default: ""
         description: |
-          Kubernetes namespace that will be used for deployment. Defaults to the value from `argo-app`.
+          Kubernetes namespace that will be used for deployment. Defaults to the value from `argo_app`.
 
     steps:
     - - name: build
@@ -43,14 +43,14 @@ spec:
           template: main
         arguments:
           parameters:
-          - name: github-org
-            value: "{{`{{ inputs.parameters.github-org }}`}}"
+          - name: github_org
+            value: "{{`{{ inputs.parameters.github_org }}`}}"
           - name: repo
             value: "{{`{{ inputs.parameters.repo }}`}}"
           - name: branch
             value: "{{`{{ inputs.parameters.branch }}`}}"
-          - name: image-name
-            value: "{{`{{ inputs.parameters.image-name }}`}}"
+          - name: image_name
+            value: "{{`{{ inputs.parameters.image_name }}`}}"
 
     # TODO - send GitHub check
 
@@ -61,11 +61,11 @@ spec:
         arguments:
           parameters:
           - name: name
-            value: "{{`{{ inputs.parameters.argo-app }}`}}"
+            value: "{{`{{ inputs.parameters.argo_app }}`}}"
           - name: namespace
-            value: "{{`{{= inputs.parameters.argo-namespace == '' ? inputs.parameters.argo-app : inputs.parameters.argo-namespace }}`}}"
-          - name: image-tag
+            value: "{{`{{= inputs.parameters.argo_namespace == '' ? inputs.parameters.argo_app : inputs.parameters.argo_namespace }}`}}"
+          - name: image_tag
             # use exact git revision, not just branch name that could change - this will help with rollbacks and debugging
-            value: "{{`{{ steps.build.outputs.parameters.git-revision }}`}}"
+            value: "{{`{{ steps.build.outputs.parameters.git_revision }}`}}"
 
     # TODO - send Slack notification

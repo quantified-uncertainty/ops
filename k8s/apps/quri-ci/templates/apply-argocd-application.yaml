@@ -14,9 +14,9 @@ spec:
         # required
 
       - name: namespace
-        value: "" # defaults to argo-app
+        value: "" # defaults to argo_app
 
-      - name: image-tag
+      - name: image_tag
         # required, will be used for image.tag Helm var
 
     resource:
@@ -41,7 +41,7 @@ spec:
             helm:
               valuesObject:
                 image:
-                  tag: {{`{{ inputs.parameters.image-tag }}`}}
+                  tag: {{`{{ inputs.parameters.image_tag }}`}}
           destination:
             server: https://kubernetes.default.svc
             namespace: {{`{{= inputs.parameters.namespace == '' ? inputs.parameters.name : inputs.parameters.namespace }}`}}

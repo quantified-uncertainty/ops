@@ -15,15 +15,15 @@ spec:
           template: main
         arguments:
           parameters:
-          - name: github-org
+          - name: github_org
             value: getguesstimate
           - name: repo
             value: guesstimate-server
           - name: branch
             value: main
-          - name: image-name
+          - name: image_name
             value: guesstimate-server
-          - name: argo-app
+          - name: argo_app
             value: guesstimate-server
-          - name: argo-namespace
+          - name: argo_namespace
             value: guesstimate
