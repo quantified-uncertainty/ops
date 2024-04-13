@@ -69,6 +69,7 @@ spec:
         git:
           repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ inputs.parameters.repo }}`}}
           revision: "{{`{{ inputs.parameters.branch }}`}}"
+          depth: 1
     container:
       image: alpine/git
       workingDir: /workspace
@@ -93,6 +94,7 @@ spec:
           repo: https://github.com/{{`{{ inputs.parameters.github-org }}`}}/{{`{{ inputs.parameters.repo }}`}}
           # note that we check out the exact revision obtained by get-revision step, not the branch, for consistency
           revision: "{{`{{ inputs.parameters.git-revision }}`}}"
+          depth: 1
 
     volumes:
     - name: quri-registry-secret
