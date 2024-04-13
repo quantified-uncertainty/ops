@@ -1,0 +1,15 @@
+# https://argo-workflows.readthedocs.io/en/release-3.5/argo-server-sso-argocd/#example-manifests-for-authenticating-against-argo-cds-dex-kustomize
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: argocd-application-controller
+spec:
+  template:
+    spec:
+      nodeSelector:
+        dedicated: builds
+      tolerations:
+      - key: dedicated
+        operator: Equal
+        value: builds
+        effect: NoSchedule
