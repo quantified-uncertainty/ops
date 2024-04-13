@@ -73,7 +73,7 @@ spec:
           - name: name
             value: "{{`{{ inputs.parameters.argo-app }}`}}"
           - name: namespace
-            value: "{{`{{= inputs.parameters.argo-namespace == '' ? inputs.parameters.argo-app : inputs.parameters.argo-namespace }}`}}"
+            value: "{{`{{ inputs.parameters.argo-namespace }}`}}"
           - name: image-tag
             # use exact git revision, not just branch name that could change - this will help with rollbacks and debugging
             value: "{{`{{ steps.build.outputs.parameters.git-revision }}`}}"
