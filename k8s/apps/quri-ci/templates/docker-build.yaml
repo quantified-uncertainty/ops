@@ -98,6 +98,13 @@ spec:
     - name: quri-registry-secret
       secret:
         secretName: quri-registry-write
+
+    tolerations:
+    - key: dedicated
+      operator: Equal
+      value: builds
+      effect: NoSchedule
+
     container:
       image: gcr.io/kaniko-project/executor:latest
       volumeMounts:

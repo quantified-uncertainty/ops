@@ -51,6 +51,14 @@ argo-workflows:
     serviceMonitor:
       enabled: true
 
+    # schedule on build-servers, it's fine if argo workflows goes down and this saves us some memory
+    nodeSelector:
+      dedicated: builds
+    tolerations:
+    - key: dedicated
+      operator: Equal
+      value: builds
+      effect: NoSchedule
 
   artifactRepository:
     s3:
