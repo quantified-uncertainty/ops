@@ -60,6 +60,7 @@ spec:
             value: "{{`{{= item.directory ?? '' }}`}}"
           - name: dockerfile
             value: "{{`{{ item.dockerfile }}`}}"
+        # TODO - docker-build doesn't support monorepos, so we check out branch for each package separately
         withParam: "{{`{{ inputs.parameters.packages }}`}}"
 
     # TODO - send GitHub check
@@ -76,6 +77,6 @@ spec:
             value: "{{`{{ inputs.parameters.argo-namespace }}`}}"
           - name: image-tag
             # use exact git revision, not just branch name that could change - this will help with rollbacks and debugging
-            value: "{{`{{ steps.build.outputs.parameters.git-revision[0] }}`}}"
+            value: "{{`{{= steps.build.outputs.parameters.git-revision[0] }}`}}"
 
     # TODO - send Slack notification
