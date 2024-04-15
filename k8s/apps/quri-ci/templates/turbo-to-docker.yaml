@@ -131,11 +131,19 @@ spec:
       workingDir: /workspace
       source: |
         set -e
+
+        # Install OpenSSL - necessary for Prisma client
+        # TODO - pre-build image with openssl
+        apt-get update && apt-get install -y openssl
+
         npm install -g pnpm turbo
         pnpm config set store-dir /pnpm-store
+
         turbo prune {{`{{ inputs.parameters.package }}`}}
         cd out
+
         pnpm install --frozen-lockfile
+
         turbo run build --filter={{`{{ inputs.parameters.package }}`}}
 
     outputs:
@@ -163,6 +171,7 @@ spec:
         raw:
           data: |
             FROM node:{{`{{ inputs.parameters.node-version }}`}} AS base
+            RUN apt-get update && apt-get install -y openssl
             WORKDIR /app
             COPY . .
 
