@@ -92,6 +92,7 @@ spec:
           repo: "{{`{{ inputs.parameters.repo-url }}`}}"
           revision: "{{`{{ inputs.parameters.branch }}`}}"
           depth: 1
+
     container:
       image: alpine/git
       workingDir: /workspace
@@ -115,17 +116,6 @@ spec:
           # note that we check out the exact revision obtained by get-revision step, not the branch, for consistency
           revision: "{{`{{ inputs.parameters.git-revision }}`}}"
           depth: 1
-    image: node:{{`{{ inputs.parameters.node-version }}`}}
-    command: [bash]
-    workingDir: /workspace
-    source: |
-      set -e
-      npm install -g pnpm turbo
-      pnpm config set store-dir /pnpm-store
-      turbo prune {{`{{ inputs.parameters.package }}`}}
-      cd out
-      pnpm install --frozen-lockfile
-      turbo run build --filter={{`{{ inputs.parameters.package }}`}}
 
     nodeSelector:
       dedicated: builds
@@ -134,6 +124,19 @@ spec:
       operator: Equal
       value: builds
       effect: NoSchedule
+
+    script:
+      image: node:{{`{{ inputs.parameters.node-version }}`}}
+      command: [bash]
+      workingDir: /workspace
+      source: |
+        set -e
+        npm install -g pnpm turbo
+        pnpm config set store-dir /pnpm-store
+        turbo prune {{`{{ inputs.parameters.package }}`}}
+        cd out
+        pnpm install --frozen-lockfile
+        turbo run build --filter={{`{{ inputs.parameters.package }}`}}
 
     outputs:
       artifacts:
