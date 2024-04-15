@@ -16,7 +16,7 @@ spec:
         arguments:
           parameters:
           - name: repo-url
-            value: https://github/quantified-uncertainty/squiggle
+            value: https://github.com/quantified-uncertainty/squiggle
           - name: package
             value: "@quri/hub"
           - name: output-directory
