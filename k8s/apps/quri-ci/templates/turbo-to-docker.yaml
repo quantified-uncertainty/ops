@@ -156,6 +156,9 @@ spec:
       volumeMounts:
       - name: pnpm-cache
         mountPath: /pnpm-store
+      env:
+      - name: TURBO_TELEMETRY_DISABLED
+        value: "1"
       source: |
         set -e
 
