@@ -18,6 +18,11 @@ spec:
   serviceAccountName: quri-ci
   entrypoint: main
 
+  volumes:
+  - name: pnpm-cache
+    persistentVolumeClaim:
+      claimName: pnpm-cache
+
   templates:
   - name: main
     inputs:
