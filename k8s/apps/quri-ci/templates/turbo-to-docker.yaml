@@ -36,6 +36,8 @@ spec:
         template: get-revision
         arguments:
           parameters:
+          - name: repo-url
+            value: "{{`{{ inputs.parameters.repo-url }}`}}"
           - name: branch
             value: "{{`{{ inputs.parameters.branch }}`}}"
 
