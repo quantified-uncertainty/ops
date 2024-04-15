@@ -22,6 +22,9 @@ spec:
         description: |
           Name of a package to build. TODO: support building multiple packages at once.
 
+      - name: turbo-build-command
+        default: build # can be "bundle", in some cases, or something else
+
       - name: output-directory
         description: |
           Directory to copy to the final image.
@@ -55,6 +58,8 @@ spec:
             value: "{{`{{ inputs.parameters.node-version }}`}}"
           - name: output-directory
             value: "{{`{{ inputs.parameters.output-directory }}`}}"
+          - name: turbo-build-command
+            value: "{{`{{ inputs.parameters.turbo-build-command }}`}}"
 
     - - name: image
         template: image
@@ -108,6 +113,7 @@ spec:
       - name: package
       - name: node-version
       - name: output-directory
+      - name: turbo-build-command
       artifacts:
       - name: source
         path: /workspace
@@ -144,7 +150,7 @@ spec:
 
         pnpm install --frozen-lockfile
 
-        turbo run build --filter={{`{{ inputs.parameters.package }}`}}
+        turbo run {{`{{ inputs.parameters.turbo-build-command }}`}} --filter={{`{{ inputs.parameters.package }}`}}
 
     outputs:
       artifacts:

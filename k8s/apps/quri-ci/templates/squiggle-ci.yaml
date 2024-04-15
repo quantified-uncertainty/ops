@@ -23,6 +23,8 @@ spec:
             value: packages/hub/dist
           - name: image-name
             value: squiggle-build-runner
+          - name: turbo-build-command
+            value: bundle
 
     - - name: deploy
         templateRef:
