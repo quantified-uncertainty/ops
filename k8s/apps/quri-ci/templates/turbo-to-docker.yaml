@@ -1,3 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: pnpm-cache
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 10Gi
+---
 # Build a set of Turbo packages from a repo and upload node-based Docker images to a registry.
 # TODO: this workflow only supports a single package for now.
 apiVersion: argoproj.io/v1alpha1
@@ -131,10 +141,17 @@ spec:
       value: builds
       effect: NoSchedule
 
+    synchronization:
+      mutex:
+        name: pnpm-cache
+
     script:
       image: node:{{`{{ inputs.parameters.node-version }}`}}
       command: [bash]
       workingDir: /workspace
+      volumeMounts:
+      - name: pnpm-cache
+        mountPath: /pnpm-store
       source: |
         set -e
 
@@ -155,7 +172,7 @@ spec:
     outputs:
       artifacts:
       - name: build-output
-        path: /workspace/packages/{{`{{ inputs.parameters.output-directory }}`}}
+        path: /workspace/{{`{{ inputs.parameters.output-directory }}`}}
         s3:
           key: build-output-{{`{{ workflow.uid }}`}}
 
