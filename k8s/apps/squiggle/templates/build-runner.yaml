@@ -20,3 +20,4 @@ spec:
           envFrom:
           - secretRef:
               name: squiggle-hub-env
+          command: ['node', 'dist/buildRecentModelRevision/main.js']
