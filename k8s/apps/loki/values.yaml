@@ -60,3 +60,10 @@ promtail:
     clients:
       - url: http://loki-gateway/loki/api/v1/push
         tenant_id: 1
+
+  # run on build server too
+  tolerations:
+  - key: dedicated
+    operator: Equal
+    value: builds
+    effect: NoSchedule
