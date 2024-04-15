@@ -74,9 +74,6 @@ spec:
     - - name: image
         template: image
         arguments:
-          artifacts:
-          - name: build-output
-            from: "{{`{{ tasks.build.outputs.artifacts.build-output }}`}}"
           parameters:
           - name: branch
             value: "{{`{{ inputs.parameters.branch }}`}}"
@@ -86,6 +83,9 @@ spec:
             value: "{{`{{ inputs.parameters.node-version }}`}}"
           - name: image-name
             value: "{{`{{ inputs.parameters.image-name }}`}}"
+          artifacts:
+          - name: build-output
+            from: "{{`{{ steps.build.outputs.artifacts.build-output }}`}}"
 
     outputs:
       parameters:
