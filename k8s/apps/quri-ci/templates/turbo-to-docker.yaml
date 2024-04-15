@@ -176,7 +176,7 @@ spec:
     outputs:
       artifacts:
       - name: build-output
-        path: /workspace/{{`{{ inputs.parameters.output-directory }}`}}
+        path: /workspace/out/{{`{{ inputs.parameters.output-directory }}`}}
         s3:
           key: build-output-{{`{{ workflow.uid }}`}}
 
