@@ -1,0 +1,189 @@
+# Build a set of Turbo packages from a repo and upload node-based Docker images to a registry.
+# TODO: this workflow only supports a single package for now.
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: turbo-to-docker
+spec:
+  serviceAccountName: quri-ci
+  entrypoint: main
+
+  templates:
+  - name: main
+    inputs:
+      parameters:
+      - name: repo-url
+        description: "GitHub repository url, e.g. https://github.com/quantified-uncertainty/squiggle"
+
+      - name: branch
+        default: main
+
+      - name: package
+        description: |
+          Name of a package to build. TODO: support building multiple packages at once.
+
+      - name: output-directory
+        description: |
+          Directory to copy to the final image.
+
+      - name: image-name
+
+      - name: node-version
+        default: 20-bookworm-slim
+
+    steps:
+    - - name: get-revision
+        template: get-revision
+        arguments:
+          parameters:
+          - name: branch
+            value: "{{`{{ inputs.parameters.branch }}`}}"
+
+    - - name: build
+        template: build
+        arguments:
+          parameters:
+          - name: repo-url
+            value: "{{`{{ inputs.parameters.repo-url }}`}}"
+          - name: git-revision
+            value: "{{`{{ steps.get-revision.outputs.result }}`}}"
+          - name: package
+            value: "{{`{{ inputs.parameters.package }}`}}"
+          - name: node-version
+            value: "{{`{{ inputs.parameters.node-version }}`}}"
+          - name: output-directory
+            value: "{{`{{ inputs.parameters.output-directory }}`}}"
+
+    - - name: image
+        template: image
+        arguments:
+          artifacts:
+          - name: build-output
+            from: "{{`{{ tasks.build.outputs.artifacts.build-output }}`}}"
+          parameters:
+          - name: branch
+            value: "{{`{{ inputs.parameters.branch }}`}}"
+          - name: git-revision
+            value: "{{`{{ steps.get-revision.outputs.result }}`}}"
+          - name: node-version
+            value: "{{`{{ inputs.parameters.node-version }}`}}"
+          - name: image-name
+            value: "{{`{{ inputs.parameters.image-name }}`}}"
+
+    outputs:
+      parameters:
+      - name: git-revision
+        valueFrom:
+          parameter: "{{`{{ steps.get-revision.outputs.result }}`}}"
+
+# ------------------------------------------------------------------------
+
+  - name: get-revision
+    inputs:
+      parameters:
+      - name: repo-url
+      - name: branch
+      artifacts:
+      - name: source
+        path: /workspace
+        git:
+          repo: "{{`{{ inputs.parameters.repo-url }}`}}"
+          revision: "{{`{{ inputs.parameters.branch }}`}}"
+          depth: 1
+    container:
+      image: alpine/git
+      workingDir: /workspace
+      command: [git, rev-parse, HEAD]
+
+# ------------------------------------------------------------------------
+
+  - name: build
+    inputs:
+      parameters:
+      - name: repo-url
+      - name: git-revision
+      - name: package
+      - name: node-version
+      - name: output-directory
+      artifacts:
+      - name: source
+        path: /workspace
+        git:
+          repo: "{{`{{ inputs.parameters.repo-url }}`}}"
+          # note that we check out the exact revision obtained by get-revision step, not the branch, for consistency
+          revision: "{{`{{ inputs.parameters.git-revision }}`}}"
+          depth: 1
+    image: node:{{`{{ inputs.parameters.node-version }}`}}
+    command: [bash]
+    workingDir: /workspace
+    source: |
+      set -e
+      npm install -g pnpm turbo
+      pnpm config set store-dir /pnpm-store
+      turbo prune {{`{{ inputs.parameters.package }}`}}
+      cd out
+      pnpm install --frozen-lockfile
+      turbo run build --filter={{`{{ inputs.parameters.package }}`}}
+
+    nodeSelector:
+      dedicated: builds
+    tolerations:
+    - key: dedicated
+      operator: Equal
+      value: builds
+      effect: NoSchedule
+
+    outputs:
+      artifacts:
+      - name: build-output
+        path: /workspace/packages/{{`{{ inputs.parameters.output-directory }}`}}
+        s3:
+          key: build-output-{{`{{ workflow.uid }}`}}
+
+# ------------------------------------------------------------------------
+
+  - name: image
+    inputs:
+      parameters:
+      - name: image-name
+      - name: branch
+      - name: git-revision
+      - name: node-version
+
+      artifacts:
+      - name: build-output
+        path: /workspace
+      - name: dockerfile
+        path: /Dockerfile
+        raw:
+          data: |
+            FROM node:{{`{{ inputs.parameters.node-version }}`}} AS base
+            WORKDIR /app
+            COPY . .
+
+    volumes:
+    - name: quri-registry-secret
+      secret:
+        secretName: quri-registry-write
+
+    nodeSelector:
+      dedicated: builds
+    tolerations:
+    - key: dedicated
+      operator: Equal
+      value: builds
+      effect: NoSchedule
+
+    container:
+      image: gcr.io/kaniko-project/executor:latest
+      volumeMounts:
+      - name: quri-registry-secret
+        mountPath: /kaniko/.docker
+      args:
+      # tag with branch
+      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.branch }}`}}"
+      # also tag with exact git revision
+      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.git-revision }}`}}"
+      - "--context=dir:///workspace"
+      - "--dockerfile=/Dockerfile"
+      - "--skip-default-registry-fallback"

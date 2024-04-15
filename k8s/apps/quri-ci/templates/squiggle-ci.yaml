@@ -9,18 +9,29 @@ spec:
   templates:
   - name: main
     steps:
-    - - name: call-ci
+    - - name: turbo-to-docker
         templateRef:
-          name: monorepo-ci
+          name: turbo-to-docker
           template: main
         arguments:
           parameters:
-          - name: repo
+          - name: repo-url
+            value: https://github/quantified-uncertainty/squiggle
+          - name: package
+            value: "@quri/hub"
+          - name: output-directory
+            value: packages/hub/dist
+          - name: image-name
+            value: squiggle-build-runner
+
+    - - name: deploy
+        templateRef:
+          name: apply-argocd-application
+          template: main
+        arguments:
+          parameters:
+          - name: name
             value: squiggle
-          - name: packages
-            value: |
-              [
-                { "image": "squiggle-build-runner", "dockerfile": "packages/hub/dockerfile" }
-              ]
-          - name: argo-app
-            value: squiggle
+          - name: image-tag
+            # use exact git revision, not just branch name that could change - this will help with rollbacks and debugging
+            value: "{{`{{ steps.turbo-to-docker.outputs.parameters.git-revision }}`}}"
