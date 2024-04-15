@@ -41,6 +41,8 @@ argo-workflows:
   controller:
     workflowDefaults:
       spec:
+        artifactGC:
+          strategy: OnWorkflowDeletion
         podGC:
           strategy: OnPodCompletion
           deleteDelayDuration: 60s # give enough time to Loki to collect logs
