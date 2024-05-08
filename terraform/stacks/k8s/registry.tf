@@ -53,7 +53,7 @@ resource "kubernetes_secret" "registry_htpasswd" {
 
   data = {
     "htpasswd" = <<EOF
-${local.registry_user}:${bcrypt(random_password.registry_password.result)}
+${local.registry_user}:${random_password.registry_password.bcrypt_hash}
 EOF
   }
 }
@@ -77,4 +77,10 @@ resource "kubernetes_secret" "docker_config" {
   }
 
   type = "kubernetes.io/dockerconfigjson"
+}
+
+resource "github_actions_secret" "registry_password" {
+  repository      = "GUCEM"
+  secret_name     = "REGISTRY_PASSWORD"
+  plaintext_value = random_password.registry_password.result
 }
