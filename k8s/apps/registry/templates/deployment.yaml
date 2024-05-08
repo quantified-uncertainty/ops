@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: main
+          image: registry/{{ .Values.version }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: REGISTRY_AUTH
+              value: htpasswd
+            - name: REGISTRY_AUTH_HTPASSWD_REALM
+              value: "Registry Realm"
+            - name: REGISTRY_AUTH_HTPASSWD_PATH
+              value: /auth/htpasswd
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: "256Mi"
+            limits:
+              memory: "1024Mi"
+      volumeMounts:
+      - name: data
+        mountPath: /var/lib/registry
+      - name: auth
+        mountPath: /auth
+    volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: {{ .Release.Name }}
+    - name: auth
+      secret:
+        secretName: {{ .Values.htpasswdSecret }}
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: {{ .Values.storage.size }}

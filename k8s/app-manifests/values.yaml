@@ -11,6 +11,8 @@ apps:
 - name: argo-workflows
   automated: null
 
+- name: registry
+
 # Core services for ingress
 - name: cert-manager
   automated: null
