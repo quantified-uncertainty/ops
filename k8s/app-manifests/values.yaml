@@ -82,6 +82,6 @@ apps:
 
 - name: gucem
   source:
-    repoURL: https://github.com/quantified-uncertainty/GUCEM
+    repoURL: git@github.com/quantified-uncertainty/GUCEM.git
     path: opts/chart
     targetRevision: "2024"
