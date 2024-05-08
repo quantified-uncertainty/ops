@@ -39,18 +39,19 @@ spec:
               memory: "256Mi"
             limits:
               memory: "1Gi"
-      volumeMounts:
+          volumeMounts:
+          - name: data
+            mountPath: /var/lib/registry
+          - name: auth
+            mountPath: /auth
+
+      volumes:
       - name: data
-        mountPath: /var/lib/registry
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}
       - name: auth
-        mountPath: /auth
-    volumes:
-    - name: data
-      persistentVolumeClaim:
-        claimName: {{ .Release.Name }}
-    - name: auth
-      secret:
-        secretName: {{ .Values.htpasswdSecret }}
+        secret:
+          secretName: {{ .Values.htpasswdSecret }}
 
 ---
 kind: PersistentVolumeClaim
