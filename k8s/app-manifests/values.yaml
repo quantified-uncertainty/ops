@@ -84,4 +84,4 @@ apps:
   source:
     repoURL: https://github.com/quantified-uncertainty/GUCEM
     path: opts/chart
-    targetRevision: 2024
+    targetRevision: "2024"
