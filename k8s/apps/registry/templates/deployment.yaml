@@ -52,14 +52,3 @@ spec:
       - name: auth
         secret:
           secretName: {{ .Values.htpasswdSecret }}
-
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: {{ .Release.Name }}
-spec:
-  accessModes: [ "ReadWriteOnce" ]
-  resources:
-    requests:
-      storage: {{ .Values.storage.size }}
