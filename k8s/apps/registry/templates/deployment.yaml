@@ -23,7 +23,7 @@ spec:
 
       containers:
         - name: main
-          image: registry/{{ .Values.version }}
+          image: registry:{{ .Values.version }}
           imagePullPolicy: IfNotPresent
           env:
             - name: REGISTRY_AUTH
