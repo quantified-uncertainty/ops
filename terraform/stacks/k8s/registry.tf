@@ -2,9 +2,13 @@ locals {
   # Should include the list of all namespaces that need to use the registry.
   # Sorry; this might be inconvenient, we'll have to figure out a better solution in the future.
   # Maybe we could copy the secret with Argo Workflows?
-  registry_credentials_namespaces = toset([
+  registry_namespaces = toset([
     "guesstimate"
   ])
+
+  # We use a single user for our container registry, with full permissions.
+  # This is still an improvement over a default DigitalOcean Registry, which uses a token with full permissions for entire DO team.
+  registry_user = "quri"
 }
 
 # We're using the DigitalOcean Container Registry to store our Docker images.
@@ -35,4 +39,42 @@ resource "kubernetes_secret" "quri_registry_rw_credentials" {
   data = {
     "config.json" = digitalocean_container_registry_docker_credentials.write.docker_credentials
   }
+}
+
+resource "random_password" "registry_password" {
+  length = 30
+}
+
+resource "kubernetes_secret" "registry_htpasswd" {
+  metadata {
+    name      = "quri-registry-htpasswd" # should match the name used by registry Helm chart (see in k8s/apps)
+    namespace = "registry"
+  }
+
+  data = {
+    "htpasswd" = <<EOF
+${local.registry_user}:${bcrypt(random_password.registry_password.result)}
+EOF
+  }
+}
+
+resource "kubernetes_secret" "docker_config" {
+  for_each = local.registry_namespaces
+
+  metadata {
+    name      = "dockerconfig"
+    namespace = each.key
+  }
+
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      auths = {
+        "registry.registry" = {
+          auth = base64encode("${local.registry_user}:${random_password.registry_password.result}")
+        }
+      }
+    })
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
 }
