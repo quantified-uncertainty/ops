@@ -38,7 +38,7 @@ spec:
             requests:
               memory: "256Mi"
             limits:
-              memory: "1024Mi"
+              memory: "1Gi"
       volumeMounts:
       - name: data
         mountPath: /var/lib/registry
