@@ -225,9 +225,9 @@ spec:
         mountPath: /kaniko/.docker
       args:
       # tag with branch
-      - "--destination=registry.k8s.quantifieduncertainty.org/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.branch }}`}}"
+      - "--destination=registry.k8s.quantifieduncertainty.org/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.branch }}`}}"
       # also tag with exact git revision
-      - "--destination=registry.k8s.quantifieduncertainty.org/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.git-revision }}`}}"
+      - "--destination=registry.k8s.quantifieduncertainty.org/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.git-revision }}`}}"
       # registry.registry is http-only, and that's fine, we don't care about in-cluster traffic encryption
       - "--insecure"
       - "--context=dir:///workspace"
