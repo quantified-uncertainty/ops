@@ -4,7 +4,7 @@ hosts:
 
 image:
   pullSecret: dockerconfig
-  name: registry.k8s.quantifieduncertainty.org/quri/guesstimate-server
+  name: registry.k8s.quantifieduncertainty.org/guesstimate-server
   # Image tag, filled by Argo CD app that's dynamically created by CI workflow.
   # Required.
   tag: ""

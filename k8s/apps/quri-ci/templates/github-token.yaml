@@ -14,7 +14,7 @@ spec:
       - name: github-org # either `quantified-uncertainty` or `getguesstimate`
         default: quantified-uncertainty
     container:
-      image: registry.k8s.quantifieduncertainty.org/quri/github-credentials-obtainer
+      image: registry.k8s.quantifieduncertainty.org/github-credentials-obtainer
       imagePullSecrets:
       - name: dockerconfig
       env:
