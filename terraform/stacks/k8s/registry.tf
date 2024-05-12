@@ -3,7 +3,10 @@ locals {
   # Sorry; this might be inconvenient, we'll have to figure out a better solution in the future.
   # Maybe we could copy the secret with Argo Workflows?
   registry_namespaces = toset([
-    "guesstimate"
+    "quri-ci",
+    "guesstimate",
+    "gucem",
+    "squiggle"
   ])
 
   # We use a single user for our container registry, with full permissions.
@@ -69,9 +72,14 @@ resource "kubernetes_secret" "docker_config" {
   data = {
     ".dockerconfigjson" = jsonencode({
       auths = {
+        // public ingress endpoint
+        "registry.k8s.quantifieduncertainty.org" = {
+          auth = base64encode("${local.registry_user}:${random_password.registry_password.result}")
+        },
+        // registry.registry is a internal k8s alias: `registry` service in `registry` kubernetes namespace
         "registry.registry" = {
           auth = base64encode("${local.registry_user}:${random_password.registry_password.result}")
-        }
+        },
       }
     })
   }

@@ -1,5 +1,4 @@
-# Secrets for oauth2-proxy.
-# It's used to protect https://alerts.k8s.quantifieduncertainty.org/ with GitHub SSO, and possibly other domains in the future.
+# OAuth secrets, for when we need to authorize a deployment with oauth2-proxy and GitHub SSO.
 
 data "onepassword_item" "quri_integrations_github_app_oauth" {
   vault = module.providers.op_vault
@@ -12,9 +11,13 @@ resource "random_password" "oauth2_proxy_cookie_secret" {
 }
 
 resource "kubernetes_secret" "oauth2_proxy_secret" {
+  for_each = toset([
+    "prometheus", # alerts.k8s.quantifieduncertainty.org
+    "gucem"       # GUCEM
+  ])
   metadata {
     name      = "quri-oauth2-proxy"
-    namespace = "prometheus"
+    namespace = each.key
   }
 
   data = {
