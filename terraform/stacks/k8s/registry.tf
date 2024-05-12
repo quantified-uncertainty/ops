@@ -1,3 +1,15 @@
+# We're self-hosting the Docker Registry (CNCF Distribution, https://distribution.github.io/distribution/) in Kubernetes.
+#
+# Reasons why I was unhappy with GitHub registry:
+# - I'm confused about their pricing model, I think private images would require an organization subscription, but it's unclear; I managed to upload private images, but unsure how reliable it is
+# - I'd need a GitHub token in our Kubernetes cluster to run private images
+# - the easiest option is a personal token but it would expire in a year
+# - other options would require a substantial infra to re-issue a cluster through a custom GitHub app, etc., or a service user in GitHub
+#
+# Reasons why I was unhappy with DigitalOcean registry:
+# - security! their "container registry access token" gives full admin permissions; so I'm not comfortable with storing it in github env (misconfiguration could lead to someone getting the full access to our DO with full permissions through a pull request)
+# - also, pricing and scaling; their $20 plan for registry is for 100GB (while a volume is $10/100GB, and can be more fine-grained); I'm not even sure how to increase it above 100GB if we need it
+
 locals {
   # Should include the list of all namespaces that need to use the registry.
   # Sorry; this might be inconvenient, we'll have to figure out a better solution in the future.
@@ -12,36 +24,6 @@ locals {
   # We use a single user for our container registry, with full permissions.
   # This is still an improvement over a default DigitalOcean Registry, which uses a token with full permissions for entire DO team.
   registry_user = "quri"
-}
-
-# We're using the DigitalOcean Container Registry to store our Docker images.
-# So the registry is configured here and not through Argo CD.
-
-resource "digitalocean_container_registry" "main" {
-  # This name is also used by DO for k8s secret, which is awkward, but it's too late to rename.
-  name                   = "quri"
-  subscription_tier_slug = "basic"
-}
-
-# Separate credentials for jobs that need to push images
-resource "digitalocean_container_registry_docker_credentials" "write" {
-  registry_name = digitalocean_container_registry.main.name
-  write         = true
-}
-
-# Credentials for workloads that need to _push_ images to the registry, i.e. CI workflows.
-# Will usually be mounted to `/kaniko/.docker`.
-resource "kubernetes_secret" "quri_registry_rw_credentials" {
-  for_each = toset([var.ci_namespace])
-
-  metadata {
-    name      = "quri-registry-write"
-    namespace = each.key
-  }
-
-  data = {
-    "config.json" = digitalocean_container_registry_docker_credentials.write.docker_credentials
-  }
 }
 
 resource "random_password" "registry_password" {
