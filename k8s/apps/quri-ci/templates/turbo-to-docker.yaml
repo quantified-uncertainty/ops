@@ -206,9 +206,9 @@ spec:
             COPY . .
 
     volumes:
-    - name: quri-registry-secret
+    - name: dockerconfig
       secret:
-        secretName: quri-registry-write
+        secretName: dockerconfig
 
     nodeSelector:
       dedicated: builds
@@ -221,13 +221,13 @@ spec:
     container:
       image: gcr.io/kaniko-project/executor:latest
       volumeMounts:
-      - name: quri-registry-secret
+      - name: dockerconfig
         mountPath: /kaniko/.docker
       args:
       # tag with branch
-      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.branch }}`}}"
+      - "--destination=registry.registry/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.branch }}`}}"
       # also tag with exact git revision
-      - "--destination=registry.digitalocean.com/quri/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.git-revision }}`}}"
+      - "--destination=registry.registry/{{`{{ inputs.parameters.image-name }}`}}:{{`{{ inputs.parameters.git-revision }}`}}"
       - "--context=dir:///workspace"
       - "--dockerfile=/Dockerfile"
       - "--skip-default-registry-fallback"

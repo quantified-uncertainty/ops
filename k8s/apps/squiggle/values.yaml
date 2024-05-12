@@ -1,5 +1,4 @@
 image:
-  pullSecret: quri # maintained by DigitalOcean
   # Image tag, filled by Argo CD app that's dynamically created by CI workflow.
   # Required.
   tag: ""

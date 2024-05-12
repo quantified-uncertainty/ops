@@ -12,10 +12,10 @@ spec:
         app: {{ .Release.Name }}-build-runner
     spec:
       imagePullSecrets:
-      - name: {{ .Values.image.pullSecret }}
+      - name: dockerconfig
       containers:
         - name: server
-          image: "registry.digitalocean.com/quri/squiggle-build-runner:{{ required "tag is required" .Values.image.tag }}"
+          image: "registry.registry/squiggle-build-runner:{{ required "tag is required" .Values.image.tag }}"
           imagePullPolicy: Always
           envFrom:
           - secretRef:

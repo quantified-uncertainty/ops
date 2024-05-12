@@ -3,8 +3,8 @@ hosts:
 - api.getguesstimate.com
 
 image:
-  pullSecret: quri
-  name: registry.digitalocean.com/quri/guesstimate-server
+  pullSecret: dockerconfig
+  name: registry.registry/guesstimate-server
   # Image tag, filled by Argo CD app that's dynamically created by CI workflow.
   # Required.
   tag: ""
