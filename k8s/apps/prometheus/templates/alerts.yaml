@@ -9,6 +9,11 @@ spec:
     groupInterval: 5m
     repeatInterval: 12h
     receiver: slack
+    routes:
+    - matchers:
+      - name: alertname
+        value: Watchdog
+      receiver: drop
   receivers:
   - name: slack
     slackConfigs:
@@ -42,3 +47,4 @@ spec:
       fields:
       - title: "Severity"
         value: "{{`{{ .CommonLabels.severity }}`}}"
+  - name: drop
