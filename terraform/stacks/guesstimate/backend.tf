@@ -22,11 +22,21 @@ resource "kubernetes_secret" "backend_env" {
   }
 
   data = {
-    "ALGOLIA_API_KEY"   = data.onepassword_item.algolia_api_key.password
-    "AUTH0_API_DOMAIN"  = var.auth0_domain
-    "AUTH0_AUDIENCE"    = module.auth0_prod.backend_audience
-    "AUTH0_API_TOKEN"   = data.onepassword_item.auth0_api_token.password
-    "AUTH0_CONNECTION"  = var.auth0_connection_name
+    "ALGOLIA_API_KEY" = data.onepassword_item.algolia_api_key.password
+
+    # Auth0 tenant domain
+    "AUTH0_API_DOMAIN" = var.auth0_domain
+
+    # Guesstimate API audience
+    "AUTH0_AUDIENCE" = module.auth0_2024.backend_audience
+
+    # Credentials for creating and reading users from auth0, used by authentor.rb in guesstimate-server
+    "AUTH0_CLIENT_ID"     = module.auth0_2024.authentor_client_id
+    "AUTH0_CLIENT_SECRET" = module.auth0_2024.authentor_client_secret
+
+    # Name of the Auth0 users database
+    "AUTH0_CONNECTION" = var.auth0_connection_name
+
     "CHARGEBEE_API_KEY" = data.onepassword_item.chargebee_api_key.password
     "DATABASE_URL"      = digitalocean_database_cluster.main.uri
     "SECRET_KEY_BASE"   = random_bytes.rails_secret.hex

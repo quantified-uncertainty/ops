@@ -9,7 +9,7 @@ terraform {
 
 resource "auth0_client" "frontend" {
   name     = var.application_name
-  app_type = var.app_type
+  app_type = "regular_web"
   callbacks = flatten([
     for url in local.all_frontend_urls : [
       "${url}/",
@@ -26,8 +26,8 @@ resource "auth0_client" "frontend" {
     alg = var.jwt_alg
   }
 
-  oidc_conformant = var.oidc_conformant
-  sso             = var.sso
+  oidc_conformant = true
+  sso             = true
 }
 
 resource "auth0_client_credentials" "frontend" {

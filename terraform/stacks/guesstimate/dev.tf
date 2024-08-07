@@ -33,31 +33,3 @@ module "auth0_dev" {
   application_name = "Guesstimate (dev)"
   connection_name  = "Username-Password-Authentication"
 }
-
-# Imported to be deleted after Terraform migration is complete
-resource "auth0_client" "legacy_dev_client" {
-  provider = auth0.dev
-
-  for_each = toset([
-    "2023",
-    "pre-2023"
-  ])
-
-  name = "${each.key}, use guesstimate-app/dev instead"
-
-  app_type = each.key == "2023" ? "spa" : "regular_web"
-  sso      = each.key == "2023" ? false : true
-  callbacks = [
-    "${local.dev_frontend_url}/", "${local.dev_frontend_url}/auth-redirect", "${local.dev_frontend_url}/api/auth/callback/auth0"
-  ]
-
-  allowed_logout_urls = [local.dev_frontend_url]
-  allowed_origins     = [each.key == "2023" ? local.dev_frontend_url : "${local.dev_frontend_url}/"]
-  web_origins         = [local.dev_frontend_url]
-
-  jwt_configuration {
-    alg = "RS256"
-  }
-
-  oidc_conformant = true
-}
