@@ -33,3 +33,9 @@ data "onepassword_item" "vsce_pat" {
   vault = module.providers.op_vault
   title = "VSCode marketplace PAT token"
 }
+
+// Anthropic API key for Squiggle Hub AI generation.
+data "onepassword_item" "anthropic_api_key" {
+  vault = module.providers.op_vault
+  title = "Anthropic API key"
+}

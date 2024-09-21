@@ -51,6 +51,11 @@ resource "vercel_project" "hub" {
       target = ["production", "preview"]
     },
     {
+      key    = "ANTHROPIC_API_KEY"
+      value  = data.onepassword_item.anthropic_api_key.password
+      target = ["production", "preview"]
+    },
+    {
       key    = "EMAIL_FROM"
       value  = var.hub_email_from
       target = ["production", "preview"]
