@@ -1,0 +1,24 @@
+# Enable metabase.k8s.quantifieduncertainty.org website.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-metabase
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Release.Name }}-metabase
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - {{ .Values.host }}
+    secretName: {{ .Release.Name }}-metabase-tls
