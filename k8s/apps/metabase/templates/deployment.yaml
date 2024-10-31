@@ -13,6 +13,14 @@ spec:
       labels:
         app: {{ .Release.Name }}-metabase
     spec:
+      nodeSelector:
+        dedicated: builds
+      tolerations:
+      - key: dedicated
+        operator: Equal
+        value: builds
+        effect: NoSchedule
+
       containers:
         - name: metabase
           image: "metabase/metabase:{{ .Values.version }}"
