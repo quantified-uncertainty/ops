@@ -1,4 +1,6 @@
-This repository contains configs that set up QURI infrastructure.
+This repository contains the configs that describe QURI infrastructure.
+
+It has two major components: Terraform and Kubernetes.
 
 # Terraform
 
