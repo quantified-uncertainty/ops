@@ -83,7 +83,7 @@ apps:
 # -------------------- QURI apps --------------------
 - name: metaforecast
   sources:
-  - repoURL: git@github.com/quantified-uncertainty/metaforecast.git
+  - repoURL: https://github.com/quantified-uncertainty/metaforecast
     path: ops/chart
     targetRevision: dockerize
   - repoURL: git@github.com/quantified-uncertainty/ops.git
