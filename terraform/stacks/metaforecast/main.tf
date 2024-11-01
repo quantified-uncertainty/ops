@@ -2,7 +2,10 @@ locals {
   domain                = "metaforecast.org"
   elastic_host          = "https://metaforecast-elastic.k8s.quantifieduncertainty.org"
   elastic_k8s_namespace = "metaforecast"
-  elastic_k8s_secret    = "metaforecast-search-es-elastic-user"
+
+  # Contains credentials for default elastic user.
+  # https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-users-and-roles.html
+  elastic_k8s_secret = "metaforecast-search-es-elastic-user"
 }
 
 resource "digitalocean_project" "main" {

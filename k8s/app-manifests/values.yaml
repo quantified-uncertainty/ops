@@ -81,17 +81,19 @@ apps:
 - name: quri-ci
 
 # -------------------- QURI apps --------------------
+- name: elastic
+  # Namespaced for historical reasons; metaforecast is the only app that uses this chart, for now.
+  # But we will probably use a single Elastic cluster (possibly with multiple users)for all QURI apps.
+  namespace: metaforecast
+  automated: null
+
 - name: metaforecast
-  sources:
-  # metaforecast repo is public, but HTTPS is problematic because of https://github.com/argoproj/argo-cd/issues/16532
-  - repoURL: git@github.com/quantified-uncertainty/metaforecast.git
+  source:
+    # metaforecast repo is public, but HTTPS is problematic because of https://github.com/argoproj/argo-cd/issues/16532
+    repoURL: git@github.com/quantified-uncertainty/metaforecast.git
     path: ops/chart
     targetRevision: dockerize
-  - repoURL: git@github.com/quantified-uncertainty/ops.git
-    path: k8s/apps/metaforecast-elastic
-    targetRevision: HEAD
-  automated: null # tmp
-
+  automated: null
 
 - name: gucem
   source:

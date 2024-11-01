@@ -1,7 +1,0 @@
-apiVersion: v2
-name: metaforecast
-version: "0.1.0"
-dependencies:
-- name: elastic
-  version: "0.1.0"
-  repository: file://../../charts/elastic
