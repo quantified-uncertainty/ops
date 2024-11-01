@@ -90,7 +90,7 @@ apps:
 - name: metaforecast
   source:
     # metaforecast repo is public, but HTTPS is problematic because of https://github.com/argoproj/argo-cd/issues/16532
-    repoURL: git@github.com/quantified-uncertainty/metaforecast.git
+    repoURL: https://github.com/quantified-uncertainty/metaforecast
     path: ops/chart
     targetRevision: dockerize
   automated: null
