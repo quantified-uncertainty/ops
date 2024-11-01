@@ -20,14 +20,20 @@ spec:
     {{- if not (hasKey $app "automated") }}
     automated: {}
     {{- end }}
+
+  {{- if $app.source }}
   source:
-    {{- if $app.source }}
     {{- toYaml $app.source | nindent 4 }}
-    {{- else }}
+  {{- else if $app.sources }}
+  sources:
+    {{- toYaml $app.sources | nindent 4 }}
+  {{- else }}
+  source:
     repoURL: https://github.com/quantified-uncertainty/ops
     path: "k8s/apps/{{ $app.name }}"
     targetRevision: HEAD
-    {{- end }}
+  {{- end }}
+
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $app.namespace | default $app.name }}

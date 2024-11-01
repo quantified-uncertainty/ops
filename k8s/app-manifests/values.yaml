@@ -1,10 +1,15 @@
-apps:
-# Infra-level apps.
-# If `source` is set, it'll load a remote Helm chart.
+# Simplified configuration for Argo CD.
+# All apps in the following list will be turned into Argo CD Applications.
+# If `source` is set, it'll load a remote Helm chart. See https://argo-cd.readthedocs.io/en/stable/user-guide/helm/ for the supported fields in the `source` section.
 # Otherwise, it'll load the `k8s/apps/{name}` dir from this repo.
+# (If this sounds confusing, check out the `apps.yaml` template file, and look through Argo CD docs on `Application` resource.)
+
+apps:
+# -------------------- Infra-level apps --------------------
 #
 # For infra-level apps, `automated: null` is set intentionally to avoid accidents.
-# Please sync them through Argo CD Web UI or CLI, and check the diffs carefully before sync.
+# Please sync them via [Argo CD Web UI](https://argo.k8s.quantifieduncertainty.org/) or CLI,
+# and check the diffs carefully before sync.
 - name: argocd
   automated: null
 
@@ -65,23 +70,33 @@ apps:
 - name: elastic-system
   automated: null
 
-# Analytics
+# -------------------- Analytics --------------------
 - name: metabase
   info:
   - name: URL
     value: https://metabase.k8s.quantifieduncertainty.org
 
+# -------------------- CI --------------------
 # CI for all apps and common CI workflows for Argo Workflows
 - name: quri-ci
 
-# QURI apps
+# -------------------- QURI apps --------------------
 - name: metaforecast
+  sources:
+  - repoURL: git@github.com/quantified-uncertainty/metaforecast.git
+    path: ops/chart
+    targetRevision: dockerize
+  - repoURL: git@github.com/quantified-uncertainty/ops.git
+    path: k8s/apps/metaforecast-elastic
+    targetRevision: HEAD
+  automated: null # tmp
 
-# Note: some user-facing apps such as Guesstimate are deployed by Argo Workflows dynamically, so they are not listed here.
-# Check out apply-argocd-application WorkflowTemplate in argo-ci app to see how they're configured.
 
 - name: gucem
   source:
     repoURL: git@github.com/quantified-uncertainty/GUCEM.git
     path: ops/chart
     targetRevision: "2024"
+
+# Note: some user-facing apps such as Guesstimate are deployed by Argo Workflows dynamically, so they are not listed here.
+# Check out apply-argocd-application WorkflowTemplate in argo-ci app to see how they're configured.
