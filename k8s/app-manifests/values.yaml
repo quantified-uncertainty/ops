@@ -83,7 +83,8 @@ apps:
 # -------------------- QURI apps --------------------
 - name: metaforecast
   sources:
-  - repoURL: https://github.com/quantified-uncertainty/metaforecast
+  # metaforecast repo is public, but HTTPS is problematic because of https://github.com/argoproj/argo-cd/issues/16532
+  - repoURL: git@github.com/quantified-uncertainty/metaforecast.git
     path: ops/chart
     targetRevision: dockerize
   - repoURL: git@github.com/quantified-uncertainty/ops.git
