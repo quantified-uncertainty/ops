@@ -20,7 +20,7 @@ spec:
           - name: package
             value: "@quri/hub"
           - name: output-directory
-            value: packages/hub/dist
+            value: apps/hub/dist
           - name: image-name
             value: squiggle-build-runner
           - name: turbo-build-command

@@ -5,7 +5,7 @@ locals {
 
 resource "vercel_project" "squiggle-website" {
   name           = "squiggle-website"
-  root_directory = "packages/website"
+  root_directory = "apps/website"
 
   git_repository = {
     production_branch = "main"

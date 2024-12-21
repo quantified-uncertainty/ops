@@ -12,7 +12,7 @@ resource "random_password" "hub_nextauth_secret" {
 
 resource "vercel_project" "hub" {
   name           = "quri-hub"
-  root_directory = "packages/hub"
+  root_directory = "apps/hub"
   git_repository = {
     production_branch = "main"
     repo              = "quantified-uncertainty/squiggle"
