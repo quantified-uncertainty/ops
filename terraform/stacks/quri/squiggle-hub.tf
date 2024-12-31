@@ -51,6 +51,11 @@ resource "vercel_project" "hub" {
       target = ["production", "preview"]
     },
     {
+      key    = "AUTH_RESEND_KEY"
+      value  = data.onepassword_item.resend_key.password
+      target = ["production", "preview"]
+    },
+    {
       key    = "ANTHROPIC_API_KEY"
       value  = data.onepassword_item.anthropic_api_key.password
       target = ["production", "preview"]
@@ -99,23 +104,6 @@ module "squiggle_hub_alternative_domains" {
 }
 
 # Sendgrid DNS configuration; obtained from https://app.sendgrid.com/settings/sender_auth/domain/get/18308809
-resource "vercel_dns_record" "squigglehub-sendgrid" {
-  for_each = {
-    "url1940" : "sendgrid.net",
-    "34091428" : "sendgrid.net",
-    "em6594" : "u34091428.wl179.sendgrid.net",
-    "s1._domainkey" : "s1.domainkey.u34091428.wl179.sendgrid.net",
-    "s2._domainkey" : "s2.domainkey.u34091428.wl179.sendgrid.net",
-  }
-
-  domain = local.squiggle_hub_domain
-  name   = each.key
-  type   = "CNAME"
-  ttl    = 300
-  value  = each.value
-}
-
-# Sendgrid DNS configuration; obtained from https://app.sendgrid.com/settings/sender_auth/domain/get/18308809
 resource "digitalocean_record" "hub-sendgrid" {
   for_each = {
     "url1940" : "sendgrid.net.",
@@ -130,6 +118,34 @@ resource "digitalocean_record" "hub-sendgrid" {
   type   = "CNAME"
   ttl    = 300
   value  = each.value
+}
+
+# Resend DNS configuration; obtained from https://resend.com/domains
+resource "digitalocean_record" "hub_resend" {
+  for_each = {
+    "mx" : {
+      type  = "MX"
+      name  = "send"
+      value = "feedback-smtp.us-east-1.amazonses.com."
+    },
+    "spf" : {
+      type  = "TXT"
+      name  = "send"
+      value = "v=spf1 include:amazonses.com ~all"
+    },
+    "dkim" : {
+      type  = "TXT"
+      name  = "resend._domainkey"
+      value = "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJbEJgQ3nN8wmt3R7yfuUxXXTCv+4DPXnu8fSOUXM/kQdfJrHGBxa4pgSwFUt6fCColcNDFtwrLIgNymz3Ye13V4y79SypQ4qV6gKfSFFj86NbK6znw10POSPHmHhoREVMooikIfYpFMPSfVkFGiZLgHeUBKj5gMsPXIW9Ri6FDwIDAQAB"
+    }
+  }
+
+  domain   = local.squiggle_hub_domain
+  name     = each.value.name
+  type     = each.value.type
+  ttl      = 300
+  priority = each.value.type == "MX" ? 10 : null
+  value    = each.value.value
 }
 
 resource "digitalocean_record" "hub_google_verification" {

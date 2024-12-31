@@ -20,6 +20,12 @@ data "onepassword_item" "sendgrid_key" {
   title = "SendGrid key"
 }
 
+# Used for Squiggle Hub. TODO: rename?
+data "onepassword_item" "resend_key" {
+  vault = module.providers.op_vault
+  title = "Resend key"
+}
+
 # Token for controlling GitHub, e.g. configuring action secrets in Squiggle repo.
 # Get here: https://github.com/settings/tokens?type=beta (choose QURI org)
 data "onepassword_item" "github_token" {
