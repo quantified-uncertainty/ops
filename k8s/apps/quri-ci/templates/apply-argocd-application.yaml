@@ -1,3 +1,9 @@
+# This workflow applies an ArgoCD Application manifest to Kubernetes.
+#
+# This is useful for Argo Workflows-powered CI/CD, where we want to update `image.tag` on deployment,
+# and don't want to bother with the GitOps pattern of committing the updated tag value to the repo.
+#
+# The common use case is to call this workflow as a step in a CI workflow after the build, to hand off the updated image to ArgoCD.
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
