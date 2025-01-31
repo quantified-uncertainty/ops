@@ -46,11 +46,6 @@ resource "vercel_project" "hub" {
       target = ["production"]
     },
     {
-      key    = "SENDGRID_KEY"
-      value  = data.onepassword_item.sendgrid_key.password
-      target = ["production", "preview"]
-    },
-    {
       key    = "AUTH_RESEND_KEY"
       value  = data.onepassword_item.resend_key.password
       target = ["production", "preview"]
