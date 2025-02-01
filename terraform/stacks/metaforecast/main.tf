@@ -13,36 +13,6 @@ resource "digitalocean_project" "main" {
   description = "Metaforecast resources."
 }
 
-data "onepassword_item" "goodjudgmentopen_cookie" {
-  vault = "Metaforecast"
-  title = "Good Judgment Open cookie"
-}
-
-data "onepassword_item" "google_api_key" {
-  vault = "Metaforecast"
-  title = "Google API key"
-}
-
-data "onepassword_item" "hypermind_cookie" {
-  vault = "Metaforecast"
-  title = "Hypermind cookie"
-}
-
-data "onepassword_item" "infer_cookie" {
-  vault = "Metaforecast"
-  title = "Infer cookie"
-}
-
-data "onepassword_item" "secret_betfair_endpoint" {
-  vault = "Metaforecast"
-  title = "Secret Betfair endpoint"
-}
-
-data "onepassword_item" "imgur_bearer" {
-  vault = "Metaforecast"
-  title = "Imgur bearer"
-}
-
 # Elasticsearch must be configured in Kubernetes before applying this stack.
 data "kubernetes_secret" "elastic" {
   metadata {
@@ -73,6 +43,7 @@ module "metaforecast" {
   digitalocean_project_id = digitalocean_project.main.id
 }
 
+# Create metaforecast.org domain on DigitalOcean and Vercel.
 module "domain" {
   source = "../../modules/vercel-domain"
 
@@ -81,11 +52,14 @@ module "domain" {
   www        = false
 }
 
+# DigitalOcean domain belongs to the metaforecast DigitalOcean project.
 resource "digitalocean_project_resources" "domain" {
   project   = digitalocean_project.main.id
   resources = module.domain.digitalocean_urns
 }
 
+# Kubernetes secret with metaforecast environment variables.
+# It will be used by metaforecast Helm chart, to run background jobs.
 resource "kubernetes_secret" "metaforecast_env" {
   metadata {
     namespace = "metaforecast"
