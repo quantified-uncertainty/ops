@@ -5,6 +5,10 @@ kind: Application
 metadata:
   name: {{ $app.name }}
   namespace: argocd
+  {{- if $app.annotations }}
+  annotations:
+    {{- toYaml $app.annotations | nindent 4 }}
+  {{- end }}
 spec:
   project: default
   syncPolicy:

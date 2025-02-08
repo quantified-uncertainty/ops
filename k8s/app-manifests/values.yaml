@@ -16,6 +16,9 @@ apps:
 - name: argo-workflows
   automated: null
 
+- name: argocd-image-updater
+  automated: null
+
 - name: registry
 
 # Core services for ingress
@@ -83,16 +86,17 @@ apps:
 # -------------------- QURI apps --------------------
 - name: elastic
   # Namespaced for historical reasons; metaforecast is the only app that uses this chart, for now.
-  # But we will probably use a single Elastic cluster (possibly with multiple users)for all QURI apps.
+  # But we will probably use a single Elastic cluster (possibly with multiple users) for all QURI apps.
   namespace: metaforecast
   automated: null
 
 - name: metaforecast
   source:
-    # metaforecast repo is public, but HTTPS is problematic because of https://github.com/argoproj/argo-cd/issues/16532
-    repoURL: https://github.com/quantified-uncertainty/metaforecast
-    path: ops/chart
-    targetRevision: master
+    repoURL: https://github.com/quantified-uncertainty/squiggle
+    path: apps/metaforecast/ops/chart
+    targetRevision: main
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: ghcr.io/quantified-uncertainty/metaforecast
   automated: null
 
 - name: gucem
