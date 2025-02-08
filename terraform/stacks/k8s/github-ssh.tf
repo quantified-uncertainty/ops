@@ -9,6 +9,7 @@ locals {
     "GUCEM",
     # public repo, but HTTPS is problematic because of https://github.com/argoproj/argo-cd/issues/16532
     "metaforecast",
+    "squiggle",
   ])
 }
 
