@@ -96,7 +96,7 @@ apps:
       helm:
       valueFiles:
       - $values/k8s/tags/metaforecast.yaml
-    - repoURL: 'https://git.example.com/org/value-files.git'
+    - repoURL: https://github.com/quantified-uncertainty/ops
       targetRevision: master
       ref: values
 
