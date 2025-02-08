@@ -25,6 +25,7 @@ data "onepassword_item" "quri_integrations_for_quri_github_app_private_key" {
   title = "QURI Integrations GitHub App Private Key"
 }
 
+# TODO - bad resource name, should mention guesstimate
 resource "kubernetes_secret" "argo_workflows_github_token_credentials" {
   metadata {
     name      = "quri-integrations-for-getguesstimate-github-app"
