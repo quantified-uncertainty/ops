@@ -17,6 +17,7 @@ apps:
   automated: null
 
 - name: argocd-image-updater
+  namespace: argocd
   automated: null
 
 - name: registry
