@@ -16,10 +16,6 @@ apps:
 - name: argo-workflows
   automated: null
 
-- name: argocd-image-updater
-  namespace: argocd
-  automated: null
-
 - name: registry
 
 # Core services for ingress
@@ -96,8 +92,9 @@ apps:
     repoURL: https://github.com/quantified-uncertainty/squiggle
     path: apps/metaforecast/ops/chart
     targetRevision: main
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: ghcr.io/quantified-uncertainty/metaforecast
+    helm:
+      valuesFiles:
+        - ../tags/metaforecast.yaml
   automated: null
 
 - name: gucem
