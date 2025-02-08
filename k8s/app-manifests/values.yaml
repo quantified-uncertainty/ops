@@ -93,7 +93,7 @@ apps:
     path: apps/metaforecast/ops/chart
     targetRevision: main
     helm:
-      valuesFiles:
+      valueFiles:
         - ../tags/metaforecast.yaml
   automated: null
 
