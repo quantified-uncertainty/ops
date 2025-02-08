@@ -94,8 +94,8 @@ apps:
       path: apps/metaforecast/ops/chart
       targetRevision: main
       helm:
-      valueFiles:
-      - $values/k8s/tags/metaforecast.yaml
+        valueFiles:
+        - $values/k8s/tags/metaforecast.yaml
     - repoURL: https://github.com/quantified-uncertainty/ops
       targetRevision: master
       ref: values
