@@ -22,7 +22,7 @@ data "kubernetes_secret" "elastic" {
 }
 
 module "metaforecast" {
-  source = "git::https://github.com/quantified-uncertainty/metaforecast.git//tf?depth=1"
+  source = "git::https://github.com/quantified-uncertainty/squiggle.git//apps/metaforecast/tf?depth=1"
 
   metaforecast_env = {
     GOODJUDGMENTOPENCOOKIE  = data.onepassword_item.goodjudgmentopen_cookie.password
@@ -85,6 +85,6 @@ resource "kubernetes_secret" "metaforecast_env" {
     "ELASTIC_PASSWORD" = data.kubernetes_secret.elastic.data["elastic"]
 
     # DB is created in metaforecast TF module and its url is exported as an output
-    "DIGITALOCEAN_POSTGRES" = module.metaforecast.db_url
+    "METAFORECAST_DB_URL" = module.metaforecast.db_url
   }
 }
