@@ -13,16 +13,18 @@
 # - also, pricing and scaling; their $20 plan for registry is for 100GB (while a volume is $10/100GB, and can be more fine-grained); I'm not even sure how to increase it above 100GB if we need it
 
 locals {
-  # Should include the list of all namespaces that need to use the registry.
+  # Only the namespaces in this list will be able to pull images from the registry.
   # Sorry; this might be inconvenient, we'll have to figure out a better solution in the future.
   # Maybe we could copy the secret with Argo Workflows?
   registry_namespaces = toset([
     "quri-ci",
     "guesstimate",
     "gucem",
-    "squiggle"
+    "squiggle",
+    "metaforecast",
   ])
 
+  # The repositories in this list will be able to push images to the registry.
   github_repositories = toset([
     "GUCEM",
     "squiggle"
