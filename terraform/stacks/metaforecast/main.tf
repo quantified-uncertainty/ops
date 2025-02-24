@@ -22,7 +22,7 @@ data "kubernetes_secret" "elastic" {
 }
 
 module "metaforecast" {
-  source = "git::https://github.com/quantified-uncertainty/squiggle.git//apps/metaforecast/tf?depth=1"
+  source = "git::https://github.com/quantified-uncertainty/squiggle.git//apps/metaforecast/ops/tf?depth=1"
 
   metaforecast_env = {
     GOODJUDGMENTOPENCOOKIE  = data.onepassword_item.goodjudgmentopen_cookie.password
