@@ -88,3 +88,11 @@ resource "kubernetes_secret" "metaforecast_env" {
     "METAFORECAST_DB_URL" = module.metaforecast.db_url
   }
 }
+
+# Add Metaforecast database URL as a GitHub Actions secret for migrations
+resource "github_actions_environment_secret" "metaforecast_database_url_prod" {
+  repository      = "squiggle"
+  secret_name     = "METAFORECAST_DATABASE_URL"
+  environment     = "Production" # configured by quri stack
+  plaintext_value = module.metaforecast.db_url
+}

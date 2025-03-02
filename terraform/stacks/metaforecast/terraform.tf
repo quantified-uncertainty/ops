@@ -17,6 +17,7 @@ terraform {
     vercel       = { source = "vercel/vercel" }
     heroku       = { source = "heroku/heroku" }
     kubernetes   = { source = "hashicorp/kubernetes" }
+    github       = { source = "integrations/github" }
   }
 }
 
@@ -43,4 +44,9 @@ provider "heroku" {
 
 provider "kubernetes" {
   config_path = "~/.kube/config"
+}
+
+provider "github" {
+  token = data.onepassword_item.github_token.password
+  owner = "quantified-uncertainty"
 }
