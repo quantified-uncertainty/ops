@@ -9,6 +9,10 @@ _onBuildServer: &onBuildServer
 
 harbor:
   expose:
+    tls:
+      certSource: secret
+      secret:
+        secretName: harbor-tls
     ingress:
       hosts:
         core: harbor.k8s.quantifieduncertainty.org
