@@ -3,7 +3,7 @@ version: 2.8.3
 host: registry.k8s.quantifieduncertainty.org
 
 storage:
-  size: 10Gi
+  size: 20Gi
 
 # this secret is created by terraform
 htpasswdSecret: quri-registry-htpasswd
