@@ -1,0 +1,43 @@
+_onBuildServer: &onBuildServer
+  nodeSelector:
+    dedicated: builds
+  tolerations:
+  - key: dedicated
+    operator: Equal
+    value: builds
+    effect: NoSchedule
+
+harbor:
+  expose:
+    ingress:
+      hosts:
+        core: harbor.k8s.quantifieduncertainty.org
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+
+  externalURL: https://harbor.k8s.quantifieduncertainty.org
+
+  persistence:
+    persistentVolumeClaim:
+      registry:
+        size: 20Gi
+
+  nginx:
+    <<: *onBuildServer
+  portal:
+    <<: *onBuildServer
+  core:
+    <<: *onBuildServer
+  jobservice:
+    <<: *onBuildServer
+  registry:
+    <<: *onBuildServer
+  trivy:
+    <<: *onBuildServer
+  database:
+    <<: *onBuildServer
+  redis:
+    <<: *onBuildServer
+  exporter:
+    <<: *onBuildServer
+    

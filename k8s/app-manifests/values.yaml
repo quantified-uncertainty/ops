@@ -18,6 +18,10 @@ apps:
 
 - name: registry
 
+- name: harbor
+  namespace: registry
+  automated: null
+
 # Core services for ingress
 - name: cert-manager
   automated: null
