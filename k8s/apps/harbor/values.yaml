@@ -8,6 +8,8 @@ _onBuildServer: &onBuildServer
     effect: NoSchedule
 
 harbor:
+  existingSecretAdminPassword: harbor-admin-password
+
   expose:
     tls:
       certSource: secret

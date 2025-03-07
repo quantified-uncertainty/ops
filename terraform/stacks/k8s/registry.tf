@@ -56,6 +56,17 @@ EOF
   }
 }
 
+resource "kubernetes_secret" "harbor_admin_password" {
+  metadata {
+    name      = "harbor-admin-password"
+    namespace = "registry"
+  }
+
+  data = {
+    "HARBOR_ADMIN_PASSWORD" = random_password.registry_password.result
+  }
+}
+
 # Export registry password to Kubernetes.
 # This is necessary for Kubernetes Deployments to pull images from the registry.
 resource "kubernetes_secret" "docker_config" {
