@@ -16,6 +16,7 @@ terraform {
     kubernetes   = { source = "hashicorp/kubernetes" }
     digitalocean = { source = "digitalocean/digitalocean" }
     github       = { source = "integrations/github" }
+    harbor       = { source = "goharbor/harbor" }
   }
 }
 
@@ -48,7 +49,18 @@ data "onepassword_item" "github_token" {
   title = "GitHub token"
 }
 
+data "onepassword_item" "harbor_password" {
+  vault = module.providers.op_vault
+  title = "Harbor admin"
+}
+
 provider "github" {
   token = data.onepassword_item.github_token.password
   owner = "quantified-uncertainty"
+}
+
+provider "harbor" {
+  url      = "https://harbor.k8s.quantifieduncertainty.org"
+  username = "admin"
+  password = data.onepassword_item.harbor_password.password
 }

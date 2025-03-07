@@ -56,6 +56,23 @@ EOF
   }
 }
 
+resource "harbor_robot_account" "dockerconfig" {
+  name        = "for-dockerconfig"
+  description = "Used by kubernetes to pull images from the registry"
+  level       = "system"
+
+  # same password as the one we used for old docker registry admin user
+  secret = random_password.registry_password.result
+  permissions {
+    access {
+      action   = "pull"
+      resource = "repository"
+    }
+    kind      = "project"
+    namespace = "*"
+  }
+}
+
 # Export registry password to Kubernetes.
 # This is necessary for Kubernetes Deployments to pull images from the registry.
 resource "kubernetes_secret" "docker_config" {
@@ -69,9 +86,13 @@ resource "kubernetes_secret" "docker_config" {
   data = {
     ".dockerconfigjson" = jsonencode({
       auths = {
-        // public ingress endpoint
+        // public ingress endpoint, old registry
         "registry.k8s.quantifieduncertainty.org" = {
           auth = base64encode("${local.registry_user}:${random_password.registry_password.result}")
+        },
+        // new registry - harbor
+        "harbor.k8s.quantifieduncertainty.org" = {
+          auth = base64encode("${harbor_robot_account.dockerconfig.full_name}:${random_password.registry_password.result}")
         },
         // registry.registry is a internal k8s alias: `registry` service in `registry` kubernetes namespace
         "registry.registry" = {
