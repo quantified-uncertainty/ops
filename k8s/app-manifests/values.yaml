@@ -92,18 +92,10 @@ apps:
   automated: null
 
 - name: metaforecast
-  sources:
-    # https://argo-cd.readthedocs.io/en/stable/user-guide/multiple_sources/#helm-value-files-from-external-git-repository
-    - repoURL: https://github.com/quantified-uncertainty/squiggle
-      path: apps/metaforecast/ops/chart
-      targetRevision: main
-      helm:
-        valueFiles:
-        - $values/k8s/tags/metaforecast.yaml
-    - repoURL: https://github.com/quantified-uncertainty/ops
-      targetRevision: master
-      ref: values
-
+  source:
+    repoURL: git@github.com/quantified-uncertainty/squiggle
+    path: apps/metaforecast/ops/chart
+    targetRevision: main
   automated: null
 
 - name: gucem
