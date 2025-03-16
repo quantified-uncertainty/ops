@@ -83,6 +83,9 @@ apps:
 # -------------------- CI --------------------
 # CI for all apps and common CI workflows for Argo Workflows
 - name: quri-ci
+  info:
+  - name: URL
+    value: https://workflows.k8s.quantifieduncertainty.org
 
 # -------------------- QURI apps --------------------
 - name: elastic
@@ -92,6 +95,9 @@ apps:
   automated: null
 
 - name: metaforecast
+  info:
+  - name: URL
+    value: https://metaforecast.org
   source:
     repoURL: git@github.com:quantified-uncertainty/squiggle.git
     path: apps/metaforecast/ops/chart
