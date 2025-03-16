@@ -80,19 +80,13 @@ resource "github_team_members" "k8s_admins" {
   }
 }
 
-data "onepassword_item" "quri_integrations_for_quri_github_app_private_key" {
+data "onepassword_item" "argo_cd_auth_token" {
   vault = module.providers.op_vault
-  title = "QURI Integrations GitHub App Private Key"
+  title = "Argo CD github_actions_bot token"
 }
 
-resource "github_actions_variable" "app_id" {
+resource "github_actions_secret" "argo_cd_auth_token" {
   repository      = "squiggle"
-  variable_name   = "APP_ID"
-  value           = var.github_app_quri.app_id
-}
-
-resource "github_actions_secret" "app_private_key" {
-  repository      = "squiggle"
-  secret_name     = "APP_PRIVATE_KEY"
-  plaintext_value = data.onepassword_item.quri_integrations_for_quri_github_app_private_key.note_value
+  secret_name     = "ARGOCD_AUTH_TOKEN"
+  plaintext_value = data.onepassword_item.argo_cd_auth_token.password
 }
