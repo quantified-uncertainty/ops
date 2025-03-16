@@ -112,4 +112,3 @@ apps:
 
 - name: guesstimate-server
   namespace: guesstimate
-  automated: null
