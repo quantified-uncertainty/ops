@@ -73,6 +73,45 @@ resource "harbor_robot_account" "dockerconfig" {
   }
 }
 
+resource "random_password" "registry_upload_password" {
+  length = 30
+}
+
+# Account for uploading images to the Harbor registry from GitHub Actions.
+resource "harbor_robot_account" "upload" {
+  name        = "for-upload"
+  description = "Used by GitHub Actions to push images to the registry"
+  level       = "system"
+
+  # same password as the one we used for old docker registry admin user
+  secret = random_password.registry_upload_password.result
+  permissions {
+    access {
+      action   = "pull"
+      resource = "repository"
+    }
+    access {
+      action   = "push"
+      resource = "repository"
+    }
+    access {
+      action   = "create"
+      resource = "artifact-label"
+    }
+    access {
+      action   = "create"
+      resource = "tag"
+    }
+    kind      = "project"
+    namespace = "*"
+  }
+}
+
+resource "harbor_project" "main" {
+  name   = "main"
+  public = false
+}
+
 # Export registry password to Kubernetes.
 # This is necessary for Kubernetes Deployments to pull images from the registry.
 resource "kubernetes_secret" "docker_config" {
@@ -113,4 +152,12 @@ resource "github_actions_secret" "registry_password" {
   repository      = each.key
   secret_name     = "REGISTRY_PASSWORD"
   plaintext_value = random_password.registry_password.result
+}
+
+resource "github_actions_secret" "harbor_registry_password" {
+  for_each = local.github_repositories
+
+  repository      = each.key
+  secret_name     = "HARBOR_REGISTRY_PASSWORD"
+  plaintext_value = random_password.registry_upload_password.result
 }
