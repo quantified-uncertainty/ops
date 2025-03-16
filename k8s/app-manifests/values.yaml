@@ -110,5 +110,6 @@ apps:
     path: ops/chart
     targetRevision: "2024"
 
-# Note: some user-facing apps such as Guesstimate are deployed by Argo Workflows dynamically, so they are not listed here.
-# Check out apply-argocd-application WorkflowTemplate in argo-ci app to see how they're configured.
+- name: guesstimate-server
+  namespace: guesstimate
+  automated: null
