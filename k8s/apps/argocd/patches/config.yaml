@@ -9,7 +9,7 @@ data:
   admin.enabled: "false"
   # Enable terminal
   exec.enabled: "true"
-  accounts.github_actions: apiKey # user for api key, to call `argocd app set` from GitHub Actions
+  accounts.github_actions_bot: apiKey # user for api key, to call `argocd app set` from GitHub Actions
 
   # Important workaround for DigitalOcean Kubernetes; otherwise apps will be
   # permanently out of sync.
