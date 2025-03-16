@@ -67,3 +67,13 @@ provider "sentry" {
 provider "kubernetes" {
   config_path = "~/.kube/config"
 }
+
+data "onepassword_item" "github_token_getguesstimate" {
+  vault = module.providers.op_vault
+  title = "GitHub token for getguesstimate"
+}
+
+provider "github" {
+  token = data.onepassword_item.github_token_getguesstimate.password
+  owner = "getguesstimate"
+}

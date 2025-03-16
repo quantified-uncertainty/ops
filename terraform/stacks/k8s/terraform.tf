@@ -49,6 +49,11 @@ data "onepassword_item" "github_token" {
   title = "GitHub token"
 }
 
+data "onepassword_item" "github_token_getguesstimate" {
+  vault = module.providers.op_vault
+  title = "GitHub token for getguesstimate"
+}
+
 data "onepassword_item" "harbor_password" {
   vault = module.providers.op_vault
   title = "Harbor admin"
@@ -57,6 +62,12 @@ data "onepassword_item" "harbor_password" {
 provider "github" {
   token = data.onepassword_item.github_token.password
   owner = "quantified-uncertainty"
+}
+
+provider "github" {
+  alias = "github-getguesstimate"
+  token = data.onepassword_item.github_token_getguesstimate.password
+  owner = "getguesstimate"
 }
 
 provider "harbor" {

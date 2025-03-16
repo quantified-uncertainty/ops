@@ -129,13 +129,13 @@ resource "kubernetes_secret" "docker_config" {
         "registry.k8s.quantifieduncertainty.org" = {
           auth = base64encode("${local.registry_user}:${random_password.registry_password.result}")
         },
-        // new registry - harbor
-        "harbor.k8s.quantifieduncertainty.org" = {
-          auth = base64encode("${harbor_robot_account.dockerconfig.full_name}:${random_password.registry_password.result}")
-        },
         // registry.registry is a internal k8s alias: `registry` service in `registry` kubernetes namespace
         "registry.registry" = {
           auth = base64encode("${local.registry_user}:${random_password.registry_password.result}")
+        },
+        // new registry - harbor
+        "harbor.k8s.quantifieduncertainty.org" = {
+          auth = base64encode("${harbor_robot_account.dockerconfig.full_name}:${random_password.registry_password.result}")
         },
       }
     })
@@ -144,8 +144,7 @@ resource "kubernetes_secret" "docker_config" {
   type = "kubernetes.io/dockerconfigjson"
 }
 
-# Export registry password to all GitHub repos that need it.
-# GitHub Actions workflows can read it from the secret, and push images to the registry.
+# TODO - remove, legacy registry
 resource "github_actions_secret" "registry_password" {
   for_each = local.github_repositories
 
@@ -154,10 +153,20 @@ resource "github_actions_secret" "registry_password" {
   plaintext_value = random_password.registry_password.result
 }
 
+# Export registry password to all GitHub repos that need it.
+# GitHub Actions workflows can read it from the secret, and push images to the registry.
 resource "github_actions_secret" "harbor_registry_password" {
   for_each = local.github_repositories
 
   repository      = each.key
+  secret_name     = "HARBOR_REGISTRY_PASSWORD"
+  plaintext_value = random_password.registry_upload_password.result
+}
+
+resource "github_actions_secret" "harbor_registry_password_getguesstimate" {
+  provider = github.github-getguesstimate
+
+  repository      = "guesstimate-server"
   secret_name     = "HARBOR_REGISTRY_PASSWORD"
   plaintext_value = random_password.registry_upload_password.result
 }

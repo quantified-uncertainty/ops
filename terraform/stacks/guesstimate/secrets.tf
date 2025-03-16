@@ -23,3 +23,14 @@ data "onepassword_item" "sendgrid_key" {
   vault = module.providers.op_vault
   title = "SendGrid API key - Guesstimate"
 }
+
+data "onepassword_item" "argo_cd_auth_token" {
+  vault = module.providers.op_vault
+  title = "Argo CD github_actions_bot token"
+}
+
+resource "github_actions_secret" "argo_cd_auth_token" {
+  repository      = "guesstimate-server"
+  secret_name     = "ARGOCD_AUTH_TOKEN"
+  plaintext_value = data.onepassword_item.argo_cd_auth_token.password
+}
