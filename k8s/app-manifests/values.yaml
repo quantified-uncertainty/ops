@@ -93,7 +93,7 @@ apps:
 
 - name: metaforecast
   source:
-    repoURL: git@github.com/quantified-uncertainty/squiggle
+    repoURL: git@github.com/quantified-uncertainty/squiggle.git
     path: apps/metaforecast/ops/chart
     targetRevision: main
   automated: null
