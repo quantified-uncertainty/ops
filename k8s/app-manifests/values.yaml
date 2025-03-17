@@ -80,13 +80,6 @@ apps:
   - name: URL
     value: https://metabase.k8s.quantifieduncertainty.org
 
-# -------------------- CI --------------------
-# CI for all apps and common CI workflows for Argo Workflows
-- name: quri-ci
-  info:
-  - name: URL
-    value: https://workflows.k8s.quantifieduncertainty.org
-
 # -------------------- QURI apps --------------------
 - name: elastic
   # Namespaced for historical reasons; metaforecast is the only app that uses this chart, for now.
