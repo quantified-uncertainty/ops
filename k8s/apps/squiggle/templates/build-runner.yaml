@@ -20,4 +20,4 @@ spec:
           envFrom:
           - secretRef:
               name: squiggle-hub-env
-          command: ['node', '--conditions=react-server', 'dist/scripts/buildRecentModelRevision/main.js']
+          command: ['node', '--conditions=react-server', 'dist/scripts/buildRecentModelRevision/main.mjs']
