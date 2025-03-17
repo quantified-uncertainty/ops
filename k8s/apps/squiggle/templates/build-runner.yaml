@@ -15,7 +15,7 @@ spec:
       - name: dockerconfig
       containers:
         - name: server
-          image: "registry.k8s.quantifieduncertainty.org/squiggle-build-runner:{{ required "tag is required" .Values.image.tag }}"
+          image: "harbor.k8s.quantifieduncertainty.org/main/hub-scripts:{{ required "tag is required" .Values.image.tag }}"
           imagePullPolicy: Always
           envFrom:
           - secretRef:

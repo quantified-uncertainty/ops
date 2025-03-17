@@ -1,4 +1,4 @@
 image:
-  # Image tag, filled by Argo CD app that's dynamically created by CI workflow.
+  # Image tag, filled by `argocd app set` through GitHub Actions workflow.
   # Required.
   tag: ""
