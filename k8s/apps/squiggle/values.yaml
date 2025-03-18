@@ -1,4 +1,0 @@
-image:
-  # Image tag, filled by `argocd app set` through GitHub Actions workflow.
-  # Required.
-  tag: ""
