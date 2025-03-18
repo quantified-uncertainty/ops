@@ -16,8 +16,6 @@ apps:
 - name: argo-workflows
   automated: null
 
-- name: registry
-
 - name: harbor
   namespace: registry
   automated: null
