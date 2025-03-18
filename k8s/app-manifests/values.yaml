@@ -103,3 +103,13 @@ apps:
 
 - name: guesstimate-server
   namespace: guesstimate
+
+- name: squiggle-hub
+  info:
+  - name: URL
+    value: https://squigglehub.org
+  namespace: squiggle
+  source:
+    repoURL: git@github.com:quantified-uncertainty/squiggle.git
+    path: apps/hub/ops/chart
+    targetRevision: main
