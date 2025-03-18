@@ -7,9 +7,9 @@ resource "kubernetes_secret" "main" {
   data = {
     DATABASE_URL = data.terraform_remote_state.quri.outputs.prod_db_prisma_url
     # run evals with root permissions
-    CLI_MODE = "true"
-    # FIXME - copy-pasted from squiggle-hub.tf in quri stack (we need to migrate squiggle resources to this stack)
-    CLI_USER_EMAIL = "me@berekuk.ru"
-    ROOT_EMAILS    = "me@berekuk.ru"
+    CLI_MODE          = "true"
+    CLI_USER_EMAIL    = var.hub_cli_user_email
+    ROOT_EMAILS       = var.hub_root_emails
+    ANTHROPIC_API_KEY = data.onepassword_item.anthropic_api_key.password
   }
 }

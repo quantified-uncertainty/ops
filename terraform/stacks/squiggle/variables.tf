@@ -15,3 +15,9 @@ variable "hub_root_emails" {
   type    = string
   default = "me@berekuk.ru,ozzieagooen@gmail.com"
 }
+
+# Used for CLI scripts that need root permissions, e.g. running evals.
+variable "hub_cli_user_email" {
+  type    = string
+  default = "me@berekuk.ru"
+}
