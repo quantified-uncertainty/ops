@@ -9,11 +9,11 @@ output "dev_db_direct_url" {
 }
 
 output "prod_db_prisma_url" {
-  value     = local.prod_db_prisma_url
+  value     = "${module.prod_db.bouncer_url}&pgbouncer=true"
   sensitive = true
 }
 
 output "dev_db_prisma_url" {
-  value     = local.dev_db_prisma_url
+  value     = "${module.dev_db.bouncer_url}&pgbouncer=true"
   sensitive = true
 }

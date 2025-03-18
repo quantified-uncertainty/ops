@@ -8,24 +8,6 @@ data "onepassword_item" "vercel_team_id" {
   title = "Vercel Team ID"
 }
 
-# Secret for "sign in with github" feature
-data "onepassword_item" "github_client_secret" {
-  vault = module.providers.op_vault
-  title = "GitHub client secret"
-}
-
-# Used for Squiggle Hub. TODO: rename?
-data "onepassword_item" "sendgrid_key" {
-  vault = module.providers.op_vault
-  title = "SendGrid key"
-}
-
-# Used for Squiggle Hub. TODO: rename?
-data "onepassword_item" "resend_key" {
-  vault = module.providers.op_vault
-  title = "Resend key"
-}
-
 # Token for controlling GitHub, e.g. configuring action secrets in Squiggle repo.
 # Get here: https://github.com/settings/tokens?type=beta (choose QURI org)
 data "onepassword_item" "github_token" {
@@ -38,10 +20,4 @@ data "onepassword_item" "github_token" {
 data "onepassword_item" "vsce_pat" {
   vault = module.providers.op_vault
   title = "VSCode marketplace PAT token"
-}
-
-// Anthropic API key for Squiggle Hub AI generation.
-data "onepassword_item" "anthropic_api_key" {
-  vault = module.providers.op_vault
-  title = "Anthropic API key"
 }

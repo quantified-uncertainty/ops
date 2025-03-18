@@ -15,6 +15,7 @@ terraform {
     onepassword  = { source = "1Password/onepassword" }
     kubernetes   = { source = "hashicorp/kubernetes" }
     digitalocean = { source = "digitalocean/digitalocean" }
+    vercel       = { source = "vercel/vercel" }
   }
 }
 
@@ -32,4 +33,9 @@ provider "kubernetes" {
 
 provider "digitalocean" {
   token = module.providers.do_token
+}
+
+provider "vercel" {
+  api_token = module.providers.vercel_api_token
+  team      = module.providers.vercel_team
 }

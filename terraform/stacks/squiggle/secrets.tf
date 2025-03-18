@@ -1,20 +1,18 @@
-data "terraform_remote_state" "quri" {
-  backend = "s3"
-  config = {
-    region = "us-east-1"
-    bucket = "quri-tf-state-us-east-1"
-    key    = "stacks/quri.tfstate"
-  }
+# Secret for "sign in with github" feature
+data "onepassword_item" "github_client_secret" {
+  vault = module.providers.op_vault
+  title = "GitHub client secret"
 }
 
-resource "kubernetes_secret" "main" {
-  metadata {
-    name      = "squiggle-hub-env"
-    namespace = "squiggle"
-  }
 
-  data = {
-    # Only DATABASE_URL is necessary for now, for squiggle-build-runner image.
-    DATABASE_URL = data.terraform_remote_state.quri.outputs.prod_db_prisma_url
-  }
+# Used for Squiggle Hub. TODO: rename?
+data "onepassword_item" "resend_key" {
+  vault = module.providers.op_vault
+  title = "Resend key"
+}
+
+// Anthropic API key for Squiggle Hub AI generation.
+data "onepassword_item" "anthropic_api_key" {
+  vault = module.providers.op_vault
+  title = "Anthropic API key"
 }
