@@ -27,6 +27,11 @@ resource "vercel_project" "hub" {
       target = ["preview"]
     },
     {
+      key    = "METAFORECAST_DB_URL"
+      value  = data.terraform_remote_state.metaforecast.outputs.db_url
+      target = ["production", "preview"]
+    },
+    {
       key    = "ROOT_EMAILS"
       value  = var.hub_root_emails
       target = ["production", "preview"]
