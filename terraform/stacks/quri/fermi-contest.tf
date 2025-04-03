@@ -6,4 +6,12 @@ resource "vercel_project" "fermi_contest" {
     repo              = "quantified-uncertainty/squiggle"
     type              = "github"
   }
+
+  environment = [
+    {
+      key    = "ENABLE_EXPERIMENTAL_COREPACK"
+      value  = "1"
+      target = ["production", "preview"]
+    },
+  ]
 }

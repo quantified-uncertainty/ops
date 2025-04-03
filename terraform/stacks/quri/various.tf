@@ -7,6 +7,14 @@ resource "vercel_project" "squiggle-components" {
     repo              = "quantified-uncertainty/squiggle"
     type              = "github"
   }
+
+  environment = [
+    {
+      key    = "ENABLE_EXPERIMENTAL_COREPACK"
+      value  = "1"
+      target = ["production", "preview"]
+    },
+  ]
 }
 
 resource "vercel_project_domain" "squiggle-components" {
@@ -30,6 +38,14 @@ resource "vercel_project" "quri-ui" {
     repo              = "quantified-uncertainty/squiggle"
     type              = "github"
   }
+
+  environment = [
+    {
+      key    = "ENABLE_EXPERIMENTAL_COREPACK"
+      value  = "1"
+      target = ["production", "preview"]
+    },
+  ]
 }
 
 resource "vercel_project" "squiggle-stories" {

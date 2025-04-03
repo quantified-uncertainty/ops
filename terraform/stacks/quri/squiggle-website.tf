@@ -12,6 +12,14 @@ resource "vercel_project" "squiggle-website" {
     repo              = "quantified-uncertainty/squiggle"
     type              = "github"
   }
+
+  environment = [
+    {
+      key    = "ENABLE_EXPERIMENTAL_COREPACK"
+      value  = "1"
+      target = ["production", "preview"]
+    },
+  ]
 }
 
 module "squiggle_website_domain" {

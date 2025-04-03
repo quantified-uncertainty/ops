@@ -66,6 +66,11 @@ resource "vercel_project" "hub" {
       value  = random_password.hub_nextauth_secret.result
       target = ["production", "preview"]
     },
+    {
+      key    = "ENABLE_EXPERIMENTAL_COREPACK"
+      value  = "1"
+      target = ["production", "preview"]
+    },
   ]
 
   # Hub depends on VERCEL_URL; see also: https://vercel.com/docs/security/deployment-protection#migrating-to-standard-protection
