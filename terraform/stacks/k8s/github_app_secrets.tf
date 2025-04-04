@@ -6,7 +6,7 @@
 # Or anything else that's often done from GitHub Actions, but in our case it's done from Argo Workflows.
 #
 # Btw, we can't use this secret for uploading images to Github Container Registry, because it's not a personal access token.
-# I've spent ~4 hours trying to figure that out, and ended up switching to DigitalOcean Container Registry.
+# I've spent ~4 hours trying to figure that out, and ended up switching to DigitalOcean Container Registry. (Upd: and then to Docker Registry, and then to Harbor...)
 
 # We set up two secrets: one for quantified-uncertainty org, and another for getguesstimate org.
 # This is because we have two GitHub apps, one for each org.
