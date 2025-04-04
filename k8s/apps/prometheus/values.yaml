@@ -8,6 +8,13 @@ alertmanager-ingress:
     name: alertmanager-operated
     port: 9093
 
+prometheus-ingress:
+  name: prometheus
+  host: prometheus.k8s.quantifieduncertainty.org
+  service:
+    name: prometheus-operated
+    port: 9090
+
 kube-prometheus-stack:
   # Based on https://github.com/digitalocean/Kubernetes-Starter-Kit-Developers/blob/main/04-setup-observability/assets/manifests/prom-stack-values-v35.5.1.yaml
 

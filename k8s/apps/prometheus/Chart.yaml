@@ -15,3 +15,8 @@ dependencies:
   version: "0.1.0"
   repository: file://../../charts/github-auth-ingress
   alias: alertmanager-ingress
+
+- name: github-auth-ingress
+  version: "0.1.0"
+  repository: file://../../charts/github-auth-ingress
+  alias: prometheus-ingress
