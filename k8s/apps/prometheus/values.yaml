@@ -78,6 +78,8 @@ kube-prometheus-stack:
       ruleSelectorNilUsesHelmValues: false
       serviceMonitorSelectorNilUsesHelmValues: false
 
+      externalUrl: https://prometheus.k8s.quantifieduncertainty.org
+
       storageSpec:
         volumeClaimTemplate:
           spec:
