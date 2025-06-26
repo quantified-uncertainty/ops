@@ -1,0 +1,82 @@
+# Roast My Post Helm Chart Values
+
+# Domain configuration
+hosts:
+  - roastmypost.org
+
+# Image configuration
+image:
+  pullSecret: dockerconfig
+  name: ghcr.io/quantified-uncertainty/roast-my-post
+  tag: "main" # Set by CI/CD
+
+# Environment variables from Kubernetes secret
+envSecret: roast-my-post-env
+
+# Port configuration
+port: 3000
+
+# Web deployment configuration
+web:
+  replicas: 3
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+# Worker deployment configuration
+worker:
+  enabled: true
+  replicas: 2
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+# Database migration job
+migration:
+  enabled: true
+  backoffLimit: 3
+
+# Health check configuration
+healthCheck:
+  path: /api/health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+  tls:
+    enabled: true

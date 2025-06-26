@@ -113,3 +113,10 @@ apps:
     repoURL: git@github.com:quantified-uncertainty/squiggle.git
     path: apps/hub/ops/chart
     targetRevision: main
+
+- name: roast-my-post
+  info:
+  - name: URL
+    value: https://roastmypost.org
+  namespace: roast-my-post
+  automated: null

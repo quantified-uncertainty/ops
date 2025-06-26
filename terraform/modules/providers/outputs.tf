@@ -1,5 +1,5 @@
 output "op_account" {
-  value = "team-quri.1password.com"
+  value = "my.1password.com"
 }
 
 # Main 1Password vault

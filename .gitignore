@@ -2,3 +2,6 @@
 *.tfstate.backup
 *.tfstate.*.backup
 .terraform
+docs/2025-06-01-PROJECT_REVIEW_CLAUDE.md
+.claude/
+package-lock.json
