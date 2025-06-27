@@ -53,7 +53,7 @@ worker:
 
 # Database migration job
 migration:
-  enabled: true
+  enabled: false  # Migrations handled via GitHub Actions
   backoffLimit: 3
 
 # Health check configuration

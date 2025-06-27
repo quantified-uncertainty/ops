@@ -31,7 +31,7 @@ spec:
         - name: migration
           image: "{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
-          command: ["npm", "run", "db:deploy"]
+          command: ["npx", "prisma", "migrate", "deploy"]
           envFrom:
             - secretRef:
                 name: {{ .Values.envSecret }}
