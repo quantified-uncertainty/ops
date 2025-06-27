@@ -2,6 +2,9 @@
 *.tfstate.backup
 *.tfstate.*.backup
 .terraform
+*.tfplan
+*.tfvars
+*.tfvars.json
 docs/2025-06-01-PROJECT_REVIEW_CLAUDE.md
 .claude/
 package-lock.json
