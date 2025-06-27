@@ -8,14 +8,14 @@ resource "vercel_project" "main" {
     repo = "quantified-uncertainty/roast-my-post"
   }
 
-  build_command    = "npm run build"
+  build_command    = "npx prisma generate && npm run build"
   output_directory = ".next"
   
   # Environment variables for Vercel deployment
   environment = [
     {
       key    = "NEXT_PUBLIC_SITE_URL"
-      value  = "https://${local.domain}"
+      value  = "https://www.${local.domain}"
       target = ["production", "preview", "development"]
     },
     {
@@ -30,7 +30,7 @@ resource "vercel_project" "main" {
     },
     {
       key    = "NEXTAUTH_URL"
-      value  = "https://${local.domain}"
+      value  = "https://www.${local.domain}"
       target = ["production"]
     },
     {
@@ -56,6 +56,11 @@ resource "vercel_project" "main" {
     {
       key    = "AUTH_RESEND_KEY"
       value  = data.onepassword_item.auth_resend_key.password
+      target = ["production"]
+    },
+    {
+      key    = "AUTH_TRUST_HOST"
+      value  = "true"
       target = ["production"]
     }
   ]
