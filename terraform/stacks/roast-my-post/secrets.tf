@@ -30,6 +30,12 @@ data "onepassword_item" "mcp_user_api_key" {
   title = "Roast My Post MCP_USER_API_KEY"
 }
 
+# Firecrawl API key for article importing
+data "onepassword_item" "firecrawl_key" {
+  vault = module.providers.op_vault
+  title = "Roast My Post FIRECRAWL_KEY"
+}
+
 # Kubernetes secret with all environment variables
 resource "kubernetes_secret" "roast_my_post_env" {
   metadata {
@@ -49,6 +55,9 @@ resource "kubernetes_secret" "roast_my_post_env" {
     # AI/LLM APIs
     ANTHROPIC_API_KEY  = data.onepassword_item.anthropic_api_key.password
     OPENROUTER_API_KEY = data.onepassword_item.openrouter_api_key.password
+    
+    # Article import services
+    FIRECRAWL_KEY = data.onepassword_item.firecrawl_key.password
     
     # Email services
     SENDGRID_KEY    = data.onepassword_item.sendgrid_key.password

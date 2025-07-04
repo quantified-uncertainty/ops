@@ -44,6 +44,11 @@ resource "vercel_project" "main" {
       target = ["production"]
     },
     {
+      key    = "FIRECRAWL_KEY"
+      value  = data.onepassword_item.firecrawl_key.password
+      target = ["production"]
+    },
+    {
       key    = "SENDGRID_KEY"
       value  = data.onepassword_item.sendgrid_key.password
       target = ["production"]
