@@ -36,6 +36,18 @@ data "onepassword_item" "firecrawl_key" {
   title = "Roast My Post FIRECRAWL_KEY"
 }
 
+# Helicone API key for API monitoring and caching
+data "onepassword_item" "helicone_api_key" {
+  vault = module.providers.op_vault
+  title = "Roast My Post HELICONE_API_KEY"
+}
+
+# Diffbot API key
+data "onepassword_item" "diffbot_key" {
+  vault = module.providers.op_vault
+  title = "Roast My Post DIFFBOT_KEY"
+}
+
 # Kubernetes secret with all environment variables
 resource "kubernetes_secret" "roast_my_post_env" {
   metadata {
@@ -68,6 +80,22 @@ resource "kubernetes_secret" "roast_my_post_env" {
     ROAST_MY_POST_MCP_USER_API_KEY = data.onepassword_item.mcp_user_api_key.password
     ROAST_MY_POST_MCP_DATABASE_URL = module.database.bouncer_url
     ROAST_MY_POST_MCP_API_BASE_URL = "https://${local.domain}"
+    
+    # Helicone configuration
+    HELICONE_API_KEY               = data.onepassword_item.helicone_api_key.password
+    HELICONE_CACHE_ENABLED         = "true"
+    HELICONE_CACHE_MAX_AGE         = "7200"           # 2 hours
+    HELICONE_CACHE_BUCKET_MAX_SIZE = "20"             # Max allowed by Helicone
+    
+    # Diffbot configuration
+    DIFFBOT_KEY = data.onepassword_item.diffbot_key.password
+    
+    # Ephemeral Experiments Configuration
+    CLEANUP_INTERVAL_MINUTES     = "60"
+    CLEANUP_DRY_RUN              = "false"
+    MAX_EXPERIMENTS_PER_USER     = "50"
+    DEFAULT_EXPERIMENT_EXPIRY_DAYS = "7"
+    MAX_EXPERIMENT_EXPIRY_DAYS   = "30"
   }
 }
 
