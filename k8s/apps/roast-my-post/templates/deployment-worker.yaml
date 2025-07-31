@@ -31,7 +31,7 @@ spec:
         - name: worker
           image: "{{ .Values.image.name }}-worker:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
-          command: ["npm", "run", "process-jobs-adaptive"]
+          command: ["pnpm", "run", "process-jobs-adaptive"]
           envFrom:
             - secretRef:
                 name: {{ .Values.envSecret }}
