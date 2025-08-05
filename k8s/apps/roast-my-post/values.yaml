@@ -18,18 +18,18 @@ port: 3000
 
 # Web deployment configuration
 web:
-  replicas: 3
+  replicas: 2  # Reduced from 3 to save memory
   resources:
     requests:
-      memory: "1Gi"
-      cpu: "500m"
+      memory: "512Mi"  # Reduced from 1Gi
+      cpu: "250m"     # Reduced from 500m
     limits:
-      memory: "2Gi"
-      cpu: "1000m"
+      memory: "1Gi"   # Reduced from 2Gi
+      cpu: "500m"     # Reduced from 1000m
   autoscaling:
     enabled: true
-    minReplicas: 3
-    maxReplicas: 10
+    minReplicas: 2  # Reduced from 3 to match replicas
+    maxReplicas: 6  # Reduced from 10
     targetCPUUtilizationPercentage: 70
     targetMemoryUtilizationPercentage: 80
 
