@@ -30,7 +30,7 @@ spec:
         - name: web
           image: "{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
-          command: ["node", "server.js"]
+          command: ["node", "apps/web/server.js"]
           ports:
             - name: http
               containerPort: {{ .Values.port }}
