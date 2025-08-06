@@ -29,9 +29,9 @@ spec:
         fsGroup: 1001
       containers:
         - name: worker
-          image: "{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.workerImage.name }}:{{ .Values.workerImage.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
-          command: ["npm", "run", "process-jobs-adaptive"]
+          command: ["pnpm", "--filter", "@roast/web", "run", "process-jobs-adaptive"]
           envFrom:
             - secretRef:
                 name: {{ .Values.envSecret }}

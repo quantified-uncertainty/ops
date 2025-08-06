@@ -9,6 +9,11 @@ image:
   pullSecret: dockerconfig
   name: ghcr.io/quantified-uncertainty/roast-my-post
   tag: "main" # Set by CI/CD
+  
+# Worker image configuration (uses different Dockerfile)
+workerImage:
+  name: ghcr.io/quantified-uncertainty/roast-my-post-worker
+  tag: "main" # Set by CI/CD
 
 # Environment variables from Kubernetes secret
 envSecret: roast-my-post-env
