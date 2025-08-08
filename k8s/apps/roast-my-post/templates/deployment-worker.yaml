@@ -31,7 +31,7 @@ spec:
         - name: worker
           image: "{{ .Values.workerImage.name }}:{{ .Values.workerImage.tag | default .Chart.AppVersion }}"
           imagePullPolicy: Always
-          command: ["pnpm", "--filter", "@roast/web", "run", "process-jobs-adaptive"]
+          command: ["pnpm", "run", "process-jobs-adaptive"]
           envFrom:
             - secretRef:
                 name: {{ .Values.envSecret }}
