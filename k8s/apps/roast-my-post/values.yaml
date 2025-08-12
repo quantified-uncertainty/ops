@@ -44,10 +44,10 @@ worker:
   replicas: 2
   resources:
     requests:
-      memory: "850Mi"  # Increased to match actual usage
+      memory: "1Gi"    # Generous allocation for growth
       cpu: "250m"
     limits:
-      memory: "1Gi"
+      memory: "1.5Gi"  # Increased limit to allow headroom
       cpu: "500m"
   autoscaling:
     enabled: true
