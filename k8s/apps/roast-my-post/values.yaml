@@ -44,7 +44,7 @@ worker:
   replicas: 2
   resources:
     requests:
-      memory: "512Mi"
+      memory: "850Mi"  # Increased to match actual usage
       cpu: "250m"
     limits:
       memory: "1Gi"
