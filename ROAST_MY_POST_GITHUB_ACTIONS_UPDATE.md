@@ -40,10 +40,24 @@ env:
             --helm-set image.tag=sha-${{ github.sha }} \
             --helm-set workerImage.tag=sha-${{ github.sha }}
           
-          # Optionally trigger sync (remove if you want to rely on auto-sync)
+          # Trigger sync (even though auto-sync is enabled, this ensures immediate deployment)
           /usr/local/bin/argocd app sync ${ARGOCD_APP} \
             --server ${ARGOCD_SERVER} \
             --auth-token ${ARGOCD_AUTH_TOKEN}
+          
+          # Wait for sync to complete and verify health
+          /usr/local/bin/argocd app wait ${ARGOCD_APP} \
+            --server ${ARGOCD_SERVER} \
+            --auth-token ${ARGOCD_AUTH_TOKEN} \
+            --timeout 300 \
+            --health \
+            --sync
+          
+          # Get final status for the logs
+          /usr/local/bin/argocd app get ${ARGOCD_APP} \
+            --server ${ARGOCD_SERVER} \
+            --auth-token ${ARGOCD_AUTH_TOKEN} \
+            --output json | jq -r '.status.sync.status, .status.health.status'
 ```
 
 ### 3. Update Docker build to use SHA tags
@@ -83,10 +97,67 @@ You need to add `ARGOCD_AUTH_TOKEN` as a repository secret. This token can be ob
 - **Reliable updates** - ArgoCD always knows when images change
 - **Rollback capability** - Easy to revert to previous SHA
 
+## Alternative: Comprehensive Deployment Verification
+
+For even better deployment verification, you can add a separate verification step:
+
+```yaml
+      - name: Verify deployment completed
+        env:
+          ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
+        run: |
+          # Function to check if pods are running the new image
+          verify_deployment() {
+            local expected_tag="sha-${{ github.sha }}"
+            
+            # Get app resources
+            /usr/local/bin/argocd app resources ${ARGOCD_APP} \
+              --server ${ARGOCD_SERVER} \
+              --auth-token ${ARGOCD_AUTH_TOKEN} \
+              --kind Deployment \
+              --output json | jq -r '.[] | 
+                select(.kind == "Deployment") | 
+                .name + ": " + .status'
+            
+            # Check if deployments are using the correct image
+            echo "Checking image tags..."
+            /usr/local/bin/argocd app manifests ${ARGOCD_APP} \
+              --server ${ARGOCD_SERVER} \
+              --auth-token ${ARGOCD_AUTH_TOKEN} \
+              --revision HEAD | grep -E "image:.*${expected_tag}" || {
+                echo "ERROR: Deployments not using expected tag ${expected_tag}"
+                exit 1
+              }
+            
+            echo "✅ Deployment verification successful!"
+          }
+          
+          verify_deployment
+```
+
+## What This Provides
+
+The enhanced workflow will:
+1. **Update** the image tags in ArgoCD
+2. **Trigger** an immediate sync (not waiting for auto-sync)
+3. **Wait** for the sync to complete (with 5-minute timeout)
+4. **Verify** both sync status and health status
+5. **Fail** the GitHub Actions job if deployment fails
+
+This means:
+- ✅ Green check in GitHub = deployment succeeded in Kubernetes
+- ❌ Red X in GitHub = deployment failed (sync failed, unhealthy, or timeout)
+- 📊 Full visibility in GitHub Actions logs of what happened
+
 ## Testing
 
 After implementing these changes:
 1. Push a commit to main branch
-2. Watch GitHub Actions complete
+2. Watch GitHub Actions - it will show:
+   - Building images ✅
+   - Pushing to registry ✅
+   - Updating ArgoCD ✅
+   - Waiting for deployment ⏳
+   - Deployment healthy ✅ (or ❌ if failed)
 3. Check ArgoCD UI - should show the new SHA tag
 4. Verify pods are running the new image: `kubectl get pods -n roast-my-post -o jsonpath='{.items[*].spec.containers[*].image}'`
