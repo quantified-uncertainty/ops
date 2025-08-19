@@ -96,6 +96,9 @@ You need to add `ARGOCD_AUTH_TOKEN` as a repository secret. This token can be ob
 
 1. **Sync the app-of-apps application** to apply the automated sync setting:
    ```bash
+   # Via ArgoCD UI: Navigate to app-of-apps and click Sync
+   # OR via CLI (requires login):
+   argocd login argo.k8s.quantifieduncertainty.org
    argocd app sync app-of-apps
    ```
    This is necessary because we removed `automated: null` from the roast-my-post configuration, but app-of-apps needs to be synced to apply this change.
