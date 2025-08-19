@@ -21,8 +21,6 @@ spec:
         app.kubernetes.io/component: migration
     spec:
       restartPolicy: Never
-      imagePullSecrets:
-        - name: {{ .Values.image.pullSecret }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 1001
