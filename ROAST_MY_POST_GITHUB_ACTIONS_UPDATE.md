@@ -20,44 +20,47 @@ env:
 ### 2. Add new job to update ArgoCD after building images
 ```yaml
   update-argocd:
-    needs: [build-main-image, build-worker-image]
+    needs: build-and-push  # This waits for both matrix builds to complete
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
       - name: Update ArgoCD image tags
         env:
+          ARGOCD_SERVER: ${{ env.ARGOCD_SERVER }}
           ARGOCD_AUTH_TOKEN: ${{ secrets.ARGOCD_AUTH_TOKEN }}
         run: |
+          set -e  # Exit on any error
+          
           # Download ArgoCD CLI
-          curl -sSL -o /usr/local/bin/argocd https://${ARGOCD_SERVER}/download/argocd-linux-amd64
+          echo "Downloading ArgoCD CLI..."
+          curl -sSL -o /usr/local/bin/argocd https://${ARGOCD_SERVER}/download/argocd-linux-amd64 || {
+            echo "Failed to download ArgoCD CLI"
+            exit 1
+          }
           chmod +x /usr/local/bin/argocd
           
-          # Update both image tags with the commit SHA
+          # The ArgoCD CLI will use ARGOCD_SERVER and ARGOCD_AUTH_TOKEN env vars automatically
+          echo "Updating image tags to sha-${{ github.sha }}..."
           /usr/local/bin/argocd app set ${ARGOCD_APP} \
-            --server ${ARGOCD_SERVER} \
-            --auth-token ${ARGOCD_AUTH_TOKEN} \
             --helm-set image.tag=sha-${{ github.sha }} \
             --helm-set workerImage.tag=sha-${{ github.sha }}
           
           # Trigger sync (even though auto-sync is enabled, this ensures immediate deployment)
-          /usr/local/bin/argocd app sync ${ARGOCD_APP} \
-            --server ${ARGOCD_SERVER} \
-            --auth-token ${ARGOCD_AUTH_TOKEN}
+          echo "Triggering application sync..."
+          /usr/local/bin/argocd app sync ${ARGOCD_APP}
           
           # Wait for sync to complete and verify health
+          echo "Waiting for deployment to complete (timeout: 5 minutes)..."
           /usr/local/bin/argocd app wait ${ARGOCD_APP} \
-            --server ${ARGOCD_SERVER} \
-            --auth-token ${ARGOCD_AUTH_TOKEN} \
             --timeout 300 \
             --health \
             --sync
           
           # Get final status for the logs
-          /usr/local/bin/argocd app get ${ARGOCD_APP} \
-            --server ${ARGOCD_SERVER} \
-            --auth-token ${ARGOCD_AUTH_TOKEN} \
-            --output json | jq -r '.status.sync.status, .status.health.status'
+          echo "Deployment completed. Final status:"
+          /usr/local/bin/argocd app get ${ARGOCD_APP} --output json | \
+            jq -r '"Sync: " + .status.sync.status + ", Health: " + .status.health.status'
 ```
 
 ### 3. Update Docker build to use SHA tags
@@ -149,6 +152,27 @@ This means:
 - ❌ Red X in GitHub = deployment failed (sync failed, unhealthy, or timeout)
 - 📊 Full visibility in GitHub Actions logs of what happened
 
+## Important Notes & Potential Issues
+
+### Job Dependencies
+The `update-argocd` job has `needs: build-and-push` which waits for the matrix strategy job to complete (both main and worker images). This matches the current docker.yml structure.
+
+### SHA Tag Format
+Both images must be tagged with the same format. The current workflow generates tags like `sha-<full-sha>`. Make sure the Docker build is configured to push with this tag format.
+
+### Environment Variables
+The ArgoCD CLI automatically uses `ARGOCD_SERVER` and `ARGOCD_AUTH_TOKEN` environment variables when they're set, so we don't need to pass them as flags to every command.
+
+### Error Handling
+- The script uses `set -e` to exit on any error
+- The curl command has explicit error handling
+- The wait command will exit with non-zero if deployment fails
+
+### Timeout Considerations
+- 300 seconds (5 minutes) should be sufficient for most deployments
+- Adjust if your application takes longer to become healthy
+- Consider that initial deployments might take longer than updates
+
 ## Testing
 
 After implementing these changes:
@@ -161,3 +185,11 @@ After implementing these changes:
    - Deployment healthy ✅ (or ❌ if failed)
 3. Check ArgoCD UI - should show the new SHA tag
 4. Verify pods are running the new image: `kubectl get pods -n roast-my-post -o jsonpath='{.items[*].spec.containers[*].image}'`
+
+## Troubleshooting
+
+If the deployment fails:
+1. Check the ArgoCD UI for sync errors
+2. Check pod logs: `kubectl logs -n roast-my-post -l app.kubernetes.io/name=roast-my-post`
+3. Verify the image was pushed: Check ghcr.io package page
+4. Ensure the ARGOCD_AUTH_TOKEN secret is set correctly in GitHub
