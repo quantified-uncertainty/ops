@@ -63,8 +63,8 @@ env:
             jq -r '"Sync: " + .status.sync.status + ", Health: " + .status.health.status'
 ```
 
-### 3. Update Docker build to use SHA tags
-Modify the metadata-action step to generate SHA-based tags:
+### 3. Update Docker build to use full SHA tags
+The current workflow uses `type=sha` which generates short SHA tags. For consistency with the ArgoCD update, modify to use full SHA:
 
 ```yaml
       - name: Extract metadata
@@ -77,8 +77,10 @@ Modify the metadata-action step to generate SHA-based tags:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=sha,prefix=sha-,format=long
+            type=sha,prefix=sha-,format=long  # Use full SHA, not short
 ```
+
+**Important**: The `format=long` ensures the full commit SHA is used, matching what we set in ArgoCD (`sha-${{ github.sha }}`)
 
 ### 4. Add GitHub Secret
 You need to add `ARGOCD_AUTH_TOKEN` as a repository secret. This token can be obtained from the ArgoCD UI or by an admin who has access to the ArgoCD server.
@@ -158,7 +160,7 @@ This means:
 The `update-argocd` job has `needs: build-and-push` which waits for the matrix strategy job to complete (both main and worker images). This matches the current docker.yml structure.
 
 ### SHA Tag Format
-Both images must be tagged with the same format. The current workflow generates tags like `sha-<full-sha>`. Make sure the Docker build is configured to push with this tag format.
+Both images must be tagged with the same format. The workflow needs to generate tags like `sha-<full-sha>` (not shortened). This requires adding `format=long` to the metadata action's SHA tag configuration. Without this, the default generates short SHAs which won't match the `${{ github.sha }}` value used in the ArgoCD update.
 
 ### Environment Variables
 The ArgoCD CLI automatically uses `ARGOCD_SERVER` and `ARGOCD_AUTH_TOKEN` environment variables when they're set, so we don't need to pass them as flags to every command.
