@@ -7,12 +7,14 @@ hosts:
 # Image configuration
 image:
   name: ghcr.io/quantified-uncertainty/roast-my-post
-  tag: "main" # Set by CI/CD
+  # Tag is set by CI/CD via: argocd app set roast-my-post --helm-set image.tag=sha-xxxxx
+  tag: "main" # Default to main for now, will be overridden by CI/CD
   
 # Worker image configuration (uses different Dockerfile)
 workerImage:
   name: ghcr.io/quantified-uncertainty/roast-my-post-worker
-  tag: "main" # Set by CI/CD
+  # Tag is set by CI/CD via: argocd app set roast-my-post --helm-set workerImage.tag=sha-xxxxx
+  tag: "main" # Default to main for now, will be overridden by CI/CD
 
 # Environment variables from Kubernetes secret
 envSecret: roast-my-post-env

@@ -119,4 +119,3 @@ apps:
   - name: URL
     value: https://roastmypost.org
   namespace: roast-my-post
-  automated: null
