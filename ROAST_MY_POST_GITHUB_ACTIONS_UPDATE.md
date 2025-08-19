@@ -40,26 +40,31 @@ env:
           }
           chmod +x /usr/local/bin/argocd
           
-          # The ArgoCD CLI will use ARGOCD_SERVER and ARGOCD_AUTH_TOKEN env vars automatically
+          # ArgoCD CLI uses ARGOCD_AUTH_TOKEN env var automatically, but needs --server flag
           echo "Updating image tags to sha-${{ github.sha }}..."
           /usr/local/bin/argocd app set ${ARGOCD_APP} \
+            --server ${ARGOCD_SERVER} \
             --helm-set image.tag=sha-${{ github.sha }} \
             --helm-set workerImage.tag=sha-${{ github.sha }}
           
           # Trigger sync (even though auto-sync is enabled, this ensures immediate deployment)
           echo "Triggering application sync..."
-          /usr/local/bin/argocd app sync ${ARGOCD_APP}
+          /usr/local/bin/argocd app sync ${ARGOCD_APP} \
+            --server ${ARGOCD_SERVER}
           
           # Wait for sync to complete and verify health
           echo "Waiting for deployment to complete (timeout: 5 minutes)..."
           /usr/local/bin/argocd app wait ${ARGOCD_APP} \
+            --server ${ARGOCD_SERVER} \
             --timeout 300 \
             --health \
             --sync
           
           # Get final status for the logs
           echo "Deployment completed. Final status:"
-          /usr/local/bin/argocd app get ${ARGOCD_APP} --output json | \
+          /usr/local/bin/argocd app get ${ARGOCD_APP} \
+            --server ${ARGOCD_SERVER} \
+            --output json | \
             jq -r '"Sync: " + .status.sync.status + ", Health: " + .status.health.status'
 ```
 
@@ -84,6 +89,22 @@ The current workflow uses `type=sha` which generates short SHA tags. For consist
 
 ### 4. Add GitHub Secret
 You need to add `ARGOCD_AUTH_TOKEN` as a repository secret. This token can be obtained from the ArgoCD UI or by an admin who has access to the ArgoCD server.
+
+## Prerequisites - IMPORTANT!
+
+**Before the GitHub Actions changes will work, you need to:**
+
+1. **Sync the app-of-apps application** to apply the automated sync setting:
+   ```bash
+   argocd app sync app-of-apps
+   ```
+   This is necessary because we removed `automated: null` from the roast-my-post configuration, but app-of-apps needs to be synced to apply this change.
+
+2. **Verify automated sync is enabled**:
+   ```bash
+   argocd app get roast-my-post -o json | jq '.spec.syncPolicy.automated'
+   ```
+   Should return `{}` (not null)
 
 ## How It Works Now
 
@@ -115,10 +136,9 @@ For even better deployment verification, you can add a separate verification ste
           verify_deployment() {
             local expected_tag="sha-${{ github.sha }}"
             
-            # Get app resources
+            # Get app resources (server flag required, auth token from env)
             /usr/local/bin/argocd app resources ${ARGOCD_APP} \
               --server ${ARGOCD_SERVER} \
-              --auth-token ${ARGOCD_AUTH_TOKEN} \
               --kind Deployment \
               --output json | jq -r '.[] | 
                 select(.kind == "Deployment") | 
@@ -128,7 +148,6 @@ For even better deployment verification, you can add a separate verification ste
             echo "Checking image tags..."
             /usr/local/bin/argocd app manifests ${ARGOCD_APP} \
               --server ${ARGOCD_SERVER} \
-              --auth-token ${ARGOCD_AUTH_TOKEN} \
               --revision HEAD | grep -E "image:.*${expected_tag}" || {
                 echo "ERROR: Deployments not using expected tag ${expected_tag}"
                 exit 1
@@ -163,7 +182,7 @@ The `update-argocd` job has `needs: build-and-push` which waits for the matrix s
 Both images must be tagged with the same format. The workflow needs to generate tags like `sha-<full-sha>` (not shortened). This requires adding `format=long` to the metadata action's SHA tag configuration. Without this, the default generates short SHAs which won't match the `${{ github.sha }}` value used in the ArgoCD update.
 
 ### Environment Variables
-The ArgoCD CLI automatically uses `ARGOCD_SERVER` and `ARGOCD_AUTH_TOKEN` environment variables when they're set, so we don't need to pass them as flags to every command.
+The ArgoCD CLI automatically uses `ARGOCD_AUTH_TOKEN` from the environment variable (no need for --auth-token flag), but **requires the --server flag** to be explicitly passed. This is why we use `--server ${ARGOCD_SERVER}` in all commands.
 
 ### Error Handling
 - The script uses `set -e` to exit on any error
