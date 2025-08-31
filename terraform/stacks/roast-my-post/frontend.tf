@@ -11,77 +11,82 @@ resource "vercel_project" "main" {
   root_directory = "apps/web"
   install_command = "pnpm install"
   
+  # Workaround for provider bug
+  enable_affected_projects_deployments = false
+  
   # Environment variables for Vercel deployment
   environment = [
     {
       key    = "ENABLE_EXPERIMENTAL_COREPACK"
       value  = "1"
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
+    # Only set for production - preview will use Vercel's system variables
     {
       key    = "NEXT_PUBLIC_SITE_URL"
       value  = "https://www.${local.domain}"
-      target = ["production", "preview", "development"]
+      target = ["production"]
     },
     {
       key    = "DATABASE_URL"
       value  = module.database.bouncer_url
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
     {
       key    = "AUTH_SECRET"
       value  = data.onepassword_item.auth_secret.password
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
+    # Only set for production - NextAuth will use VERCEL_URL automatically for preview
     {
       key    = "NEXTAUTH_URL"
       value  = "https://www.${local.domain}"
-      target = ["production", "preview", "development"]
+      target = ["production"]
     },
     {
       key    = "ANTHROPIC_API_KEY"
       value  = data.onepassword_item.anthropic_api_key.password
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
     {
       key    = "OPENROUTER_API_KEY"
       value  = data.onepassword_item.openrouter_api_key.password
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
     {
       key    = "FIRECRAWL_KEY"
       value  = data.onepassword_item.firecrawl_key.password
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
     {
       key    = "SENDGRID_KEY"
       value  = data.onepassword_item.sendgrid_key.password
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
     {
       key    = "EMAIL_FROM"
       value  = "noreply@${local.domain}"
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
     {
       key    = "AUTH_RESEND_KEY"
       value  = data.onepassword_item.auth_resend_key.password
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
     {
       key    = "AUTH_TRUST_HOST"
       value  = "true"
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
     {
       key    = "HELICONE_API_KEY"
       value  = data.onepassword_item.helicone_api_key.password
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     },
     {
       key    = "DIFFBOT_KEY"
       value  = data.onepassword_item.diffbot_key.password
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     }
   ]
 }

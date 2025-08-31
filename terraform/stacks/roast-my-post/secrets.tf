@@ -82,10 +82,14 @@ resource "kubernetes_secret" "roast_my_post_env" {
     ROAST_MY_POST_MCP_API_BASE_URL = "https://${local.domain}"
     
     # Helicone configuration
-    HELICONE_API_KEY               = data.onepassword_item.helicone_api_key.password
-    HELICONE_CACHE_ENABLED         = "true"
-    HELICONE_CACHE_MAX_AGE         = "7200"           # 2 hours
-    HELICONE_CACHE_BUCKET_MAX_SIZE = "20"             # Max allowed by Helicone
+    HELICONE_API_KEY                 = data.onepassword_item.helicone_api_key.password
+    HELICONE_CACHE_ENABLED           = "true"
+    HELICONE_CACHE_MAX_AGE           = "7200"           # 2 hours
+    HELICONE_CACHE_BUCKET_MAX_SIZE   = "20"             # Max allowed by Helicone
+    HELICONE_SESSIONS_ENABLED        = "true"
+    HELICONE_JOB_SESSIONS_ENABLED    = "true"
+    HELICONE_DETAILED_PATHS_ENABLED  = "true"
+    HELICONE_CUSTOM_METADATA_ENABLED = "true"
     
     # Diffbot configuration
     DIFFBOT_KEY = data.onepassword_item.diffbot_key.password
