@@ -1,79 +1,52 @@
-# On-Demand Staging Environment Plan
+# Staging Environment Plan
 
-> **⚠️ Work in Progress**:.
+> **⚠️ Work in Progress**
 
 ## Overview
 
-This document outlines our on-demand staging environment strategy that provides full infrastructure isolation while maintaining cost efficiency through automatic spin-up/tear-down workflows.
+This document outlines our staging environment strategy that provides full infrastructure isolation for testing and development. The staging environment is manually controlled via GitHub Actions and kept running most of the time.
 
 ## Goals
 
-1. **Cost Efficiency**: Pay only for staging resources when actively used
-2. **Full Stack Testing**: Complete isolated environment including separate Kubernetes cluster, databases, and all services
-3. **Flexible Usage**: Support both manual development testing and automated CI/CD workflows
-4. **Smart Automation**: Reuse existing staging environments when possible, create when needed
-5. **Clean State**: Every staging deployment starts with fresh infrastructure
+1. **Full Stack Testing**: Complete isolated environment including separate Kubernetes cluster, databases, and all services
+2. **Manual Control**: Simple GitHub Actions workflows to spin up/down the environment
+3. **Persistent Environment**: Keep staging running most of the time for continuous development
+4. **Infrastructure Isolation**: Completely separate from production infrastructure
 
-## Core Approach
 
-### On-Demand Infrastructure
-- **Spin-up time**: NN-NN minutes for full cluster + databases
-- **Auto-destroy**: Always tear down after use
+## Usage Workflow
 
-### Two Usage Patterns
-
-#### 1. Manual Development Testing
-- Developer manually triggers staging environment creation
-- Use for feature development, debugging, manual testing
-- Developer controls lifecycle (create/destroy)
-
-#### 2. Automated CI/CD Testing  
-- Triggered by pushes to `staging` branch
-- Smart detection: reuse existing staging or create new
-- Automated app deployment + integration tests
-- Human approval gate before production deployment
-
-## Workflow Examples
-
-### Scenario 1: Manual Development Testing
+### Creating Staging Environment
 ```bash
-# Developer wants to test roast-my-post feature
-1. GitHub Actions → "Staging Environment Control" → Run workflow → Create
-2. Wait for full infrastructure spin-up
-3. Deploy feature via ArgoCD to staging.roast-my-post.com
-4. Test and debug as needed
-5. When finished: GitHub Actions → "Staging Environment Control" → Destroy
+# Team lead or developer creates staging environment
+1. Go to GitHub Actions → "Staging Environment Control"
+2. Run workflow → Select "create"
+3. Wait for full infrastructure spin-up 
+4. Staging environment available at staging.* domains
+5. Deploy apps via ArgoCD as needed
 ```
 
-### Scenario 2: Automated CI/CD Testing
+### Using Staging Environment
 ```bash
-# Developer pushes app changes to staging branch
-1. git push origin staging
-2. GitHub detects changed apps (e.g., roast-my-post)
-3. Checks if staging environment exists:
-   - If exists: Deploy apps directly
-   - If not: Create staging environment first
-4. Deploy changed apps to staging
-5. Run integration tests for changed apps
-6. Create approval issue with test results and staging URLs
-7. Human reviews staging.roast-my-post.com and approves/rejects
-8. If approved: Auto-merge to main → trigger prod deployment
-9. Always: Destroy staging environment after decision
+# Developers use persistent staging for testing
+1. Deploy features to staging via ArgoCD
+2. Test at staging.roast-my-post.com, staging.squiggle-language.com, etc.
+3. Multiple developers can use simultaneously
+4. Environment stays up for continuous development
 ```
 
-### Scenario 3: Collaborative Development
+### Destroying Staging Environment
 ```bash
-# Multiple developers using shared staging
-1. Developer A creates staging environment manually
-2. Developer B pushes to staging branch
-3. System detects existing staging, deploys B's changes
-4. Both developers can test simultaneously
-5. Either developer can trigger destruction when done
+# When staging not needed (e.g., end of sprint, cost savings)
+1. Go to GitHub Actions → "Staging Environment Control"
+2. Run workflow → Select "destroy"
+3. All staging infrastructure torn down
+4. Recreate when needed for next development cycle
 ```
 
 ## GitHub Actions Architecture
 
-### 1. Manual Staging Control Workflow
+### Staging Control Workflow
 **File**: `.github/workflows/staging-control.yml`
 
 ```yaml
@@ -92,135 +65,72 @@ on:
         - destroy
         - status
       reason:
-        description: 'Reason for staging environment'
+        description: 'Reason for this action'
         required: false
-        default: 'Manual testing'
+        default: 'Development testing'
 
 jobs:
   staging-control:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.5.7
+        
+    - name: Configure 1Password
+      uses: 1password/load-secrets-action@v1
+      with:
+        export-env: true
+      env:
+        OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        
     - name: Create Staging Environment
       if: inputs.action == 'create'
+      working-directory: terraform/stacks/staging
       run: |
-        # Deploy full Terraform infrastructure
-        # Set environment state tracking
+        terraform init
+        terraform plan -out=staging.tfplan
+        terraform apply staging.tfplan
+        echo "Staging environment created successfully"
+        echo "Access staging apps at:"
+        echo "- staging.roast-my-post.com"
+        echo "- staging.squiggle-language.com"
+        echo "- staging.getguesstimate.com"
         
     - name: Destroy Staging Environment  
       if: inputs.action == 'destroy'
+      working-directory: terraform/stacks/staging
       run: |
-        # Tear down all infrastructure
-        # Clear environment state
+        terraform init
+        terraform destroy -auto-approve
+        echo "Staging environment destroyed successfully"
         
     - name: Check Status
       if: inputs.action == 'status'
       run: |
-        # Report current staging environment status
-```
-
-### 2. Smart Staging Deployment Workflow
-**File**: `.github/workflows/staging-deploy.yml`
-
-```yaml
-name: Staging App Deployment
-
-on:
-  push:
-    branches: [staging]
-
-jobs:
-  analyze-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      staging-exists: ${{ steps.check.outputs.exists }}
-      changed-apps: ${{ steps.changes.outputs.apps }}
-    steps:
-    - name: Check staging environment status
-      id: check
-      run: |
-        # Check DigitalOcean API for staging cluster
-        # Output: exists=true/false
-        
-    - name: Detect changed applications
-      id: changes
-      run: |
-        # Analyze git diff to determine changed apps
-        # Output: apps=["roast-my-post","guesstimate"]
-
-  create-staging-if-needed:
-    needs: analyze-changes
-    if: needs.analyze-changes.outputs.staging-exists == 'false'
-    runs-on: ubuntu-latest
-    steps:
-    - name: Create staging infrastructure
-      run: |
-        # Deploy full Terraform stack
-        # Wait for cluster readiness
-
-  deploy-and-test:
-    needs: [analyze-changes, create-staging-if-needed]
-    if: always() && !failure()
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        app: ${{ fromJson(needs.analyze-changes.outputs.changed-apps) }}
-    steps:
-    - name: Deploy app to staging
-      run: |
-        # Deploy specific app via ArgoCD
-        argocd app sync staging-${{ matrix.app }}
-        
-    - name: Run integration tests
-      run: |
-        # Run app-specific integration tests
-        npm run test:integration --prefix=apps/${{ matrix.app }}
-
-  await-approval:
-    needs: deploy-and-test
-    runs-on: ubuntu-latest
-    steps:
-    - name: Create approval request
-      run: |
-        # Create GitHub issue with:
-        # - Test results summary
-        # - Links to staging URLs
-        # - Approve/Reject buttons
-        
-    - name: Wait for human decision
-      uses: trstringer/manual-approval@v1
-      with:
-        secret: ${{ github.TOKEN }}
-        approvers: team-leads
-        
-  finalize:
-    needs: await-approval
-    runs-on: ubuntu-latest
-    steps:
-    - name: Merge to main if approved
-      if: needs.await-approval.outputs.approved == 'true'
-      run: |
-        # Create and auto-merge PR to main
-        
-    - name: Always destroy staging
-      run: |
-        # Tear down staging infrastructure
-        # Whether approved or rejected
+        # Check DigitalOcean API for staging resources
+        echo "Checking staging environment status..."
+        # TODO: Implement status check via DO API
 ```
 
 
 ## Implementation Steps
 
-### Phase 1: Repository Setup
-1. **Create staging Terraform configs**: Copy and modify production configs
-2. **Set up staging domains**: Configure DNS for staging subdomains
-3. **Create staging secrets**: Set up 1Password entries for staging
-4. **Test manual deployment**: Verify staging infrastructure works
+### Phase 1: Terraform Configuration
+1. **Create staging Terraform stack**: Copy production configs to `terraform/stacks/staging/`
+2. **Modify for staging**: Update resource names, sizes, and configurations
+3. **Set up staging domains**: Configure DNS for staging.* subdomains
+4. **Create staging secrets**: Set up 1Password entries with staging prefix
 
 ### Phase 2: GitHub Actions
-1. **Implement manual control workflow**: `staging-control.yml`
-2. **Create smart deployment workflow**: `staging-deploy.yml`
-3. **Add environment state tracking**: GitHub variables + DO API checks
-4. **Test automation**: Verify workflows work end-to-end
+1. **Implement staging control workflow**: Create `.github/workflows/staging-control.yml`
+2. **Test manual workflows**: Verify create/destroy operations work
+3. **Set up ArgoCD staging apps**: Configure staging application deployments
+4. **Document usage**: Update team documentation for staging workflow
 
 
 ## Security and Access Control
