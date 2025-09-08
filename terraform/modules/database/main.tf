@@ -27,7 +27,7 @@ resource "postgresql_grant" "db_access" {
   database    = var.database
   object_type = "database"
   privileges  = ["CREATE", "CONNECT", "TEMPORARY"]
-  depends_on  = [postgresql_database.db]
+  depends_on  = [postgresql_database.db, postgresql_role.role]
 }
 
 resource "postgresql_grant" "table_access" {
@@ -36,7 +36,7 @@ resource "postgresql_grant" "table_access" {
   schema      = "public"
   object_type = "table"
   privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"]
-  depends_on  = [postgresql_database.db]
+  depends_on  = [postgresql_database.db, postgresql_role.role]
 }
 
 resource "postgresql_default_privileges" "db_access" {
@@ -45,7 +45,7 @@ resource "postgresql_default_privileges" "db_access" {
   owner       = "doadmin"
   object_type = "schema"
   privileges  = ["CREATE"]
-  depends_on  = [postgresql_database.db]
+  depends_on  = [postgresql_database.db, postgresql_role.role]
 }
 
 resource "postgresql_default_privileges" "table_access" {
@@ -55,7 +55,7 @@ resource "postgresql_default_privileges" "table_access" {
   schema      = "public"
   object_type = "table"
   privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"]
-  depends_on  = [postgresql_database.db]
+  depends_on  = [postgresql_database.db, postgresql_role.role]
 }
 
 # Tighten permissions; default since PostgreSQL 15.
@@ -67,7 +67,7 @@ resource "postgresql_grant" "revoke_public" {
   schema      = "public"
   object_type = "database"
   privileges  = []
-  depends_on  = [postgresql_database.db]
+  depends_on  = [postgresql_database.db, postgresql_role.role]
 }
 
 # Each DB gets its own connection pool.
@@ -78,5 +78,13 @@ resource "digitalocean_database_connection_pool" "pool" {
   size       = var.pool_size
   db_name    = var.database
   user       = var.role
-  depends_on = [postgresql_database.db]
+  depends_on = [
+    postgresql_database.db,
+    postgresql_role.role,
+    postgresql_grant.db_access,
+    postgresql_grant.table_access,
+    postgresql_default_privileges.db_access,
+    postgresql_default_privileges.table_access,
+    postgresql_grant.revoke_public
+  ]
 }
