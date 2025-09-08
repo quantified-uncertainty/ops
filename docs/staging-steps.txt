@@ -1,0 +1,69 @@
+# Staging Environment Setup Steps
+
+## Phase 1: Terraform Configuration ✅ DONE
+1. ✅ Create terraform/stacks/staging/ directory
+2. ✅ Create terraform configuration files:
+   - terraform.tf (providers and backend)
+   - main.tf (project and locals)
+   - k8s.tf (smaller cluster config)
+   - db.tf (smaller database config)
+   - outputs.tf (cluster and db info)
+
+## Phase 2: GitHub Actions ✅ DONE
+1. ✅ Create .github/workflows/staging-control.yml
+2. ⏳ Add required GitHub secrets:
+   - OP_SERVICE_ACCOUNT_TOKEN
+   - AWS_ACCESS_KEY_ID (for terraform backend)
+   - AWS_SECRET_ACCESS_KEY (for terraform backend)
+
+## Phase 3: Local Testing First
+1. ⏳ Test terraform locally in dev environment:
+   ```bash
+   cd terraform/stacks/staging
+   terraform init
+   terraform plan
+   terraform apply
+   ```
+2. ⏳ Verify cluster and database creation
+3. ⏳ Configure kubectl access: `doctl kubernetes cluster kubeconfig save staging`
+4. ⏳ Test basic cluster functionality
+5. ⏳ Destroy when satisfied: `terraform destroy`
+
+## Phase 4: GitHub Actions Integration
+1. ⏳ Add required GitHub secrets:
+   - OP_SERVICE_ACCOUNT_TOKEN
+   - AWS_ACCESS_KEY_ID (for terraform backend)
+   - AWS_SECRET_ACCESS_KEY (for terraform backend)
+2. ⏳ Test GitHub Actions workflow with action=create
+3. ⏳ Verify GitHub Actions can create/destroy successfully
+
+## Phase 5: DNS Configuration
+1. ⏳ Set up DNS records for staging domains:
+   - staging.roast-my-post.com
+   - staging.squiggle-language.com  
+   - staging.getguesstimate.com
+2. ⏳ Point to staging cluster load balancer
+
+## Phase 6: ArgoCD Integration
+1. ⏳ Create staging ArgoCD applications
+2. ⏳ Configure staging ingress domains
+3. ⏳ Test application deployments to staging
+
+## Phase 7: Final Validation
+1. ⏳ Deploy roast-my-post to staging
+2. ⏳ Verify staging.roast-my-post.com works
+3. ⏳ Test full create/destroy cycle via GitHub Actions
+4. ⏳ Document final workflow for team
+
+## Next Immediate Steps:
+1. Run terraform locally to test staging infrastructure:
+   a. cd terraform/stacks/staging
+   b. terraform init
+   c. terraform plan (review what will be created)
+   d. terraform apply (create the infrastructure)
+   e. doctl kubernetes cluster kubeconfig save staging
+   f. kubectl config use-context do-nyc1-staging
+   g. kubectl get nodes (verify cluster is working)
+   h. terraform destroy (clean up when done testing)
+2. Fix any issues found during local testing
+3. Once working locally, set up GitHub Actions
