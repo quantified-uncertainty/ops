@@ -1,0 +1,80 @@
+name: Staging Environment Control
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'create'
+        type: choice
+        options:
+        - create
+        - destroy
+        - status
+      reason:
+        description: 'Reason for this action'
+        required: false
+        default: 'Development testing'
+
+jobs:
+  staging-control:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.5.7
+        
+    - name: Configure 1Password
+      uses: 1password/load-secrets-action@v1
+      with:
+        export-env: true
+      env:
+        OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        
+    - name: Configure AWS credentials for Terraform backend
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        
+    - name: Create Staging Environment
+      if: inputs.action == 'create'
+      working-directory: terraform/stacks/staging
+      run: |
+        terraform init
+        terraform plan -out=staging.tfplan
+        terraform apply staging.tfplan
+        echo "✅ Staging environment created successfully"
+        echo ""
+        echo "🌐 Access staging apps at:"
+        echo "- https://staging.roast-my-post.com"
+        echo "- https://staging.squiggle-language.com"
+        echo "- https://staging.getguesstimate.com"
+        echo ""
+        echo "📝 Next steps:"
+        echo "1. Configure kubectl: doctl kubernetes cluster kubeconfig save staging"
+        echo "2. Deploy applications via ArgoCD"
+        
+    - name: Destroy Staging Environment  
+      if: inputs.action == 'destroy'
+      working-directory: terraform/stacks/staging
+      run: |
+        terraform init
+        terraform destroy -auto-approve
+        echo "🗑️ Staging environment destroyed successfully"
+        echo "💰 Cost savings: Staging infrastructure is now offline"
+        
+    - name: Check Status
+      if: inputs.action == 'status'
+      working-directory: terraform/stacks/staging
+      run: |
+        terraform init
+        echo "📊 Checking staging environment status..."
+        terraform show -json | jq -r '.values.root_module.resources[] | select(.type == "digitalocean_kubernetes_cluster") | "Cluster: \(.values.name) - Status: \(.values.status)"' || echo "No staging cluster found"
+        terraform show -json | jq -r '.values.root_module.resources[] | select(.type == "digitalocean_database_cluster") | "Database: \(.values.name) - Status: \(.values.status)"' || echo "No staging database found"
