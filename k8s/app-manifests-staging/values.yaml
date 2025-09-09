@@ -52,14 +52,14 @@ apps:
   source:
     path: k8s/apps/prometheus-staging
     repoURL: https://github.com/quantified-uncertainty/ops
-    targetRevision: HEAD
+    targetRevision: 45-staging-environment
 
 - name: loki-staging
   automated: {}
   source:
     path: k8s/apps/loki-staging
     repoURL: https://github.com/quantified-uncertainty/ops
-    targetRevision: HEAD
+    targetRevision: 45-staging-environment
 
 # -------------------- Applications --------------------
 - name: roast-my-post
@@ -68,7 +68,7 @@ apps:
   source:
     path: k8s/apps/roast-my-post
     repoURL: https://github.com/quantified-uncertainty/ops
-    targetRevision: HEAD
+    targetRevision: 45-staging-environment
     helm:
       valuesObject:
         hosts:
