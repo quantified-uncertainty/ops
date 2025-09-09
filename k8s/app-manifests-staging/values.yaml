@@ -5,6 +5,10 @@ apps:
 # -------------------- Core Infrastructure --------------------
 - name: cert-manager
   automated: {}  # Auto-sync enabled for staging
+  source:
+    path: k8s/apps/cert-manager
+    repoURL: https://github.com/quantified-uncertainty/ops
+    targetRevision: 45-staging-environment
 
 - name: ingress-nginx
   automated: {}
