@@ -1,0 +1,87 @@
+# Staging-specific Loki configuration with reduced resources and local storage
+
+# Loki subchart configuration
+loki:
+  loki:
+    commonConfig:
+      replication_factor: 1
+    auth_enabled: false
+    
+    # Use S3 storage for staging (same as production)
+    storage:
+      # env from secrets, same pattern as production
+      bucketNames:
+        chunks: "${LOKI_S3_BUCKETNAME}"
+        ruler: "${LOKI_S3_BUCKETNAME}"
+        admin: "${LOKI_S3_BUCKETNAME}"
+      s3:
+        endpoint: "${LOKI_S3_ENDPOINT}"
+        accessKeyId: "${LOKI_S3_ACCESKEYID}"
+        secretAccessKey: "${LOKI_S3_SECRETACCESSKEY}"
+        s3ForcePathStyle: true
+    
+    # Shorter retention for staging
+    limits_config:
+      retention_period: 168h  # 7 days instead of default 30 days
+      
+  singleBinary:
+    replicas: 1
+    extraArgs:
+      - '-config.expand-env=true'
+    extraEnv:
+      - name: LOKI_S3_BUCKETNAME
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets-staging
+            key: s3-bucketName
+      - name: LOKI_S3_ENDPOINT
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets-staging
+            key: s3-endpoint
+      - name: LOKI_S3_ACCESKEYID
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets-staging
+            key: s3-accessKeyId
+      - name: LOKI_S3_SECRETACCESSKEY
+        valueFrom:
+          secretKeyRef:
+            name: loki-storage-secrets-staging
+            key: s3-secretAccessKey
+    
+    # Reduced resources for staging
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "200m"
+      
+  # Disable monitoring to save resources
+  monitoring:
+    selfMonitoring:
+      enabled: false
+      grafanaAgent:
+        installOperator: false
+        
+  test:
+    enabled: false
+
+# Promtail subchart configuration
+promtail:
+  config:
+    # Publish data to staging Loki
+    clients:
+      - url: http://loki-staging-gateway/loki/api/v1/push
+        tenant_id: 1
+
+  # Reduced resources for promtail
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"

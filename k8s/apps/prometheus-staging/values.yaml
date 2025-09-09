@@ -1,0 +1,101 @@
+# Staging-specific Prometheus configuration with reduced resources
+
+kube-prometheus-stack:
+  # Disable some components to save resources in staging
+  defaultRules:
+    create: true
+    rules:
+      etcd: false
+      kubeScheduler: false
+      kubeControllerManager: false
+
+  # Disabled because it's being managed by DOKS
+  kubeScheduler:
+    enabled: false
+
+  kubeEtcd:
+    enabled: false
+
+  # Simplified alertmanager for staging
+  alertmanager:
+    enabled: true
+    alertmanagerSpec:
+      # Reduced resources for staging
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "100m"
+        limits:
+          memory: "256Mi"
+          cpu: "200m"
+      # Smaller storage for staging
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: do-block-storage
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 2Gi  # Reduced from default
+
+  # Lightweight Grafana configuration for staging
+  grafana:
+    enabled: true
+    # Use default admin credentials for staging (not secure, but convenient)
+    adminPassword: "staging123"
+    
+    # Smaller storage for staging
+    persistence:
+      enabled: true
+      storageClassName: do-block-storage
+      accessModes: ["ReadWriteOnce"]
+      size: 2Gi  # Reduced from 5Gi
+    
+    # Reduced resources
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+
+  prometheusOperator:
+    enabled: true
+    # Reduced resources for operator
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+
+  prometheus:
+    enabled: true
+    prometheusSpec:
+      # Simplified selectors for staging
+      ruleSelectorNilUsesHelmValues: false
+      serviceMonitorSelectorNilUsesHelmValues: false
+
+      # Reduced storage for staging
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: do-block-storage
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 5Gi  # Reduced from 10Gi
+      
+      # Reduced resources for Prometheus
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "200m"
+        limits:
+          memory: "1Gi"
+          cpu: "500m"
+      
+      # Shorter retention for staging
+      retention: "7d"  # Instead of default 15d

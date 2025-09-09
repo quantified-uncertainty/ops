@@ -39,6 +39,10 @@ terraform {
     random = {
       source = "hashicorp/random"
     }
+
+    null = {
+      source = "hashicorp/null"
+    }
   }
 }
 
@@ -46,12 +50,20 @@ module "providers" {
   source = "../../modules/providers"
 }
 
-# provider "onepassword" {
-#   account = module.providers.op_account
-# }
+provider "onepassword" {
+  # Configuration comes from module.providers
+}
+
+data "onepassword_item" "do_spaces_api_key" {
+  vault = module.providers.op_vault
+  title = "DigitalOcean Spaces API Key"
+}
 
 provider "digitalocean" {
   token = module.providers.do_token
+
+  spaces_access_id  = data.onepassword_item.do_spaces_api_key.username
+  spaces_secret_key = data.onepassword_item.do_spaces_api_key.password
 }
 
 provider "vercel" {
@@ -60,7 +72,9 @@ provider "vercel" {
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  host                   = digitalocean_kubernetes_cluster.staging.endpoint
+  token                  = digitalocean_kubernetes_cluster.staging.kube_config[0].token
+  cluster_ca_certificate = base64decode(digitalocean_kubernetes_cluster.staging.kube_config[0].cluster_ca_certificate)
 }
 
 data "onepassword_item" "github_token_quri" {

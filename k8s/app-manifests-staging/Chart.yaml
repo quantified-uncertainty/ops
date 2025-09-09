@@ -1,0 +1,4 @@
+apiVersion: v2
+name: app-manifests-staging
+description: Staging environment apps
+version: 0.1.0

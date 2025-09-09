@@ -56,14 +56,70 @@
 4. ⏳ Document final workflow for team
 
 ## Next Immediate Steps:
-1. Run terraform locally to test staging infrastructure:
-   a. cd terraform/stacks/staging
-   b. terraform init
-   c. terraform plan (review what will be created)
-   d. terraform apply (create the infrastructure)
-   e. doctl kubernetes cluster kubeconfig save staging
-   f. kubectl config use-context do-nyc1-staging
-   g. kubectl get nodes (verify cluster is working)
-   h. terraform destroy (clean up when done testing)
-2. Fix any issues found during local testing
-3. Once working locally, set up GitHub Actions
+1. ✅ Run terraform locally to test staging infrastructure:
+   a. ✅ cd terraform/stacks/staging
+   b. ✅ terraform init
+   c. ✅ terraform plan (review what will be created)
+   d. ✅ terraform apply (create the infrastructure)
+   e. ✅ doctl kubernetes cluster kubeconfig save staging
+   f. ✅ kubectl config use-context do-nyc1-staging
+   g. ✅ kubectl get nodes (verify cluster is working)
+   h. ✅ terraform destroy (clean up when done testing)
+2. ✅ Fix any issues found during local testing
+3. ⏳ Once working locally, set up GitHub Actions
+
+## Phase 8: Automated Infrastructure Apps Deployment
+1. ✅ Infrastructure apps are now deployed automatically by Terraform:
+   a. ✅ Terraform applies ArgoCD during cluster creation
+   b. ✅ Terraform deploys staging app-of-apps automatically
+   c. ✅ ArgoCD syncs all infrastructure apps automatically:
+      - cert-manager-staging (for TLS certificates)
+      - ingress-nginx-staging (for ingress controller)  
+      - metrics-server-staging (for HPA and resource metrics)
+      - prometheus-staging (lightweight monitoring for staging)
+      - loki-staging (log aggregation with local storage)
+      - roast-my-post-staging (application deployment)
+
+2. ⏳ Verify automated deployment worked:
+   a. Check cluster is ready: `kubectl get nodes`
+   b. Access ArgoCD: `kubectl port-forward svc/argocd-server -n argocd 8080:443`
+   c. Open https://localhost:8080 (accept self-signed cert)
+   d. Get admin password: `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+   e. Verify all apps are synced and healthy in ArgoCD UI
+
+3. ⏳ Configure staging-specific secrets:
+   a. Create staging database secrets: `kubectl create secret generic roast-my-post-env -n staging --from-literal=DATABASE_URL="$(terraform output -raw database_connection_pool)"`
+   b. Verify all infrastructure apps are healthy: `kubectl get applications -n argocd`
+
+4. ⏳ Set up staging DNS records:
+   a. Get ingress controller external IP: `kubectl get svc -n ingress-nginx ingress-nginx-controller`
+   b. Create DNS records pointing staging.roast-my-post.com to cluster IP
+
+5. ⏳ Test end-to-end staging environment:
+   a. Verify cert-manager is issuing certificates: `kubectl get certificates -A`
+   b. Check roast-my-post deployment: `kubectl get pods -n staging`
+   c. Access staging application at https://staging.roast-my-post.com
+   d. Check Grafana at staging grafana domain (admin/staging123)
+   e. Verify logs are flowing to Loki
+
+## Phase 9: Application Deployment to Staging
+1. ⏳ Deploy roast-my-post to staging:
+   a. Create staging-specific values file for roast-my-post
+   b. Configure staging database connection
+   c. Deploy via ArgoCD
+   d. Verify application is accessible at staging.roast-my-post.com
+2. ⏳ Test staging environment end-to-end:
+   a. Verify application functionality
+   b. Check monitoring and logging
+   c. Test autoscaling behavior
+   d. Validate backup and restore procedures
+
+## Phase 10: CI/CD Integration
+1. ⏳ Set up GitHub Actions for staging deployments:
+   a. Create staging deployment workflow
+   b. Configure automatic deployments on main branch
+   c. Set up staging environment promotion workflow
+2. ⏳ Document staging workflow for team:
+   a. How to deploy to staging
+   b. How to promote from staging to production
+   c. Troubleshooting guide

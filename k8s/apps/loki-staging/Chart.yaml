@@ -1,0 +1,10 @@
+apiVersion: v2
+name: loki-staging
+version: "0.1.0"
+dependencies:
+- name: loki
+  repository: https://grafana.github.io/helm-charts
+  version: 5.44.1
+- name: promtail
+  repository: https://grafana.github.io/helm-charts
+  version: 6.15.5

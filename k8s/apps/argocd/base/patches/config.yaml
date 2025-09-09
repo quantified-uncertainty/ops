@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  url: https://argocd.k8s.quantifieduncertainty.org
+  dex.config: |
+    connectors:
+    - type: github
+      id: github
+      name: GitHub
+      config:
+        clientID: $argo-workflows-sso:dex.github.clientId
+        clientSecret: $argo-workflows-sso:dex.github.clientSecret
+        orgs:
+        - name: quantified-uncertainty
