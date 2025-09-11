@@ -13,8 +13,6 @@ apps:
 - name: ingress-nginx
   namespace: ingress-nginx-staging
   automated: {}
-  syncOptions:
-    - CreateNamespace=true
   source:
     chart: ingress-nginx
     repoURL: https://kubernetes.github.io/ingress-nginx
