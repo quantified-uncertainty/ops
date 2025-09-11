@@ -11,6 +11,7 @@ apps:
     targetRevision: 45-staging-environment
 
 - name: ingress-nginx
+  namespace: ingress-nginx-staging
   automated: {}
   syncOptions:
     - CreateNamespace=true
@@ -21,6 +22,8 @@ apps:
     helm:
       valuesObject:
         controller:
+          admissionWebhooks:
+            enabled: false
           extraArgs:
             "enable-ssl-passthrough": ""
           # Smaller resource allocation for staging
