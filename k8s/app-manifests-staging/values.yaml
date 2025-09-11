@@ -12,6 +12,8 @@ apps:
 
 - name: ingress-nginx
   automated: {}
+  syncOptions:
+    - CreateNamespace=true
   source:
     chart: ingress-nginx
     repoURL: https://kubernetes.github.io/ingress-nginx
