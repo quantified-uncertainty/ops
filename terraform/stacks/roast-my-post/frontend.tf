@@ -52,22 +52,22 @@ resource "vercel_project" "main" {
     {
       key    = "NEXT_PUBLIC_SITE_URL"
       value  = "https://staging.${local.domain}"
-      target = ["development"]
+      target = ["preview"]
     },
     {
       key    = "NEXTAUTH_URL"
       value  = "https://staging.${local.domain}"
-      target = ["development"]
+      target = ["preview"]
     },
     {
       key    = "DATABASE_URL"
       value  = module.staging_database.bouncer_url
-      target = ["development"]
+      target = ["preview"]
     },
     {
       key    = "EMAIL_FROM"
       value  = "noreply-staging@${local.domain}"
-      target = ["development"]
+      target = ["preview"]
     },
     {
       key    = "ANTHROPIC_API_KEY"
