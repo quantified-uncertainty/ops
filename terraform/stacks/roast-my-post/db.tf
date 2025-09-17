@@ -38,7 +38,7 @@ module "database" {
   cluster  = digitalocean_database_cluster.main
   
   # Pool size for production workload
-  pool_size = 17
+  pool_size = 20
   
   # Create the database
   create = true

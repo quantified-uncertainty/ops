@@ -4,16 +4,17 @@ Action plan for adding a staging/test environment for the Roast My Post applicat
 
 STEPS
 
-1. Create staging database in Terraform
+1. Create staging database in Terraform ✅ COMPLETED
    - Add staging database module to terraform/stacks/roast-my-post/db.tf
    - Apply Terraform changes: cd terraform/stacks/roast-my-post && terraform plan && terraform apply
+   - Used pool_size = 2 to stay within database connection limits (22/25 total)
 
-2. Create staging environment secret in Terraform
+2. Create staging environment secret in Terraform ✅ COMPLETED
    - Add staging database outputs to terraform/stacks/roast-my-post/outputs.tf for connection string
-   - Add Kubernetes secret resource in terraform/stacks/roast-my-post/k8s.tf for roast-my-post-staging-env secret
+   - Add Kubernetes secret resource in terraform/stacks/roast-my-post/secrets.tf for roast-my-post-staging-env secret
    - Configure secret in roast-my-post-staging namespace with staging database connection
    - Copy all environment variables from production secret but update DATABASE_URL to staging database
-   - Apply Terraform changes to create the secret
+   - Apply Terraform changes: terraform apply -target=kubernetes_namespace.roast_my_post_staging -target=kubernetes_secret.roast_my_post_staging_env
 
 3. Add staging app to ArgoCD
    - Update k8s/app-manifests/values.yaml to include roast-my-post-staging app
