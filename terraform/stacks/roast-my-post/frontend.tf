@@ -35,7 +35,7 @@ resource "vercel_project" "main" {
     {
       key    = "DATABASE_URL"
       value  = module.database.bouncer_url
-      target = ["production", "preview"]
+      target = ["production"]
     },
     {
       key    = "AUTH_SECRET"
@@ -92,7 +92,7 @@ resource "vercel_project" "main" {
     {
       key    = "EMAIL_FROM"
       value  = "noreply@${local.domain}"
-      target = ["production", "preview"]
+      target = ["production"]
     },
     {
       key    = "AUTH_RESEND_KEY"
