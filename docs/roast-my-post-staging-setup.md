@@ -16,28 +16,37 @@ STEPS
    - Copy all environment variables from production secret but update DATABASE_URL to staging database
    - Apply Terraform changes: terraform apply -target=kubernetes_namespace.roast_my_post_staging -target=kubernetes_secret.roast_my_post_staging_env
 
-3. Add staging app to ArgoCD
+3. Add staging app to ArgoCD ✅ COMPLETED
    - Update k8s/app-manifests/values.yaml to include roast-my-post-staging app
    - Configure staging namespace and URL
    - Note: Both apps will initially track same Git repo/branch for Helm chart
    - Different image tags will be set via ArgoCD CLI to deploy different versions
    - Production uses main branch images, staging uses staging branch images
 
-4. Deploy via ArgoCD
-   - Sync app-of-apps to create staging application: argocd app sync app-of-apps
-   - Configure staging domain via ArgoCD: argocd app set roast-my-post-staging --helm-set hosts[0]=staging.roastmypost.org
-   - Set staging image tags: argocd app set roast-my-post-staging --helm-set image.tag=staging-branch
-   - Sync staging app: argocd app sync roast-my-post-staging
+4. Create staging-specific configuration ✅ COMPLETED
+   - Create k8s/apps/roast-my-post/values-staging.yaml with staging-specific settings
+   - Update k8s/app-manifests/values.yaml to use staging values file for roast-my-post-staging app
+   - Staging configuration (domain, environment secret) defined declaratively in Git
+   - Image tags set dynamically by CI/CD (same production builds deployed to staging)
+   - Uses same resource allocations as production for simplicity
 
-5. Verify deployment
+5. Deploy via ArgoCD
+   - Sync app-of-apps to create staging application: argocd app sync app-of-apps
+   - Set image tags for staging: argocd app set roast-my-post-staging --helm-set image.tag=main --helm-set workerImage.tag=main
+   - Sync staging app: argocd app sync roast-my-post-staging
+   - Image tags can be updated later via ArgoCD CLI or CI/CD automation
+
+6. Verify deployment
    - Check staging app is accessible at https://staging.roastmypost.org
-   - Verify database migrations ran successfully
-   - Check application logs for errors
+   - Verify database migrations ran successfully (if migration.enabled is true)
+   - Check application logs: kubectl -n roast-my-post-staging logs -l app.kubernetes.io/component=web
+   - Check worker logs: kubectl -n roast-my-post-staging logs -l app.kubernetes.io/component=worker
 
 NOTES
 
-- Staging uses separate database to avoid production interference
-- Same Helm chart deployed to different namespaces with different Git branch tracking
-- Production app tracks main branch, staging app tracks staging branch
-- SSL certificates automatically provisioned for staging domain
-- Consider reduced resource allocations for staging to save costs
+- Staging uses separate database (roast_my_post_staging) to avoid production interference
+- Same Helm chart deployed to different namespaces with different configurations via values-staging.yaml
+- Staging uses reduced resource allocations (1 replica vs 2, smaller memory/CPU limits)
+- Image tags can be updated by modifying values-staging.yaml and committing to Git
+- SSL certificates automatically provisioned by cert-manager for staging domain
+- All configuration is declarative and stored in Git for proper GitOps workflow

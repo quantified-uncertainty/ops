@@ -1,0 +1,12 @@
+# Staging-specific values for Roast My Post
+
+# Domain configuration for staging
+hosts:
+  - staging.roastmypost.org
+
+# Environment variables from staging Kubernetes secret
+envSecret: roast-my-post-staging-env
+
+# Image tags will be set by CI/CD or ArgoCD CLI
+# e.g., argocd app set roast-my-post-staging --helm-set image.tag=sha-abc123
+# Uses same production builds, just deployed to staging environment
