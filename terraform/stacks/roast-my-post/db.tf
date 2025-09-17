@@ -38,7 +38,7 @@ module "database" {
   cluster  = digitalocean_database_cluster.main
   
   # Pool size for production workload
-  pool_size = 20
+  pool_size = 17
   
   # Create the database
   create = true
@@ -56,7 +56,7 @@ module "staging_database" {
   cluster   = digitalocean_database_cluster.main
   database  = "roast_my_post_staging"
   role      = "roast_my_post_staging_role"
-  pool_size = 5
+  pool_size = 2
   create    = true
 }
 
