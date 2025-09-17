@@ -30,13 +30,18 @@ STEPS
    - Image tags set dynamically by CI/CD (same production builds deployed to staging)
    - Uses same resource allocations as production for simplicity
 
-5. Deploy via ArgoCD
+5. Configure Vercel staging environment
+   - Apply Terraform changes to add staging environment variables and domain to Vercel project
+   - cd terraform/stacks/roast-my-post && terraform apply
+   - This configures Vercel to deploy staging branch to staging.roastmypost.org with staging database
+
+6. Deploy via ArgoCD
    - Sync app-of-apps to create staging application: argocd app sync app-of-apps
    - Set image tags for staging: argocd app set roast-my-post-staging --helm-set image.tag=main --helm-set workerImage.tag=main
    - Sync staging app: argocd app sync roast-my-post-staging
    - Image tags can be updated later via ArgoCD CLI or CI/CD automation
 
-6. Verify deployment
+7. Verify deployment
    - Check staging app is accessible at https://staging.roastmypost.org
    - Verify database migrations ran successfully (if migration.enabled is true)
    - Check application logs: kubectl -n roast-my-post-staging logs -l app.kubernetes.io/component=web
@@ -45,8 +50,9 @@ STEPS
 NOTES
 
 - Staging uses separate database (roast_my_post_staging) to avoid production interference
+- Frontend deployed to Vercel with staging environment variables pointing to staging database
+- Backend deployed to Kubernetes with reduced resource allocations (1 replica vs 2)
 - Same Helm chart deployed to different namespaces with different configurations via values-staging.yaml
-- Staging uses reduced resource allocations (1 replica vs 2, smaller memory/CPU limits)
 - Image tags can be updated by modifying values-staging.yaml and committing to Git
 - SSL certificates automatically provisioned by cert-manager for staging domain
 - All configuration is declarative and stored in Git for proper GitOps workflow
