@@ -7,6 +7,17 @@ hosts:
 # Environment variables from staging Kubernetes secret
 envSecret: roast-my-post-staging-env
 
+# Reduced replicas for staging environment
+web:
+  replicas: 1
+  autoscaling:
+    maxReplicas: 2
+
+worker:
+  replicas: 1
+  autoscaling:
+    maxReplicas: 2
+
 # Image tags will be set by CI/CD or ArgoCD CLI
 # e.g., argocd app set roast-my-post-staging --helm-set image.tag=sha-abc123
 # Uses same production builds, just deployed to staging environment
