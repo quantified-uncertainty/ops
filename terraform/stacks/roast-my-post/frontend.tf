@@ -14,6 +14,11 @@ resource "vercel_project" "main" {
   # Workaround for provider bug
   enable_affected_projects_deployments = false
   
+  # Keep current authentication settings
+  vercel_authentication = {
+    deployment_type = "none"
+  }
+  
   # Environment variables for Vercel deployment
   environment = [
     {
@@ -30,7 +35,7 @@ resource "vercel_project" "main" {
     {
       key    = "DATABASE_URL"
       value  = module.database.bouncer_url
-      target = ["production", "preview"]
+      target = ["production"]
     },
     {
       key    = "AUTH_SECRET"
@@ -42,6 +47,27 @@ resource "vercel_project" "main" {
       key    = "NEXTAUTH_URL"
       value  = "https://www.${local.domain}"
       target = ["production"]
+    },
+    # Staging environment configuration
+    {
+      key    = "NEXT_PUBLIC_SITE_URL"
+      value  = "https://staging.${local.domain}"
+      target = ["preview"]
+    },
+    {
+      key    = "NEXTAUTH_URL"
+      value  = "https://staging.${local.domain}"
+      target = ["preview"]
+    },
+    {
+      key    = "DATABASE_URL"
+      value  = module.staging_database.bouncer_url
+      target = ["preview"]
+    },
+    {
+      key    = "EMAIL_FROM"
+      value  = "noreply-staging@${local.domain}"
+      target = ["preview"]
     },
     {
       key    = "ANTHROPIC_API_KEY"
@@ -66,7 +92,7 @@ resource "vercel_project" "main" {
     {
       key    = "EMAIL_FROM"
       value  = "noreply@${local.domain}"
-      target = ["production", "preview"]
+      target = ["production"]
     },
     {
       key    = "AUTH_RESEND_KEY"
@@ -98,6 +124,13 @@ module "domain" {
   domain     = local.domain
   project_id = vercel_project.main.id
   www        = true  # Create www subdomain redirect
+}
+
+# Staging subdomain for staging branch deployments
+resource "vercel_project_domain" "staging" {
+  project_id = vercel_project.main.id
+  domain     = "staging.${local.domain}"
+  git_branch = "staging"
 }
 
 # Associate domain with DigitalOcean project

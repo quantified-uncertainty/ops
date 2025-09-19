@@ -44,6 +44,22 @@ module "database" {
   create = true
 }
 
+# Create staging database and user
+module "staging_database" {
+  source = "../../modules/database"
+
+  providers = {
+    postgresql = postgresql
+  }
+
+  name      = "roast_my_post_staging"
+  cluster   = digitalocean_database_cluster.main
+  database  = "roast_my_post_staging"
+  role      = "roast_my_post_staging_role"
+  pool_size = 2
+  create    = true
+}
+
 # Associate database cluster with the project
 resource "digitalocean_project_resources" "db" {
   project   = digitalocean_project.main.id

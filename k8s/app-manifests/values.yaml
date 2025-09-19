@@ -119,3 +119,17 @@ apps:
   - name: URL
     value: https://roastmypost.org
   namespace: roast-my-post
+
+- name: roast-my-post-staging
+  info:
+  - name: URL
+    value: https://staging.roastmypost.org
+  namespace: roast-my-post-staging
+  source:
+    repoURL: https://github.com/quantified-uncertainty/ops
+    path: "k8s/apps/roast-my-post"
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+        - values-staging.yaml
