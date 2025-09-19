@@ -46,9 +46,9 @@ module "providers" {
   source = "../../modules/providers"
 }
 
-# provider "onepassword" {
-#   account = module.providers.op_account
-# }
+provider "onepassword" {
+  account = module.providers.op_account
+}
 
 provider "digitalocean" {
   token = module.providers.do_token
