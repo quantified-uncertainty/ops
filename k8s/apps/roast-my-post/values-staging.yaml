@@ -9,12 +9,12 @@ envSecret: roast-my-post-staging-env
 
 # Reduced replicas for staging environment
 web:
-  replicas: 1
+  replicas: 2
   autoscaling:
     maxReplicas: 2
 
 worker:
-  replicas: 1
+  replicas: 2
   autoscaling:
     maxReplicas: 2
 
