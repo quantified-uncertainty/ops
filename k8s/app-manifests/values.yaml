@@ -128,7 +128,7 @@ apps:
   source:
     repoURL: https://github.com/quantified-uncertainty/ops
     path: "k8s/apps/roast-my-post"
-    targetRevision: "48-remove-web-pods-if-they-are-unused"
+    targetRevision: HEAD
     helm:
       valueFiles:
         - values.yaml
