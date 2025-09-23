@@ -24,7 +24,7 @@ port: 3000
 
 # Web deployment configuration
 web:
-  enabled: true
+  enabled: false
   replicas: 2  # Reduced from 3 to save memory
   resources:
     requests:
@@ -80,7 +80,7 @@ service:
 
 # Ingress configuration
 ingress:
-  enabled: true
+  enabled: false
   className: nginx
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
