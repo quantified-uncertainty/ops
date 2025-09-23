@@ -7,13 +7,19 @@ hosts:
 # Environment variables from staging Kubernetes secret
 envSecret: roast-my-post-staging-env
 
+# Disable web ingress for staging
+ingress:
+  enabled: false
+
 # Reduced replicas for staging environment
 web:
+  enabled: false
   replicas: 2
   autoscaling:
     maxReplicas: 2
 
 worker:
+  enabled: true
   replicas: 2
   autoscaling:
     maxReplicas: 2
