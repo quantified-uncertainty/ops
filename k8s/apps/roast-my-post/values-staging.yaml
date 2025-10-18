@@ -24,6 +24,9 @@ worker:
   autoscaling:
     maxReplicas: 2
 
+scheduler:
+  enabled: true
+
 # Image tags will be set by CI/CD or ArgoCD CLI
 # e.g., argocd app set roast-my-post-staging --helm-set image.tag=sha-abc123
 # Uses same production builds, just deployed to staging environment

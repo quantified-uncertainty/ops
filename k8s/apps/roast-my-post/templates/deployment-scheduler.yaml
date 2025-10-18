@@ -1,0 +1,45 @@
+{{- if .Values.scheduler.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "roast-my-post.fullname" . }}-scheduler
+  labels:
+    app.kubernetes.io/name: {{ include "roast-my-post.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: scheduler
+spec:
+  # This deployment must have exactly one replica to prevent duplicate background jobs.
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "roast-my-post.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: scheduler
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "roast-my-post.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: scheduler
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      containers:
+        - name: scheduler
+          image: "{{ .Values.workerImage.name }}:{{ .Values.workerImage.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          command: ["pnpm", "run", "run-scheduled-tasks"]
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envSecret }}
+          resources:
+            {{- toYaml .Values.scheduler.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+{{- end }}
