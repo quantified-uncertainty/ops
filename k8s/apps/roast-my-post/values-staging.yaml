@@ -21,6 +21,7 @@ web:
 worker:
   enabled: true
   replicas: 2
+  command: process-pgboss
   autoscaling:
     maxReplicas: 2
 
