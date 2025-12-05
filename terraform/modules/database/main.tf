@@ -70,6 +70,11 @@ resource "postgresql_grant" "revoke_public" {
   depends_on  = [postgresql_database.db]
 }
 
+# Get database CA certificate for SSL connections
+data "digitalocean_database_ca" "ca" {
+  cluster_id = var.cluster.id
+}
+
 # Each DB gets its own connection pool.
 resource "digitalocean_database_connection_pool" "pool" {
   cluster_id = var.cluster.id

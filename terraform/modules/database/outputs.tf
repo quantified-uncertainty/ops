@@ -10,3 +10,8 @@ output "bouncer_url" {
   value     = "postgresql://${var.role}:${postgresql_role.role.password}@${digitalocean_database_connection_pool.pool.host}:${digitalocean_database_connection_pool.pool.port}/${digitalocean_database_connection_pool.pool.name}?sslmode=require"
   sensitive = true
 }
+
+output "ca_cert" {
+  value     = data.digitalocean_database_ca.ca.certificate
+  sensitive = true
+}

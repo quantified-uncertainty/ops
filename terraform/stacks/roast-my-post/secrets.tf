@@ -126,8 +126,9 @@ resource "kubernetes_secret" "roast_my_post_staging_env" {
 
   data = {
     # Database URLs - pointing to staging database
-    DATABASE_URL = module.staging_database.bouncer_url
-    PRISMA_URL   = module.staging_database.direct_url
+    DATABASE_URL     = module.staging_database.bouncer_url
+    PRISMA_URL       = module.staging_database.direct_url
+    DATABASE_CA_CERT = module.staging_database.ca_cert
     
     # Authentication
     AUTH_SECRET   = data.onepassword_item.auth_secret.password
