@@ -61,7 +61,7 @@ worker:
 
 # Scheduler deployment for background tasks
 scheduler:
-  enabled: true
+  enabled: false
   resources:
     requests:
       memory: "256Mi"
