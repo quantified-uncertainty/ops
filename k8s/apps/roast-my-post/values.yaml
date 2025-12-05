@@ -44,7 +44,7 @@ web:
 worker:
   enabled: true
   replicas: 2
-  command: process-jobs-adaptive
+  command: process-pgboss
   resources:
     requests:
       memory: "1Gi"    # Generous allocation for growth
