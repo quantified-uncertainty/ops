@@ -23,6 +23,7 @@ worker:
   replicas: 1
   command: process-pgboss
   autoscaling:
+    minReplicas: 1
     maxReplicas: 1
 
 scheduler:
