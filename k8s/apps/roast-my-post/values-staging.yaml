@@ -20,10 +20,10 @@ web:
 
 worker:
   enabled: true
-  replicas: 2
+  replicas: 1
   command: process-pgboss
   autoscaling:
-    maxReplicas: 2
+    maxReplicas: 1
 
 scheduler:
   enabled: false
