@@ -1,0 +1,18 @@
+hosts:
+- wiki-server.k8s.quantifieduncertainty.org
+
+image:
+  name: ghcr.io/quantified-uncertainty/longterm-wiki-server
+  tag: "main"
+
+envSecret: longtermwiki-env
+
+port: 3100
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "250m"

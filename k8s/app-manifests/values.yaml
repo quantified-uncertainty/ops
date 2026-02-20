@@ -114,6 +114,9 @@ apps:
     path: apps/hub/ops/chart
     targetRevision: main
 
+- name: wiki-server
+  namespace: longtermwiki
+
 - name: roast-my-post
   info:
   - name: URL
