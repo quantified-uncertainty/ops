@@ -19,7 +19,7 @@ resource "kubernetes_secret" "longtermwiki_env" {
   }
 
   data = {
-    DATABASE_URL                = module.database.bouncer_url
+    DATABASE_URL                = module.database.direct_url
     LONGTERMWIKI_SERVER_API_KEY = data.onepassword_item.server_api_key.password
   }
 
