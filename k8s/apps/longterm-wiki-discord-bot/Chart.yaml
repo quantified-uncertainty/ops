@@ -1,0 +1,5 @@
+apiVersion: v2
+name: longterm-wiki-discord-bot
+description: Discord Q&A bot for the Longterm Wiki
+type: application
+version: 0.1.0

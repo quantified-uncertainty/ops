@@ -1,0 +1,13 @@
+image:
+  name: ghcr.io/quantified-uncertainty/longterm-wiki-discord-bot
+  tag: "main"
+
+envSecret: longtermwiki-discord-bot-env
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "250m"

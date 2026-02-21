@@ -117,6 +117,9 @@ apps:
 - name: longterm-wiki-server
   namespace: longtermwiki
 
+- name: longterm-wiki-discord-bot
+  namespace: longtermwiki
+
 - name: roast-my-post
   info:
   - name: URL

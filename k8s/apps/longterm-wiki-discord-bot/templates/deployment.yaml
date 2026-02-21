@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "discord-bot.name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "discord-bot.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "discord-bot.name" . }}
+    spec:
+      containers:
+        - name: bot
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          envFrom:
+          - secretRef:
+              name: {{ .Values.envSecret }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
