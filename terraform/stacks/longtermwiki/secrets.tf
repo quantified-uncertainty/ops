@@ -54,9 +54,11 @@ resource "kubernetes_secret" "discord_bot_env" {
   }
 
   data = {
-    ANTHROPIC_API_KEY = data.onepassword_item.anthropic_api_key.password
-    DISCORD_TOKEN     = data.onepassword_item.discord_token.password
-    WIKI_BASE_URL     = "https://www.longtermwiki.com"
+    ANTHROPIC_API_KEY          = data.onepassword_item.anthropic_api_key.password
+    DISCORD_TOKEN              = data.onepassword_item.discord_token.password
+    WIKI_BASE_URL              = "https://www.longtermwiki.com"
+    LONGTERMWIKI_SERVER_URL     = "http://longterm-wiki-server-wiki-server.longtermwiki.svc.cluster.local"
+    LONGTERMWIKI_SERVER_API_KEY = data.onepassword_item.server_api_key.password
   }
 
   depends_on = [kubernetes_namespace.longtermwiki]
