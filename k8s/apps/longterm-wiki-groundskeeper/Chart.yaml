@@ -1,0 +1,5 @@
+apiVersion: v2
+name: longterm-wiki-groundskeeper
+description: Automated maintenance service for the Longterm Wiki
+type: application
+version: 0.1.0

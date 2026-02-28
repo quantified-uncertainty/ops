@@ -120,6 +120,9 @@ apps:
 - name: longterm-wiki-discord-bot
   namespace: longtermwiki
 
+- name: longterm-wiki-groundskeeper
+  namespace: longtermwiki
+
 - name: roast-my-post
   info:
   - name: URL

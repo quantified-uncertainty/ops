@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "groundskeeper.name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "groundskeeper.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "groundskeeper.name" . }}
+    spec:
+      containers:
+        - name: groundskeeper
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          envFrom:
+          - secretRef:
+              name: {{ .Values.envSecret }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: run-log
+              mountPath: /data
+      volumes:
+        - name: run-log
+          emptyDir: {}
