@@ -3,7 +3,7 @@ resource "digitalocean_database_cluster" "main" {
   name             = "longtermwiki"
   engine           = "pg"
   version          = "16"
-  size             = "db-s-1vcpu-1gb"
+  size             = "db-s-1vcpu-2gb"
   region           = local.region
   node_count       = 1
   storage_size_mib = 1024 * 30 # 30GB storage
@@ -39,6 +39,14 @@ module "database" {
 
   pool_size = 10
   create    = true
+}
+
+# Database configuration
+resource "digitalocean_database_postgresql_config" "main" {
+  cluster_id = digitalocean_database_cluster.main.id
+
+  log_min_duration_statement        = 5000   # Log queries slower than 5s
+  idle_in_transaction_session_timeout = 30000 # Kill idle-in-transaction after 30s
 }
 
 # Associate database cluster with the project
