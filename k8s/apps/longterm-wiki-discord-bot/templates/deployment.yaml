@@ -23,5 +23,22 @@ spec:
           envFrom:
           - secretRef:
               name: {{ .Values.envSecret }}
+          env:
+            - name: HOME
+              value: /home/bot
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: logs
+              mountPath: /repo/apps/discord-bot/logs
+            - name: home
+              mountPath: /home/bot
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: logs
+          emptyDir: {}
+        - name: home
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
