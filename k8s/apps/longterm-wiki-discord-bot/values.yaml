@@ -6,8 +6,8 @@ envSecret: longtermwiki-discord-bot-env
 
 resources:
   requests:
-    memory: "256Mi"
+    memory: "512Mi"
     cpu: "100m"
   limits:
-    memory: "512Mi"
-    cpu: "250m"
+    memory: "2Gi"
+    cpu: "500m"
