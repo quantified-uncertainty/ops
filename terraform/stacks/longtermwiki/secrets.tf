@@ -24,6 +24,11 @@ data "onepassword_item" "groundskeeper_discord_webhook" {
   title = "Longtermwiki Groundskeeper DISCORD_WEBHOOK_URL"
 }
 
+data "onepassword_item" "claude_code_oauth_token" {
+  vault = module.providers.op_vault
+  title = "Longtermwiki CLAUDE_CODE_SUBSCRIPTION_OATH_TOKEN"
+}
+
 # Create namespace
 resource "kubernetes_namespace" "longtermwiki" {
   metadata {
@@ -55,6 +60,7 @@ resource "kubernetes_secret" "discord_bot_env" {
 
   data = {
     ANTHROPIC_API_KEY          = data.onepassword_item.anthropic_api_key.password
+    CLAUDE_CODE_OAUTH_TOKEN    = data.onepassword_item.claude_code_oauth_token.password
     DISCORD_TOKEN              = data.onepassword_item.discord_token.password
     WIKI_BASE_URL              = "https://www.longtermwiki.com"
     LONGTERMWIKI_SERVER_URL     = "http://longterm-wiki-server-wiki-server.longtermwiki.svc.cluster.local"
@@ -80,7 +86,8 @@ resource "kubernetes_secret" "groundskeeper_env" {
     WIKI_SERVER_API_KEY    = data.onepassword_item.server_api_key.password
     GITHUB_REPO            = "quantified-uncertainty/longterm-wiki"
     DAILY_RUN_CAP          = "20"
-    DISCORD_WEBHOOK_URL    = data.onepassword_item.groundskeeper_discord_webhook.password
+    DISCORD_WEBHOOK_URL              = data.onepassword_item.groundskeeper_discord_webhook.password
+    TASK_ISSUE_RESPONDER_ENABLED     = "true"
   }
 
   depends_on = [kubernetes_namespace.longtermwiki]
