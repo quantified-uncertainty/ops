@@ -66,21 +66,22 @@ resource "kubernetes_secret" "roast_my_post_env" {
     
     # AI/LLM APIs
     ANTHROPIC_API_KEY  = data.onepassword_item.anthropic_api_key.password
+    ANTHROPIC_BASE_URL = "https://anthropic.helicone.ai/${data.onepassword_item.helicone_api_key.password}"
     OPENROUTER_API_KEY = data.onepassword_item.openrouter_api_key.password
-    
+
     # Article import services
     FIRECRAWL_KEY = data.onepassword_item.firecrawl_key.password
-    
+
     # Email services
     SENDGRID_KEY    = data.onepassword_item.sendgrid_key.password
     EMAIL_FROM      = "noreply@${local.domain}"
     AUTH_RESEND_KEY = data.onepassword_item.auth_resend_key.password
-    
+
     # MCP Server configuration (optional)
     ROAST_MY_POST_MCP_USER_API_KEY = data.onepassword_item.mcp_user_api_key.password
     ROAST_MY_POST_MCP_DATABASE_URL = module.database.bouncer_url
     ROAST_MY_POST_MCP_API_BASE_URL = "https://${local.domain}"
-    
+
     # Helicone configuration
     HELICONE_API_KEY                 = data.onepassword_item.helicone_api_key.password
     HELICONE_CACHE_ENABLED           = "true"
@@ -90,10 +91,14 @@ resource "kubernetes_secret" "roast_my_post_env" {
     HELICONE_JOB_SESSIONS_ENABLED    = "true"
     HELICONE_DETAILED_PATHS_ENABLED  = "true"
     HELICONE_CUSTOM_METADATA_ENABLED = "true"
-    
+
     # Diffbot configuration
     DIFFBOT_KEY = data.onepassword_item.diffbot_key.password
-    
+
+    # Agentic plugin configuration
+    AGENTIC_CLEANUP_WORKSPACE = "false"
+    AGENTIC_TELEMETRY_LOG     = "true"
+
     # Ephemeral Experiments Configuration
     CLEANUP_INTERVAL_MINUTES     = "60"
     CLEANUP_DRY_RUN              = "false"
@@ -135,21 +140,22 @@ resource "kubernetes_secret" "roast_my_post_staging_env" {
     
     # AI/LLM APIs
     ANTHROPIC_API_KEY  = data.onepassword_item.anthropic_api_key.password
+    ANTHROPIC_BASE_URL = "https://anthropic.helicone.ai/${data.onepassword_item.helicone_api_key.password}"
     OPENROUTER_API_KEY = data.onepassword_item.openrouter_api_key.password
-    
+
     # Article import services
     FIRECRAWL_KEY = data.onepassword_item.firecrawl_key.password
-    
+
     # Email services
     SENDGRID_KEY    = data.onepassword_item.sendgrid_key.password
     EMAIL_FROM      = "noreply@${local.domain}"
     AUTH_RESEND_KEY = data.onepassword_item.auth_resend_key.password
-    
+
     # MCP Server configuration (optional)
     ROAST_MY_POST_MCP_USER_API_KEY = data.onepassword_item.mcp_user_api_key.password
     ROAST_MY_POST_MCP_DATABASE_URL = module.staging_database.bouncer_url
     ROAST_MY_POST_MCP_API_BASE_URL = "https://staging.${local.domain}"
-    
+
     # Helicone configuration
     HELICONE_API_KEY                 = data.onepassword_item.helicone_api_key.password
     HELICONE_CACHE_ENABLED           = "true"
@@ -162,7 +168,11 @@ resource "kubernetes_secret" "roast_my_post_staging_env" {
     
     # Diffbot configuration
     DIFFBOT_KEY = data.onepassword_item.diffbot_key.password
-    
+
+    # Agentic plugin configuration
+    AGENTIC_CLEANUP_WORKSPACE = "false"
+    AGENTIC_TELEMETRY_LOG     = "true"
+
     # Ephemeral Experiments Configuration
     CLEANUP_INTERVAL_MINUTES     = "60"
     CLEANUP_DRY_RUN              = "false"
