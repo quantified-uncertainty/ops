@@ -3,7 +3,7 @@ resource "digitalocean_database_cluster" "main" {
   name             = "longtermwiki"
   engine           = "pg"
   version          = "16"
-  size             = "db-s-1vcpu-2gb"
+  size             = "db-s-2vcpu-4gb"
   region           = local.region
   node_count       = 1
   storage_size_mib = 1024 * 30 # 30GB storage
@@ -37,7 +37,7 @@ module "database" {
   database = local.db_name
   cluster  = digitalocean_database_cluster.main
 
-  pool_size = 10
+  pool_size = 22
   create    = true
 }
 
