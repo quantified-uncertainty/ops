@@ -65,7 +65,7 @@ provider "kubernetes" {
 
 data "onepassword_item" "github_token_quri" {
   vault = module.providers.op_vault
-  title = "GitHub token for ops"
+  title = "QURI Terraform GITHUB_TOKEN"
 }
 
 provider "github" {
