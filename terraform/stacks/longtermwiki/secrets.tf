@@ -46,6 +46,7 @@ resource "kubernetes_secret" "longtermwiki_env" {
   data = {
     DATABASE_URL                = module.database.direct_url
     LONGTERMWIKI_SERVER_API_KEY = data.onepassword_item.server_api_key.password
+    GITHUB_TOKEN                = data.onepassword_item.github_token_quri.password
   }
 
   depends_on = [kubernetes_namespace.longtermwiki]
@@ -82,8 +83,8 @@ resource "kubernetes_secret" "groundskeeper_env" {
     GITHUB_APP_ID          = "856482"
     GITHUB_INSTALLATION_ID = "48463969"
     GITHUB_APP_PRIVATE_KEY = data.onepassword_item.github_app_private_key.note_value
-    WIKI_SERVER_URL        = "http://longterm-wiki-server-wiki-server.longtermwiki.svc.cluster.local"
-    WIKI_SERVER_API_KEY    = data.onepassword_item.server_api_key.password
+    LONGTERMWIKI_SERVER_URL     = "http://longterm-wiki-server-wiki-server.longtermwiki.svc.cluster.local"
+    LONGTERMWIKI_SERVER_API_KEY = data.onepassword_item.server_api_key.password
     GITHUB_REPO            = "quantified-uncertainty/longterm-wiki"
     DAILY_RUN_CAP          = "20"
     DISCORD_WEBHOOK_URL              = data.onepassword_item.groundskeeper_discord_webhook.password
