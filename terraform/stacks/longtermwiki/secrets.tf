@@ -45,6 +45,7 @@ resource "kubernetes_secret" "longtermwiki_env" {
 
   data = {
     DATABASE_URL                = module.database.direct_url
+    DATABASE_MIGRATION_URL      = module.database.direct_url
     LONGTERMWIKI_SERVER_API_KEY = data.onepassword_item.server_api_key.password
     GITHUB_TOKEN                = data.onepassword_item.github_token_quri.password
   }

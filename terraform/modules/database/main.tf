@@ -58,6 +58,26 @@ resource "postgresql_default_privileges" "table_access" {
   depends_on  = [postgresql_database.db]
 }
 
+# Sequence grants — needed for INSERT on SERIAL/BIGSERIAL columns
+resource "postgresql_grant" "sequence_access" {
+  role        = var.role
+  database    = var.database
+  schema      = "public"
+  object_type = "sequence"
+  privileges  = ["USAGE", "SELECT"]
+  depends_on  = [postgresql_database.db]
+}
+
+resource "postgresql_default_privileges" "sequence_access" {
+  role        = var.role
+  database    = var.database
+  owner       = "doadmin"
+  schema      = "public"
+  object_type = "sequence"
+  privileges  = ["USAGE", "SELECT"]
+  depends_on  = [postgresql_database.db]
+}
+
 # Tighten permissions; default since PostgreSQL 15.
 # https://www.depesz.com/2021/09/10/waiting-for-postgresql-15-revoke-public-create-from-public-schema-now-owned-by-pg_database_owner/
 # Revoking from `public` schema didn't work for some reason, but revoking on database level did.

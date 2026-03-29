@@ -16,3 +16,7 @@ resources:
   limits:
     memory: "512Mi"
     cpu: "1000m"
+
+migration:
+  enabled: true
+  backoffLimit: 3
