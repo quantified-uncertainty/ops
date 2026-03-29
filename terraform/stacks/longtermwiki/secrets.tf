@@ -94,3 +94,19 @@ resource "kubernetes_secret" "groundskeeper_env" {
 
   depends_on = [kubernetes_namespace.longtermwiki]
 }
+
+# Kubernetes secret for job worker
+resource "kubernetes_secret" "worker_env" {
+  metadata {
+    namespace = local.k8s_namespace
+    name      = "longtermwiki-worker-env"
+  }
+
+  data = {
+    LONGTERMWIKI_SERVER_URL    = "http://longterm-wiki-server-wiki-server.longtermwiki.svc.cluster.local"
+    LONGTERMWIKI_SERVER_API_KEY = data.onepassword_item.server_api_key.password
+    ANTHROPIC_API_KEY          = data.onepassword_item.anthropic_api_key.password
+  }
+
+  depends_on = [kubernetes_namespace.longtermwiki]
+}

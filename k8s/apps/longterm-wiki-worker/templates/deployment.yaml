@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "worker.name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "worker.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "worker.name" . }}
+    spec:
+      terminationGracePeriodSeconds: 600
+      containers:
+        - name: worker
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          command:
+            {{- toYaml .Values.command | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.envSecret }}
+          env:
+            - name: WORKER_HEALTH_PORT
+              value: {{ .Values.healthPort | quote }}
+            - name: NODE_ENV
+              value: production
+          ports:
+            - name: health
+              containerPort: {{ .Values.healthPort }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3

@@ -1,0 +1,25 @@
+image:
+  name: ghcr.io/quantified-uncertainty/longterm-wiki-worker
+  tag: "main"
+
+envSecret: longtermwiki-worker-env
+
+command:
+  - node
+  - --import
+  - tsx/esm
+  - crux/worker/run.ts
+  - --poll
+  - --poll-interval=5000
+  - --types=claim-verification,citation-verify,ping
+  - --verbose
+
+healthPort: 3101
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"

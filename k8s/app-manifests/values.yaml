@@ -123,6 +123,9 @@ apps:
 - name: longterm-wiki-groundskeeper
   namespace: longtermwiki
 
+- name: longterm-wiki-worker
+  namespace: longtermwiki
+
 - name: roast-my-post
   info:
   - name: URL
