@@ -11,7 +11,7 @@ command:
   - crux/worker/run.ts
   - --poll
   - --poll-interval=5000
-  - --types=claim-verification,citation-verify,ping
+  - --types=claim-verification,citation-verify,resource-verify,ping
   - --verbose
 
 healthPort: 3101
