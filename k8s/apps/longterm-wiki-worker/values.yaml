@@ -1,3 +1,5 @@
+replicaCount: 3
+
 image:
   name: ghcr.io/quantified-uncertainty/longterm-wiki-worker
   tag: "main"
@@ -12,6 +14,7 @@ command:
   - --poll
   - --poll-interval=5000
   - --types=claim-verification,citation-verify,resource-verify,ping
+  - --concurrency=5
   - --verbose
 
 healthPort: 3101
