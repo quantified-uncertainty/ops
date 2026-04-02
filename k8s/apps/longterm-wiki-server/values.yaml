@@ -11,10 +11,10 @@ port: 3100
 
 resources:
   requests:
-    memory: "256Mi"
+    memory: "512Mi"
     cpu: "200m"
   limits:
-    memory: "512Mi"
+    memory: "1536Mi"
     cpu: "1000m"
 
 migration:
