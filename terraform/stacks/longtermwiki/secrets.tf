@@ -61,6 +61,11 @@ resource "kubernetes_secret" "discord_bot_env" {
   }
 
   data = {
+    # QUA-612: dual-keyed. ANTHROPIC_BILLING_KEY is the post-rename name the
+    # app code reads. ANTHROPIC_API_KEY is kept for one transition release so
+    # the cutover is zero-downtime — remove in a follow-up once every
+    # deployed image reads BILLING.
+    ANTHROPIC_BILLING_KEY      = data.onepassword_item.anthropic_api_key.password
     ANTHROPIC_API_KEY          = data.onepassword_item.anthropic_api_key.password
     CLAUDE_CODE_OAUTH_TOKEN    = data.onepassword_item.claude_code_oauth_token.password
     DISCORD_TOKEN              = data.onepassword_item.discord_token.password
@@ -80,6 +85,9 @@ resource "kubernetes_secret" "groundskeeper_env" {
   }
 
   data = {
+    # QUA-612: dual-keyed — see discord_bot_env comment above. Remove
+    # ANTHROPIC_API_KEY in a follow-up once every deployed image reads BILLING.
+    ANTHROPIC_BILLING_KEY  = data.onepassword_item.anthropic_api_key.password
     ANTHROPIC_API_KEY      = data.onepassword_item.anthropic_api_key.password
     GITHUB_APP_ID          = "856482"
     GITHUB_INSTALLATION_ID = "48463969"
@@ -105,6 +113,9 @@ resource "kubernetes_secret" "worker_env" {
   data = {
     LONGTERMWIKI_SERVER_URL    = "http://longterm-wiki-server-wiki-server.longtermwiki.svc.cluster.local"
     LONGTERMWIKI_SERVER_API_KEY = data.onepassword_item.server_api_key.password
+    # QUA-612: dual-keyed — see discord_bot_env comment above. Remove
+    # ANTHROPIC_API_KEY in a follow-up once every deployed image reads BILLING.
+    ANTHROPIC_BILLING_KEY      = data.onepassword_item.anthropic_api_key.password
     ANTHROPIC_API_KEY          = data.onepassword_item.anthropic_api_key.password
   }
 
