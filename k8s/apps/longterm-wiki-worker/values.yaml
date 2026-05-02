@@ -13,7 +13,7 @@ command:
   - crux/worker/run.ts
   - --poll
   - --poll-interval=5000
-  - --types=claim-verification,citation-verify,resource-verify,resource-enrich,resource-ingest,ping
+  - --types=claim-sourcing,citation-verify,resource-verify,resource-enrich,resource-ingest,ping
   - --concurrency=5
   - --verbose
 
