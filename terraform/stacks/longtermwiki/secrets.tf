@@ -30,10 +30,11 @@ data "onepassword_item" "claude_code_oauth_token" {
 }
 
 # Search-provider keys for the backfill-sources job (QUA-933). The worker's
-# URL-suggestion search uses two providers: "perplexity" (routed through
-# OpenRouter, so it reads OPENROUTER_API_KEY) and "exa" (EXA_API_KEY). Without
-# these the worker silently skips both providers and every backfill run finds
-# 0 sources at $0 cost. OPENROUTER_API_KEY also powers the OpenRouter
+# URL-suggestion search uses three providers: "perplexity" (routed through
+# OpenRouter, so it reads OPENROUTER_API_KEY), "exa" (EXA_API_KEY), and "scry"
+# (SCRY_API_KEY — the EA Forum / LessWrong search). Without a key each provider
+# is skipped or falls back to a public key; the SCRY public fallback now returns
+# 401 and aborts the whole run. OPENROUTER_API_KEY also powers the OpenRouter
 # extraction/entailment/ranking models in the backfill pipeline.
 data "onepassword_item" "openrouter_api_key" {
   vault = module.providers.op_vault
@@ -43,6 +44,13 @@ data "onepassword_item" "openrouter_api_key" {
 data "onepassword_item" "exa_api_key" {
   vault = module.providers.op_vault
   title = "Longtermwiki EXA_API_KEY"
+}
+
+# SCRY's personal key lives in the "EXOPRIORS_API_KEY" 1Password item (Scry is
+# the Exopriors search service).
+data "onepassword_item" "scry_api_key" {
+  vault = module.providers.op_vault
+  title = "Longtermwiki EXOPRIORS_API_KEY"
 }
 
 # Create namespace
@@ -136,7 +144,10 @@ resource "kubernetes_secret" "worker_env" {
     # Search + LLM providers for backfill-sources (QUA-933). Without these the
     # job runs green but finds 0 sources.
     OPENROUTER_API_KEY         = data.onepassword_item.openrouter_api_key.password
-    EXA_API_KEY                = data.onepassword_item.exa_api_key.password
+    # EXA + EXOPRIORS are API_CREDENTIAL items — secret lives in `.credential`,
+    # not `.password` (which is empty and would be dropped from the secret).
+    EXA_API_KEY                = data.onepassword_item.exa_api_key.credential
+    SCRY_API_KEY               = data.onepassword_item.scry_api_key.credential
   }
 
   depends_on = [kubernetes_namespace.longtermwiki]
