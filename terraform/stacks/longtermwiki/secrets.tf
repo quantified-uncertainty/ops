@@ -29,6 +29,22 @@ data "onepassword_item" "claude_code_oauth_token" {
   title = "Longtermwiki CLAUDE_CODE_SUBSCRIPTION_OATH_TOKEN"
 }
 
+# Search-provider keys for the backfill-sources job (QUA-933). The worker's
+# URL-suggestion search uses two providers: "perplexity" (routed through
+# OpenRouter, so it reads OPENROUTER_API_KEY) and "exa" (EXA_API_KEY). Without
+# these the worker silently skips both providers and every backfill run finds
+# 0 sources at $0 cost. OPENROUTER_API_KEY also powers the OpenRouter
+# extraction/entailment/ranking models in the backfill pipeline.
+data "onepassword_item" "openrouter_api_key" {
+  vault = module.providers.op_vault
+  title = "Longtermwiki OPENROUTER_API_KEY"
+}
+
+data "onepassword_item" "exa_api_key" {
+  vault = module.providers.op_vault
+  title = "Longtermwiki EXA_API_KEY"
+}
+
 # Create namespace
 resource "kubernetes_namespace" "longtermwiki" {
   metadata {
@@ -117,6 +133,10 @@ resource "kubernetes_secret" "worker_env" {
     # ANTHROPIC_API_KEY in a follow-up once every deployed image reads BILLING.
     ANTHROPIC_BILLING_KEY      = data.onepassword_item.anthropic_api_key.password
     ANTHROPIC_API_KEY          = data.onepassword_item.anthropic_api_key.password
+    # Search + LLM providers for backfill-sources (QUA-933). Without these the
+    # job runs green but finds 0 sources.
+    OPENROUTER_API_KEY         = data.onepassword_item.openrouter_api_key.password
+    EXA_API_KEY                = data.onepassword_item.exa_api_key.password
   }
 
   depends_on = [kubernetes_namespace.longtermwiki]
