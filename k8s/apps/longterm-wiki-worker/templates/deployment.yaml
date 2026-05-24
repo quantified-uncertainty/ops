@@ -27,6 +27,12 @@ spec:
               value: {{ .Values.healthPort | quote }}
             - name: NODE_ENV
               value: production
+            # Raise the V8 heap cap. The backfill-sources child (spawned via
+            # node) inherits this env; on large batches it otherwise hits the
+            # ~512MB default heap limit and aborts with "JavaScript heap out of
+            # memory". Keep below resources.limits.memory to leave off-heap room.
+            - name: NODE_OPTIONS
+              value: {{ .Values.nodeOptions | quote }}
           ports:
             - name: health
               containerPort: {{ .Values.healthPort }}
