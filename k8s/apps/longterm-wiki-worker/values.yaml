@@ -19,10 +19,16 @@ command:
 
 healthPort: 3101
 
+# Raise V8 heap to 2GB. The default (~512MB) OOMs the backfill-sources child on
+# large batches ("JavaScript heap out of memory"). The child inherits NODE_OPTIONS
+# from the worker container. Kept below resources.limits.memory so off-heap
+# allocations + buffers still fit. Worker nodes are 4GB, so we don't go higher.
+nodeOptions: "--max-old-space-size=2048"
+
 resources:
   requests:
-    memory: "256Mi"
+    memory: "512Mi"
     cpu: "250m"
   limits:
-    memory: "1Gi"
+    memory: "2560Mi"
     cpu: "1000m"
