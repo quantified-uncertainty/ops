@@ -27,7 +27,7 @@ nodeOptions: "--max-old-space-size=2048"
 
 resources:
   requests:
-    memory: "512Mi"
+    memory: "1536Mi"
     cpu: "250m"
   limits:
     memory: "2560Mi"
