@@ -3,6 +3,10 @@ data "auth0_tenant" "tenant" {}
 resource "auth0_client" "authentor" {
   name     = "Guesstimate Authentor"
   app_type = "non_interactive"
+
+  # Matches the live tenant setting; declared so terraform doesn't try to
+  # disable it on unrelated applies.
+  cross_origin_auth = true
 }
 
 
