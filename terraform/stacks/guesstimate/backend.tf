@@ -15,6 +15,14 @@ resource "random_bytes" "rails_secret" {
   length = 64
 }
 
+# Basic auth credentials for the Chargebee webhook endpoint
+# (POST /chargebee/webhooks). The same values must be configured on the
+# webhook in the Chargebee dashboard/API.
+resource "random_password" "chargebee_webhook_password" {
+  length  = 40
+  special = false
+}
+
 resource "kubernetes_secret" "backend_env" {
   metadata {
     name      = var.k8s_backend_env_secret
@@ -37,7 +45,9 @@ resource "kubernetes_secret" "backend_env" {
     # Name of the Auth0 users database
     "AUTH0_CONNECTION" = var.auth0_connection_name
 
-    "CHARGEBEE_API_KEY" = data.onepassword_item.chargebee_api_key.password
+    "CHARGEBEE_API_KEY"          = data.onepassword_item.chargebee_api_key.password
+    "CHARGEBEE_WEBHOOK_USERNAME" = "chargebee"
+    "CHARGEBEE_WEBHOOK_PASSWORD" = random_password.chargebee_webhook_password.result
     "DATABASE_URL"      = digitalocean_database_cluster.main.uri
     "SECRET_KEY_BASE"   = random_bytes.rails_secret.hex
     "SENDGRID_PASSWORD" = data.onepassword_item.sendgrid_key.password
