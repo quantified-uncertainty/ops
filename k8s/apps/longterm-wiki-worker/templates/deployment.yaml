@@ -33,6 +33,14 @@ spec:
             # memory". Keep below resources.limits.memory to leave off-heap room.
             - name: NODE_OPTIONS
               value: {{ .Values.nodeOptions | quote }}
+            {{- if .Values.llmPayloadCaptureRate }}
+            # Sampling rate for LLM request/response payload capture (model-swap
+            # eval). Empty/unset = off; "1" = capture every call. The worker makes
+            # the bulk of production LLM calls, so it must opt in like the CI
+            # pipelines do via the LLM_PAYLOAD_CAPTURE_RATE repo variable.
+            - name: LLM_PAYLOAD_CAPTURE_RATE
+              value: {{ .Values.llmPayloadCaptureRate | quote }}
+            {{- end }}
           ports:
             - name: health
               containerPort: {{ .Values.healthPort }}

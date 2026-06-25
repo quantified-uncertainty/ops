@@ -6,6 +6,10 @@ image:
 
 envSecret: longtermwiki-worker-env
 
+# Sampling rate for LLM request/response payload capture (model-swap eval).
+# "" / unset = off, "1" = capture every call. Tunable without a code change.
+llmPayloadCaptureRate: "1"
+
 command:
   - node
   - --import
