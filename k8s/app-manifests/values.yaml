@@ -79,22 +79,6 @@ apps:
     value: https://metabase.k8s.quantifieduncertainty.org
 
 # -------------------- QURI apps --------------------
-- name: elastic
-  # Namespaced for historical reasons; metaforecast is the only app that uses this chart, for now.
-  # But we will probably use a single Elastic cluster (possibly with multiple users) for all QURI apps.
-  namespace: metaforecast
-  automated: null
-
-- name: metaforecast
-  info:
-  - name: URL
-    value: https://metaforecast.org
-  source:
-    repoURL: git@github.com:quantified-uncertainty/squiggle.git
-    path: apps/metaforecast/ops/chart
-    targetRevision: main
-  automated: null
-
 - name: gucem
   source:
     repoURL: git@github.com/quantified-uncertainty/GUCEM.git

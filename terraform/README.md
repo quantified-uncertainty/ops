@@ -10,7 +10,7 @@ Terraform state is managed through the remote S3 state, bootstrapped with config
 - `modules/*` - shared Terraform modules.
 - `bootstrap` - bootstrapping Terraform configuration which sets up S3 bucket for all state files; it outputs state locally. We probably won't run it ever again.
 
-Stacks are split by application ("guesstimate", "quri-hub", "metaforecast"). For shared resources, we can also create separate stacks, or a single stack for all shared resources.
+Stacks are split by application ("guesstimate", "quri-hub", "roast-my-post"). For shared resources, we can also create separate stacks, or a single stack for all shared resources.
 
 ## Picking state management solution
 
