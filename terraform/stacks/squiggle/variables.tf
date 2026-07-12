@@ -13,7 +13,7 @@ variable "hub_email_from" {
 # Users with admin permissions on Squiggle Hub
 variable "hub_root_emails" {
   type    = string
-  default = "me@berekuk.ru,ozzieagooen@gmail.com"
+  default = "me@berekuk.ru,ozzieagooen@gmail.com,michaelr524@gmail.com"
 }
 
 # Used for CLI scripts that need root permissions, e.g. running evals.

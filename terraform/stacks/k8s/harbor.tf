@@ -23,7 +23,6 @@ locals {
     "guesstimate",
     "gucem",
     "squiggle",
-    "metaforecast",
   ])
 
   # The repositories in this list will be able to push images to the registry.
