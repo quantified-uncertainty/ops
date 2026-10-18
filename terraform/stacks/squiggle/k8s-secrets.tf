@@ -12,4 +12,10 @@ resource "kubernetes_secret" "main" {
     ROOT_EMAILS       = var.hub_root_emails
     ANTHROPIC_API_KEY = data.onepassword_item.anthropic_api_key.password
   }
+
+  lifecycle {
+    # OpenRouter is provisioned directly on this Secret. Preserve that key when
+    # Terraform updates the settings it manages above.
+    ignore_changes = [data["OPENROUTER_API_KEY"]]
+  }
 }
