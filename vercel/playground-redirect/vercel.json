@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://www.squiggle-language.com/playground",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "destination": "https://www.squiggle-language.com/playground",
+      "permanent": true
+    }
+  ]
+}
