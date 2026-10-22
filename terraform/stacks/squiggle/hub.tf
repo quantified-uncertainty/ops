@@ -68,9 +68,9 @@ resource "vercel_project" "hub" {
     },
   ]
 
-  # Hub depends on VERCEL_URL; see also: https://vercel.com/docs/security/deployment-protection#migrating-to-standard-protection
+  # Protect previews and old production URLs; keep production domains public.
   vercel_authentication = {
-    deployment_type = "only_preview_deployments"
+    deployment_type = "standard_protection"
   }
 
   # close to QURI database on DigitalOcean

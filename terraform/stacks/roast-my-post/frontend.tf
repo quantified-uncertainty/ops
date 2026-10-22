@@ -8,17 +8,17 @@ resource "vercel_project" "main" {
     repo = "quantified-uncertainty/roast-my-post"
   }
 
-  root_directory = "apps/web"
+  root_directory  = "apps/web"
   install_command = "pnpm install"
-  
+
   # Workaround for provider bug
   enable_affected_projects_deployments = false
-  
-  # Keep current authentication settings
+
+  # Protect previews and old production URLs; keep production domains public.
   vercel_authentication = {
-    deployment_type = "none"
+    deployment_type = "standard_protection"
   }
-  
+
   # Environment variables for Vercel deployment
   environment = [
     {
@@ -123,7 +123,7 @@ module "domain" {
 
   domain     = local.domain
   project_id = vercel_project.main.id
-  www        = true  # Create www subdomain redirect
+  www        = true # Create www subdomain redirect
 }
 
 # Staging subdomain for staging branch deployments
