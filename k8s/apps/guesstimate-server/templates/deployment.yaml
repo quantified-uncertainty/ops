@@ -11,6 +11,7 @@ spec:
       labels:
         app: {{ include "server-name" . }}
     spec:
+      automountServiceAccountToken: false
       imagePullSecrets:
       - name: {{ .Values.image.pullSecret }}
       containers:

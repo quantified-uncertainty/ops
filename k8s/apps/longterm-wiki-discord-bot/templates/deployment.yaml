@@ -12,6 +12,7 @@ spec:
       labels:
         app: {{ include "discord-bot.name" . }}
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
