@@ -4,6 +4,7 @@
 provider "registry.terraform.io/1password/onepassword" {
   version = "1.4.3"
   hashes = [
+    "h1:+wnjRyAdW5h7r5OhTF9AOgZcTvHb9qjwzZMZVWalGvU=",
     "h1:/iQ2CwCCmUuqFtKXqtgUl9YqQQ2bss6Bl+sC4YuxqM0=",
     "zh:01c3d2bbc3199f46504d7c26e78230e52b8044c7965322edb107f7ebb5339d5c",
     "zh:210aaad41ad9d3df6c21bac532fcd3f554b09e4ba51a73adc0dee528fb537dbe",
@@ -25,6 +26,7 @@ provider "registry.terraform.io/1password/onepassword" {
 provider "registry.terraform.io/digitalocean/digitalocean" {
   version = "2.36.0"
   hashes = [
+    "h1:RJRiSKNguA33LlEZ2KmK7EpvogdV8lUVlCD5M8lVqtE=",
     "h1:x549fV+Qh5U62A6pF5slrfaQyaG3dljekiyT/riC01E=",
     "zh:023d11f654e4049e80254d8edb950f6c84c993134c8ffb5ec09a71e77f486cbe",
     "zh:1aa4d213d18c06df0d791aa154188517ea3efaac69f14e2de3f8e152961e22fd",
@@ -49,6 +51,7 @@ provider "registry.terraform.io/hashicorp/kubernetes" {
   version = "2.29.0"
   hashes = [
     "h1:7C1MinWhowW8EnlSYhhAFV3bte8x5YcSF5QxUPdoXDk=",
+    "h1:oUDANZ62j22EWXtXUDAJe4HFq6BZhrYa4VLk49u7Om0=",
     "zh:3edd5dc319b95fe94e61b82d10c1ce7fb53a2f21b067ddb742f2d7d0d19dd113",
     "zh:4b9096e6d0cfa0efd4c89270e3d25fea49db570e2cfbe49c5d1de085a15f2578",
     "zh:5397573838bcb8844248c8d6ac93cca7f39a0b707ac3ce7a7b306c50c261c195",
@@ -67,6 +70,7 @@ provider "registry.terraform.io/hashicorp/kubernetes" {
 provider "registry.terraform.io/hashicorp/random" {
   version = "3.7.1"
   hashes = [
+    "h1:/qtweZW2sk0kBNiQM02RvBXmlVdI9oYqRMCyBZ8XA98=",
     "h1:t152MY0tQH4a8fLzTtEWx70ITd3azVOrFDn/pQblbto=",
     "zh:3193b89b43bf5805493e290374cdda5132578de6535f8009547c8b5d7a351585",
     "zh:3218320de4be943e5812ed3de995946056db86eb8d03aa3f074e0c7316599bef",
@@ -86,6 +90,7 @@ provider "registry.terraform.io/hashicorp/random" {
 provider "registry.terraform.io/vercel/vercel" {
   version = "2.14.0"
   hashes = [
+    "h1:Y7MJVYbdeRHyNDj0HQ55C8FnxbJlXbFoPz0E3wQYPSA=",
     "h1:njE27uhwcwCMUvJQ2NdD9hZFpeaU8vCvYHjAEh2Plck=",
     "zh:20bb1b1ccabc85bb06ae6aea45fda4fb143849bcc777f98a5fa9dba6f7b8ca9c",
     "zh:2129c90d0a69fc4f86f86192c77698e50ee94cb4513d137a81518625524fb8f3",
