@@ -12,6 +12,7 @@ spec:
       labels:
         app: {{ include "worker.name" . }}
     spec:
+      automountServiceAccountToken: false
       terminationGracePeriodSeconds: 600
       containers:
         - name: worker

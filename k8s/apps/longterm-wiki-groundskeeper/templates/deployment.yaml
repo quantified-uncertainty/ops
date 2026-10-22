@@ -12,6 +12,7 @@ spec:
       labels:
         app: {{ include "groundskeeper.name" . }}
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: groundskeeper
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"

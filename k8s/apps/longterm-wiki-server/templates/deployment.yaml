@@ -11,6 +11,7 @@ spec:
       labels:
         app: {{ include "wiki-server.name" . }}
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: server
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
