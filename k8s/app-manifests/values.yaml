@@ -32,7 +32,8 @@ apps:
     # v2026.11.18 ships NGINX 1.31.9 with the fix for CVE-2026-118899.
     targetRevision: d437b9dc4da3f09b26d8891f80e7aa977d871c60
     helm:
-      valuesObject:
+      # Argo CD 2.10 fails to reconcile status after valuesObject changes.
+      values: |
         controller:
           image:
             digest: sha256:4ed95cfe0e60ee76036a8e9ed70a29f8f95ac08fe262409efd656ee75c63a239
