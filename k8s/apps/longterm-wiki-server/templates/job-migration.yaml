@@ -24,7 +24,7 @@ spec:
         - name: migration
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: Always
-          command: ["pnpm", "run", "db:migrate"]
+          command: ["node", "--import", "tsx", "src/run-migrate.ts"]
           envFrom:
             - secretRef:
                 name: {{ .Values.envSecret }}
